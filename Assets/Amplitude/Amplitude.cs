@@ -25,7 +25,7 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserId(string userId);
 	[DllImport ("__Internal")]
-	private static extern void _Amplitude_setGlobalUserProperties(string propertiesJson);
+	private static extern void _Amplitude_setUserProperties(string propertiesJson);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenue(double amount);
 #endif
@@ -146,7 +146,7 @@ public class Amplitude {
 #endif
 	}
 	
-	public void setGlobalUserProperties(IDictionary<string, object> properties) {
+	public void setUserProperties(IDictionary<string, object> properties) {
 		string propertiesJson;
 		if (properties != null) {
 			propertiesJson = Json.Serialize(properties);
@@ -154,18 +154,23 @@ public class Amplitude {
 			propertiesJson = Json.Serialize(new Dictionary<string, object>());
 		}
 
-		Log (string.Format("C# setGlobalUserProperties {0}", propertiesJson));		
+		Log (string.Format("C# setUserProperties {0}", propertiesJson));		
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			_Amplitude_setGlobalUserProperties(propertiesJson);
+			_Amplitude_setUserProperties(propertiesJson);
 		}
 #endif
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setGlobalUserProperties", propertiesJson);
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
 		}
 #endif
+	}
+	
+	[System.Obsolete("Please call setUserProperties instead", false)]
+	public void setGlobalUserProperties(IDictionary<string, object> properties) {
+		setUserProperties(properties);
 	}
 	
 	public void logRevenue(double amount) {

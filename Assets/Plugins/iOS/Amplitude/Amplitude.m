@@ -1,10 +1,19 @@
 //
-//  Amplitude.m
-//  Fawkes
-//
-//  Created by Spenser Skates on 7/26/12.
-//  Copyright (c) 2012 Sonalight, Inc. All rights reserved.
-//
+// Amplitude.m
+
+#ifndef AMPLITUDE_DEBUG
+#define AMPLITUDE_DEBUG 0
+#endif
+
+#if AMPLITUDE_DEBUG
+#   define AMPLITUDE_LOG(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
+#else
+#   define AMPLITUDE_LOG(...)
+#endif
+
+#define MAX_EVENTS_BEFORE_UPLOAD 30
+#define MAX_EVENTS_BEFORE_DELETION 1000
+#define SECONDS_BEFORE_UPLOAD 30
 
 #import "Amplitude.h"
 #import "AmplitudeLocationManagerDelegate.h"
@@ -33,16 +42,13 @@ static NSString *_phoneCarrier;
 static NSString *_country;
 static NSString *_language;
 
-static NSDictionary *_globalProperties;
-
-static NSString *_campaignInformation;
-static bool isCurrentlyTrackingCampaign = NO;
+static NSDictionary *_userProperties;
 
 static long long _sessionId = -1;
-static bool sessionStarted = NO;
+static BOOL sessionStarted = NO;
 
-static bool updateScheduled = NO;
-static bool updatingCurrently = NO;
+static BOOL updateScheduled = NO;
+static BOOL updatingCurrently = NO;
 
 static NSMutableDictionary *propertyList;
 static NSString *propertyListPath;
@@ -54,16 +60,18 @@ static NSOperationQueue *initializerQueue;
 static NSOperationQueue *backgroundQueue;
 static UIBackgroundTaskIdentifier uploadTaskID;
 
-static bool locationListeningEnabled = YES;
+static BOOL locationListeningEnabled = YES;
 static CLLocationManager *locationManager;
 static CLLocation *lastKnownLocation;
 static AmplitudeLocationManagerDelegate *locationManagerDelegate;
+
+static BOOL useAdvertisingIdForDeviceId = NO;
 
 @implementation Amplitude
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-
+#pragma mark - Main class methods
 + (void)initialize
 {
     initializerQueue = [[NSOperationQueue alloc] init];
@@ -102,7 +110,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         
         // Load propertyList object
         propertyListPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.plist"]);
-        bool successfullyLoadedPropertyList = NO;
+        BOOL successfullyLoadedPropertyList = NO;
         if ([[NSFileManager defaultManager] fileExistsAtPath:propertyListPath]) {
             NSData *propertyListData = [[NSFileManager defaultManager] contentsAtPath:propertyListPath];
             if (propertyListData != nil) {
@@ -135,7 +143,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                                         options:0 error:&error];
             if (error == nil) {
                 if (propertyListData != nil) {
-                    bool success = [propertyListData writeToFile:propertyListPath atomically:YES];
+                    BOOL success = [propertyListData writeToFile:propertyListPath atomically:YES];
                     if (!success) {
                         NSLog(@"ERROR: Unable to save propertyList to file on initialization");
                     }
@@ -149,7 +157,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         
         // Load eventData object
         eventsDataPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.archiveDict"]);
-        bool successfullyLoadedEventsData = NO;
+        BOOL successfullyLoadedEventsData = NO;
         if ([[NSFileManager defaultManager] fileExistsAtPath:eventsDataPath]) {
             @try {
                 eventsData = SAFE_ARC_RETAIN([NSKeyedUnarchiver unarchiveObjectWithFile:eventsDataPath]);
@@ -170,24 +178,23 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
             eventsData = SAFE_ARC_RETAIN([NSMutableDictionary dictionary]);
             [eventsData setObject:[NSMutableArray array] forKey:@"events"];
             [eventsData setObject:[NSNumber numberWithLongLong:0LL] forKey:@"max_id"];
-            [eventsData setObject:@"{\"tracked\": false}" forKey:@"campaign_information"];
-            bool success = [NSKeyedArchiver archiveRootObject:eventsData toFile:eventsDataPath];
+            BOOL success = [NSKeyedArchiver archiveRootObject:eventsData toFile:eventsDataPath];
             if (!success) {
                 NSLog(@"ERROR: Unable to save eventsData to file on initialization");
             }
         }
         
-        _campaignInformation = SAFE_ARC_RETAIN([eventsData objectForKey:@"campaign_information"]);
-        
         [backgroundQueue setSuspended:NO];
     }];
     
-    // Location manager callbacks must be fired on a thread with a run loop (eg the main thread)
-    Class CLLocationManager = NSClassFromString(@"CLLocationManager");
-    locationManager = [[CLLocationManager alloc] init];
-    locationManagerDelegate = [[AmplitudeLocationManagerDelegate alloc] init];
-    SEL setDelegate = NSSelectorFromString(@"setDelegate:");
-    [locationManager performSelector:setDelegate withObject:locationManagerDelegate];
+    // CLLocationManager must be created on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Class CLLocationManager = NSClassFromString(@"CLLocationManager");
+        locationManager = [[CLLocationManager alloc] init];
+        locationManagerDelegate = [[AmplitudeLocationManagerDelegate alloc] init];
+        SEL setDelegate = NSSelectorFromString(@"setDelegate:");
+        [locationManager performSelector:setDelegate withObject:locationManagerDelegate];
+    });
 }
 
 + (void)initializeApiKey:(NSString*) apiKey
@@ -196,16 +203,6 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
 }
 
 + (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId
-{
-    [Amplitude initializeApiKey:apiKey userId:userId trackCampaignSource:NO];
-}
-
-+ (void)initializeApiKey:(NSString*) apiKey trackCampaignSource:(bool) trackCampaignSource
-{
-    [Amplitude initializeApiKey:apiKey userId:nil trackCampaignSource:trackCampaignSource];
-}
-
-+ (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId trackCampaignSource:(bool) trackCampaignSource
 {
     if (apiKey == nil) {
         NSLog(@"ERROR: apiKey cannot be nil in initializeApiKey:");
@@ -233,7 +230,9 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         @synchronized (eventsData) {
             if (_deviceId == nil) {
                 _deviceId = SAFE_ARC_RETAIN([eventsData objectForKey:@"device_id"]);
-                if (_deviceId == nil) {
+                if (_deviceId == nil ||
+                    [_deviceId isEqualToString:@"e3f5536a141811db40efd6400f1d0a4e"] ||
+                    [_deviceId isEqualToString:@"04bab7ee75b9a58d39b8dc54e8851084"]) {
                     _deviceId = SAFE_ARC_RETAIN([Amplitude getDeviceId]);
                     [eventsData setObject:_deviceId forKey:@"device_id"];
                 }
@@ -261,156 +260,9 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                        name:UIApplicationDidEnterBackgroundNotification
                      object:nil];
         
-        if (trackCampaignSource) {
-            [Amplitude trackCampaignSource];
-        }
-        
     }];
     
     [Amplitude enterForeground];
-}
-
-+ (void)enableCampaignTrackingApiKey:(NSString*) apiKey
-{
-    if (apiKey == nil) {
-        NSLog(@"ERROR: apiKey cannot be nil in enableCampaignTrackingApiKey:");
-        return;
-    }
-    
-    if (![Amplitude isArgument:apiKey validType:[NSString class] methodName:@"enableCampaignTrackingApiKey:"]) {
-        return;
-    }
-    
-    if ([apiKey length] == 0) {
-        NSLog(@"ERROR: apiKey cannot be blank in enableCampaignTrackingApiKey:");
-        return;
-    }
-    
-    [backgroundQueue addOperationWithBlock:^{
-        
-        (void) SAFE_ARC_RETAIN(apiKey);
-        SAFE_ARC_RELEASE(_apiKey);
-        _apiKey = apiKey;
-        
-        [Amplitude trackCampaignSource];
-        
-    }];
-}
-
-+ (void)trackCampaignSource
-{
-    
-    NSNumber *hasTrackedCampaign = [NSNumber numberWithBool:NO];
-    @synchronized (eventsData) {
-        hasTrackedCampaign = [eventsData objectForKey:@"has_tracked_campaign"];
-    }
-    
-    if (![hasTrackedCampaign boolValue] && !isCurrentlyTrackingCampaign) {
-        
-        isCurrentlyTrackingCampaign = YES;
-        
-        NSMutableDictionary *fingerprint = [NSMutableDictionary dictionary];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_deviceId] forKey:@"device_id"];
-        [fingerprint setObject:@"ios" forKey:@"client"];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_country] forKey:@"country"];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_language] forKey:@"language"];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_phoneModel] forKey:@"phone_model"];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_buildVersionRelease] forKey:@"build_version_release"];
-        [fingerprint setObject:[Amplitude replaceWithJSONNull:_phoneCarrier] forKey:@"carrier"];
-        
-        NSError *error = nil;
-        NSData *fingerprintData = [NSJSONSerialization dataWithJSONObject:fingerprint options:0 error:&error];
-        if (error != nil) {
-            NSLog(@"ERROR: NSJSONSerialization error: %@", error);
-            isCurrentlyTrackingCampaign = NO;
-            return;
-        }
-        NSString *fingerprintString = SAFE_ARC_AUTORELEASE([[NSString alloc] initWithData:fingerprintData encoding:NSUTF8StringEncoding]);
-        [Amplitude makeCampaignTrackingPostRequest:@"https://ref.amplitude.com/install" fingerprint:fingerprintString];
-    }
-}
-
-+ (void)makeCampaignTrackingPostRequest:(NSString*) url fingerprint:(NSString*) fingerprintString
-{
-    NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    [request setTimeoutInterval:60.0];
-    
-    NSMutableData *postData = [[NSMutableData alloc] init];
-    [postData appendData:[@"key=" dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[_apiKey dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[@"&fingerprint=" dataUsingEncoding:NSUTF8StringEncoding]];
-    [postData appendData:[[Amplitude urlEncodeString:fingerprintString] dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
-    
-    [request setHTTPBody:postData];
-    
-    SAFE_ARC_RELEASE(postData);
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:backgroundQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-     {
-         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-         if (response != nil) {
-             if ([httpResponse statusCode] == 200) {
-                 NSError *error = nil;
-                 NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-                 
-                 if (error != nil) {
-                     NSLog(@"ERROR: Deserialization error:%@", error);
-                 } else if (![result isKindOfClass:[NSDictionary class]]) {
-                     NSLog(@"ERROR: JSON Dictionary not returned from server, invalid type:%@", [result class]);
-                 } else {
-                     
-                     // success, save successful campaign tracking
-                     NSString *jsonString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                     @synchronized (eventsData) {
-                         [eventsData setObject:[NSNumber numberWithBool:YES] forKey:@"has_tracked_campaign"];
-                         [eventsData setObject:jsonString forKey:@"campaign_information"];
-                     }
-                     _campaignInformation = jsonString;
-                     
-                 }
-             } else {
-                 NSLog(@"ERROR: Connection response received:%d, %@", [httpResponse statusCode],
-                       SAFE_ARC_AUTORELEASE([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]));
-             }
-         } else if (error != nil) {
-             if ([error code] == -1009) {
-                 //NSLog(@"No internet connection (not connected to internet), unable to track campaign");
-             } else if ([error code] == -1003) {
-                 //NSLog(@"No internet connection (hostname not found), unable to track campaign");
-             } else if ([error code] == -1001) {
-                 //NSLog(@"No internet connection (request timed out), unable to track campaign");
-             } else {
-                 NSLog(@"ERROR: Connection error:%@", error);
-             }
-         } else {
-             NSLog(@"ERROR: response empty, error empty for NSURLConnection");
-         }
-         
-         isCurrentlyTrackingCampaign = NO;
-         
-     }];
-}
-
-+ (NSDictionary*)getCampaignInformation
-{
-    if (_apiKey == nil) {
-        NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling getCampaignInformation");
-        return [NSDictionary dictionary];
-    }
-    
-    NSError *error = nil;
-    NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[_campaignInformation dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-    if (error != nil) {
-        NSLog(@"ERROR: Deserialization error:%@", error);
-    } else if (![result isKindOfClass:[NSDictionary class]]) {
-        NSLog(@"ERROR: JSON Dictionary not stored locally, invalid type:%@", [result class]);
-        return [NSDictionary dictionary];
-    }
-    return result;
 }
 
 + (void)logEvent:(NSString*) eventType
@@ -418,27 +270,29 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     if (![Amplitude isArgument:eventType validType:[NSString class] methodName:@"logEvent"]) {
         return;
     }
-    [Amplitude logEvent:eventType withCustomProperties:nil];
+    [Amplitude logEvent:eventType withEventProperties:nil];
 }
 
-+ (void)logEvent:(NSString*) eventType withCustomProperties:(NSDictionary*) customProperties
++ (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties
 {
-    if (![Amplitude isArgument:eventType validType:[NSString class] methodName:@"logEvent:withCustomProperties:"]) {
+    if (![Amplitude isArgument:eventType validType:[NSString class] methodName:@"logEvent:withEventProperties:"]) {
         return;
     }
-    if (customProperties != nil && ![Amplitude isArgument:customProperties validType:[NSDictionary class] methodName:@"logEvent:withCustomProperties:"]) {
+    if (eventProperties != nil && ![Amplitude isArgument:eventProperties validType:[NSDictionary class] methodName:@"logEvent:withEventProperties:"]) {
         return;
     }
-    [Amplitude logEvent:eventType withCustomProperties:customProperties apiProperties:nil];
+    [Amplitude logEvent:eventType withEventProperties:eventProperties apiProperties:nil withTimestamp:nil];
 }
 
-+ (void)logEvent:(NSString*) eventType withCustomProperties:(NSDictionary*) customProperties apiProperties:(NSDictionary*) apiProperties
++ (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties apiProperties:(NSDictionary*) apiProperties withTimestamp:(NSNumber*) timestamp
 {
     if (_apiKey == nil) {
         NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling logEvent:");
         return;
     }
-    NSNumber *timestamp = [NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000];
+    if (timestamp == nil) {
+        timestamp = [NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000];
+    }
     
     [backgroundQueue addOperationWithBlock:^{
         
@@ -455,10 +309,9 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
             
             [event setValue:[Amplitude replaceWithJSONNull:eventType] forKey:@"event_type"];
             [event setValue:[NSNumber numberWithLongLong:newId] forKey:@"event_id"];
-            [event setValue:[Amplitude replaceWithEmptyJSON:customProperties] forKey:@"custom_properties"];
-            [event setValue:[Amplitude replaceWithEmptyJSON:apiProperties] forKey:@"properties"];
+            [event setValue:[Amplitude replaceWithEmptyJSON:eventProperties] forKey:@"custom_properties"];
             [event setValue:[Amplitude replaceWithEmptyJSON:apiProperties] forKey:@"api_properties"];
-            [event setValue:[Amplitude replaceWithEmptyJSON:_globalProperties] forKey:@"global_properties"];
+            [event setValue:[Amplitude replaceWithEmptyJSON:_userProperties] forKey:@"global_properties"];
             
             [Amplitude addBoilerplate:event timestamp:timestamp maxIdCheck:propertyListMaxId];
             
@@ -466,7 +319,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
             
             [eventsData setObject:[NSNumber numberWithLongLong:newId] forKey:@"max_id"];
             
-            if ([[eventsData objectForKey:@"events"] count] >= 1020) {
+            if ([[eventsData objectForKey:@"events"] count] >= MAX_EVENTS_BEFORE_DELETION) {
                 // Delete old events if list starting to become too large to comfortably work with in memory
                 [[eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, 20)];
                 [Amplitude saveEventsData];
@@ -474,12 +327,12 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                 [Amplitude saveEventsData];
             }
             
-            if ([[eventsData objectForKey:@"events"] count] >= 30) {
+            if ([[eventsData objectForKey:@"events"] count] >= MAX_EVENTS_BEFORE_UPLOAD) {
                 [Amplitude uploadEvents];
             } else {
                 [Amplitude uploadEventsLater];
             }
-            
+
         }
         
     }];
@@ -538,7 +391,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         updateScheduled = YES;
         
         [mainQueue addOperationWithBlock:^{
-            [[Amplitude class] performSelector:@selector(uploadEventsLaterExecute) withObject:[Amplitude class] afterDelay:30];
+            [[Amplitude class] performSelector:@selector(uploadEventsLaterExecute) withObject:[Amplitude class] afterDelay:SECONDS_BEFORE_UPLOAD];
         }];
     }
 }
@@ -557,7 +410,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     [Amplitude uploadEventsLimit:YES];
 }
 
-+ (void)uploadEventsLimit:(bool) limit
++ (void)uploadEventsLimit:(BOOL) limit
 {
     if (_apiKey == nil) {
         NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling uploadEvents:");
@@ -580,7 +433,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                 updatingCurrently = NO;
                 return;
             }
-            NSArray *uploadEvents = [events subarrayWithRange:NSMakeRange(0, numEvents)];
+            NSArray *uploadEvents = [events subarrayWithRange:NSMakeRange(0, (int) numEvents)];
             long long lastEventIDUploaded = [[[uploadEvents lastObject] objectForKey:@"event_id"] longLongValue];
             NSError *error = nil;
             NSData *eventsDataLocal = [NSJSONSerialization dataWithJSONObject:uploadEvents options:0 error:&error];
@@ -632,7 +485,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     
     [NSURLConnection sendAsynchronousRequest:request queue:backgroundQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
      {
-         bool uploadSuccessful = NO;
+         BOOL uploadSuccessful = NO;
          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
          if (response != nil) {
              if ([httpResponse statusCode] == 200) {
@@ -650,7 +503,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                                  break;
                              }
                          }
-                         [[eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, numberToRemove)];
+                         [[eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, (int) numberToRemove)];
                          [Amplitude saveEventsData];
                      }
                  } else if ([result isEqualToString:@"invalid_api_key"]) {
@@ -669,11 +522,11 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
              }
          } else if (error != nil) {
              if ([error code] == -1009) {
-                 //NSLog(@"No internet connection (not connected to internet), unable to upload events");
+                 AMPLITUDE_LOG(@"No internet connection (not connected to internet), unable to upload events");
              } else if ([error code] == -1003) {
-                 //NSLog(@"No internet connection (hostname not found), unable to upload events");
+                 AMPLITUDE_LOG(@"No internet connection (hostname not found), unable to upload events");
              } else if ([error code] == -1001) {
-                 //NSLog(@"No internet connection (request timed out), unable to upload events");
+                 AMPLITUDE_LOG(@"No internet connection (request timed out), unable to upload events");
              } else {
                  NSLog(@"ERROR: Connection error:%@", error);
              }
@@ -683,7 +536,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
          
          updatingCurrently = NO;
          
-         if (uploadSuccessful && [[eventsData objectForKey:@"events"] count] > 0) {
+         if (uploadSuccessful && [[eventsData objectForKey:@"events"] count] > MAX_EVENTS_BEFORE_UPLOAD) {
              [Amplitude uploadEventsLimit:NO];
          } else if (uploadTaskID != UIBackgroundTaskInvalid) {
              // Upload finished, allow background task to be ended
@@ -692,6 +545,40 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
          }
      }];
 }
+
++ (void)printEventsCount
+{
+    NSLog(@"Events count:%ld", (long) [[eventsData objectForKey:@"events"] count]);
+}
+
++ (void)saveEventsData
+{
+    @synchronized (eventsData) {
+        BOOL success = [NSKeyedArchiver archiveRootObject:eventsData toFile:eventsDataPath];
+        if (!success) {
+            NSLog(@"ERROR: Unable to save eventsData to file");
+        }
+    }
+}
+
+// amount is a double in units of dollars
+// ex. $3.99 would be passed as [NSNumber numberWithDouble:3.99]
++ (void)logRevenue:(NSNumber*) amount
+{
+    if (_apiKey == nil) {
+        NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling logRevenue:");
+        return;
+    }
+    if (![Amplitude isArgument:amount validType:[NSNumber class] methodName:@"logRevenue:"]) {
+        return;
+    }
+    NSDictionary *apiProperties = [NSMutableDictionary dictionary];
+    [apiProperties setValue:@"revenue_amount" forKey:@"special"];
+    [apiProperties setValue:amount forKey:@"revenue"];
+    [Amplitude logEvent:@"revenue_amount" withEventProperties:nil apiProperties:apiProperties withTimestamp:nil];
+}
+
+
 
 + (NSString*)urlEncodeString:(NSString*) string
 {
@@ -711,11 +598,13 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
                                                                           CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)));
     SAFE_ARC_AUTORELEASE(newString);
 #endif
-	if (newString) {
-		return newString;
-	}
-	return @"";
+    if (newString) {
+        return newString;
+    }
+    return @"";
 }
+
+#pragma mark - application lifecycle methods
 
 + (void)enterForeground
 {
@@ -774,14 +663,14 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     
     NSMutableDictionary *apiProperties = [NSMutableDictionary dictionary];
     [apiProperties setValue:@"session_start" forKey:@"special"];
-    [Amplitude logEvent:@"session_start" withCustomProperties:nil apiProperties:apiProperties];
+    [Amplitude logEvent:@"session_start" withEventProperties:nil apiProperties:apiProperties withTimestamp:now];
 }
 
 + (void)endSession
 {
     NSDictionary *apiProperties = [NSMutableDictionary dictionary];
     [apiProperties setValue:@"session_end" forKey:@"special"];
-    [Amplitude logEvent:@"session_end" withCustomProperties:nil apiProperties:apiProperties];
+    [Amplitude logEvent:@"session_end" withEventProperties:nil apiProperties:apiProperties withTimestamp:nil];
     
     [backgroundQueue addOperationWithBlock:^{
         sessionStarted = NO;
@@ -790,23 +679,6 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     [mainQueue addOperationWithBlock:^{
         [[Amplitude class] performSelector:@selector(turnOffSessionLaterExecute) withObject:[Amplitude class] afterDelay:10];
     }];
-}
-
-// amount is a double in units of dollars
-// ex. $3.99 would be passed as [NSNumber numberWithDouble:3.99]
-+ (void)logRevenue:(NSNumber*) amount
-{
-    if (_apiKey == nil) {
-        NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling logRevenue:");
-        return;
-    }
-    if (![Amplitude isArgument:amount validType:[NSNumber class] methodName:@"logRevenue:"]) {
-        return;
-    }
-    NSDictionary *apiProperties = [NSMutableDictionary dictionary];
-    [apiProperties setValue:@"revenue_amount" forKey:@"special"];
-    [apiProperties setValue:amount forKey:@"revenue"];
-    [Amplitude logEvent:@"revenue_amount" withCustomProperties:nil apiProperties:apiProperties];
 }
 
 + (void)refreshSessionTime:(NSNumber*) timestamp
@@ -823,14 +695,16 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     }
 }
 
-+ (void)setGlobalUserProperties:(NSDictionary*) globalProperties
+#pragma mark - configurations
+
++ (void)setUserProperties:(NSDictionary*) userProperties
 {
-    if (![Amplitude isArgument:globalProperties validType:[NSDictionary class] methodName:@"setGlobalUserProperties:"]) {
+    if (![Amplitude isArgument:userProperties validType:[NSDictionary class] methodName:@"setUserProperties:"]) {
         return;
     }
-    (void) SAFE_ARC_RETAIN(globalProperties);
-    SAFE_ARC_RELEASE(_globalProperties);
-    _globalProperties = globalProperties;
+    (void) SAFE_ARC_RETAIN(userProperties);
+    SAFE_ARC_RELEASE(_userProperties);
+    _userProperties = userProperties;
 }
 
 + (void)setUserId:(NSString*) userId
@@ -848,6 +722,31 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         }
     }];
 }
+
++ (void)savePropertyList
+{
+    @synchronized (propertyList) {
+        NSError *error = nil;
+        NSData *propertyListData = [NSPropertyListSerialization
+                                    dataWithPropertyList:propertyList
+                                    format:NSPropertyListXMLFormat_v1_0
+                                    options:0 error:&error];
+        if (error == nil) {
+            if (propertyListData != nil) {
+                BOOL success = [propertyListData writeToFile:propertyListPath atomically:YES];
+                if (!success) {
+                    NSLog(@"ERROR: Unable to save propertyList to file");
+                }
+            } else {
+                NSLog(@"ERROR: propertyListData is nil");
+            }
+        } else {
+            NSLog(@"ERROR: Unable to serialize propertyList:%@", error);
+        }
+    }
+}
+
+#pragma mark - location methods
 
 + (void)updateLocation
 {
@@ -874,56 +773,32 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     locationListeningEnabled = NO;
 }
 
-
-+ (void)savePropertyList
++ (void)useAdvertisingIdForDeviceId
 {
-    @synchronized (propertyList) {
-        NSError *error = nil;
-        NSData *propertyListData = [NSPropertyListSerialization
-                                    dataWithPropertyList:propertyList
-                                    format:NSPropertyListXMLFormat_v1_0
-                                    options:0 error:&error];
-        if (error == nil) {
-            if (propertyListData != nil) {
-                bool success = [propertyListData writeToFile:propertyListPath atomically:YES];
-                if (!success) {
-                    NSLog(@"ERROR: Unable to save propertyList to file");
-                }
-            } else {
-                NSLog(@"ERROR: propertyListData is nil");
-            }
-        } else {
-            NSLog(@"ERROR: Unable to serialize propertyList:%@", error);
-        }
-    }
+    useAdvertisingIdForDeviceId = YES;
 }
 
-+ (void)saveEventsData
-{
-    @synchronized (eventsData) {
-        bool success = [NSKeyedArchiver archiveRootObject:eventsData toFile:eventsDataPath];
-        if (!success) {
-            NSLog(@"ERROR: Unable to save eventsData to file");
-        }
-    }
-}
-
+#pragma mark - Getters for device data
 + (NSString*)getDeviceId
 {
-    // On iOS 7+, return advertiser ID
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= (float) 7.0) {
-        NSString *advertiserId = [Amplitude getAdvertiserID:0];
-        if (advertiserId != nil && ![advertiserId isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-            return advertiserId;
+    if (useAdvertisingIdForDeviceId) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= (float) 6.0) {
+            NSString *advertiserId = [Amplitude getAdvertiserID:0];
+            if (advertiserId != nil && ![advertiserId isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
+                return advertiserId;
+            }
+        }
+    }
+
+    // On iOS 6+, return identifierForVendor
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= (float) 6.0) {
+        NSString *identifierForVendor = [Amplitude getVendorID:0];
+        if (identifierForVendor != nil && ![identifierForVendor isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
+            return identifierForVendor;
         }
     }
     
-    // On iOS 6 and below, md5 hash of the mac address
-    NSString *macAddress = [Amplitude getMacAddress];
-    if (macAddress != nil && ![macAddress isEqualToString:@"020000000000"]) {
-        return [Amplitude md5HexDigest:macAddress];
-    }
-    
+    // Otherwise generate random ID
     NSString *randomId = [Amplitude generateRandomId];
     return randomId;
 }
@@ -945,6 +820,18 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         }
     } else {
         return nil;
+    }
+}
+
++ (NSString*)getVendorID:(int) timesCalled
+{
+    NSString *identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    if (identifier == nil && timesCalled < 5) {
+        // Try again every 5 seconds
+        [NSThread sleepForTimeInterval:5.0];
+        return [Amplitude getVendorID:timesCalled + 1];
+    } else {
+        return identifier;
     }
 }
 
@@ -971,7 +858,7 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     return dictionary == nil ? [NSMutableDictionary dictionary] : dictionary;
 }
 
-+ (bool)isArgument:(id) argument validType:(Class) class methodName:(NSString*) methodName
++ (BOOL)isArgument:(id) argument validType:(Class) class methodName:(NSString*) methodName
 {
     if ([argument isKindOfClass:class]) {
         return YES;
@@ -979,77 +866,6 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
         NSLog(@"ERROR: Invalid type argument to method %@, expected %@, recieved %@, ", methodName, class, [argument class]);
         return NO;
     }
-}
-
-+ (NSString*)getMacAddress
-{
-    int                 mgmtInfoBase[6];
-    char                *msgBuffer = NULL;
-    size_t              length;
-    unsigned char       macAddress[6];
-    struct if_msghdr    *interfaceMsgStruct;
-    struct sockaddr_dl  *socketStruct;
-    NSString            *errorFlag = NULL;
-    bool                msgBufferAllocated = false;
-    
-    // Setup the management Information Base (mib)
-    mgmtInfoBase[0] = CTL_NET;        // Request network subsystem
-    mgmtInfoBase[1] = AF_ROUTE;       // Routing table info
-    mgmtInfoBase[2] = 0;
-    mgmtInfoBase[3] = AF_LINK;        // Request link layer information
-    mgmtInfoBase[4] = NET_RT_IFLIST;  // Request all configured interfaces
-    
-    // With all configured interfaces requested, get handle index
-    if ((mgmtInfoBase[5] = if_nametoindex("en0")) == 0)
-        errorFlag = @"if_nametoindex failure";
-    else
-    {
-        // Get the size of the data available (store in len)
-        if (sysctl(mgmtInfoBase, 6, NULL, &length, NULL, 0) < 0)
-            errorFlag = @"sysctl mgmtInfoBase failure";
-        else
-        {
-            // Alloc memory based on above call
-            if ((msgBuffer = malloc(length)) == NULL)
-                errorFlag = @"buffer allocation failure";
-            else
-            {
-                msgBufferAllocated = true;
-                // Get system information, store in buffer
-                if (sysctl(mgmtInfoBase, 6, msgBuffer, &length, NULL, 0) < 0)
-                    errorFlag = @"sysctl msgBuffer failure";
-            }
-        }
-    }
-    
-    // Befor going any further...
-    if (errorFlag != NULL)
-    {
-        NSLog(@"Error: %@", errorFlag);
-        if (msgBufferAllocated) {
-            free(msgBuffer);
-        }
-        return errorFlag;
-    }
-    
-    // Map msgbuffer to interface message structure
-    interfaceMsgStruct = (struct if_msghdr *) msgBuffer;
-    
-    // Map to link-level socket structure
-    socketStruct = (struct sockaddr_dl *) (interfaceMsgStruct + 1);
-    
-    // Copy link layer address data in socket structure to an array
-    memcpy(&macAddress, socketStruct->sdl_data + socketStruct->sdl_nlen, 6);
-    
-    // Read from char array into a string object, into traditional Mac address format
-    NSString *macAddressString = [NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X",
-                                  macAddress[0], macAddress[1], macAddress[2],
-                                  macAddress[3], macAddress[4], macAddress[5]];
-    
-    // Release the buffer memory
-    free(msgBuffer);
-    
-    return macAddressString;
 }
 
 // Taken from http://stackoverflow.com/a/3950748/340520
@@ -1111,11 +927,96 @@ static AmplitudeLocationManagerDelegate *locationManagerDelegate;
     return ret;
 }
 
-+ (void)printEventsCount
-{
-    NSLog(@"Events count:%ld", (long) [[eventsData objectForKey:@"events"] count]);
-}
-
 #pragma clang diagnostic pop
 
+#pragma mark - Getters for testing
+
++(void)flushQueue {
+    [eventsData setObject:[NSMutableArray array] forKey:@"events"];
+}
++(int)apiVersion {
+    return apiVersion;
+}
++(NSString*)apiKey {
+    return _apiKey;
+}
++(NSString*)userId {
+    return _userId;
+}
++(NSString*)deviceId{
+    return _deviceId;
+}
++(NSString*)versionName {
+    return _versionName;
+}
++(NSString*)buildVersionRelease {
+    return _buildVersionRelease;
+}
++(NSString*)platformString {
+    return _platformString;
+}
++(NSString*)phoneModel {
+    return _phoneModel;
+}
++(NSString*)phoneCarrier {
+    return _phoneCarrier;
+}
++(NSString*)country {
+    return _country;
+}
++(NSString*)language {
+    return _language;
+}
++(NSDictionary*)userProperties {
+    return _userProperties;
+}
+
++(long long)sessionId {
+    return _sessionId;
+}
++(BOOL)sessionStarted {
+    return sessionStarted;
+}
++(BOOL)updateScheduled {
+    return updateScheduled;
+}
++(BOOL)updatingCurrently {
+    return updatingCurrently;
+}
++(NSMutableDictionary*)propertyList {
+    return propertyList;
+}
++(NSString*)propertyListPath {
+    return propertyListPath;
+}
++(NSMutableDictionary*)eventsData {
+    return eventsData;
+}
++(NSString*)eventsDataPath {
+    return eventsDataPath;
+}
++(NSOperationQueue*)mainQueue {
+    return mainQueue;
+}
++(NSOperationQueue*)initializerQueue {
+    return initializerQueue;
+}
++(NSOperationQueue*)backgroundQueue {
+    return backgroundQueue;
+}
++(UIBackgroundTaskIdentifier)uploadTaskID {
+    return uploadTaskID;
+}
++(BOOL)locationListeningEnabled {
+    return locationListeningEnabled;
+}
++(CLLocationManager*)locationManager {
+    return locationManager;
+}
++(CLLocation*)lastKnownLocation {
+    return lastKnownLocation;
+}
++(AmplitudeLocationManagerDelegate*)locationManagerDelegate {
+    return locationManagerDelegate;
+}
 @end

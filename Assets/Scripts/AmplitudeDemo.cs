@@ -19,7 +19,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		{
 			{"float_gprop", 1.0}
 		};
-		amplitude.setGlobalUserProperties(userProperties);
+		amplitude.setUserProperties(userProperties);
 		
 		Dictionary<string, object> demoOptions = new Dictionary<string, object>()
 		{

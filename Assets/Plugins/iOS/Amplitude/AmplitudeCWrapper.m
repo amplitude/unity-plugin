@@ -44,7 +44,7 @@ void _Amplitude_init(const char* apiKey, const char* userId)
 void _Amplitude_logEvent(const char* event, const char* properties)
 {
 	if (properties) {
-    	[Amplitude logEvent:ToNSString(event) withCustomProperties:ToNSDictionary(properties)];
+    	[Amplitude logEvent:ToNSString(event) withEventProperties:ToNSDictionary(properties)];
 	} else {
 		[Amplitude logEvent:ToNSString(event)];
 	}
@@ -55,9 +55,9 @@ void _Amplitude_setUserId(const char* event)
 	[Amplitude setUserId:ToNSString(event)];
 }
 
-void _Amplitude_setGlobalUserProperties(const char* properties)
+void _Amplitude_setUserProperties(const char* properties)
 {
-	[Amplitude setGlobalUserProperties:ToNSDictionary(properties)];
+	[Amplitude setUserProperties:ToNSDictionary(properties)];
 }
 
 void _Amplitude_logRevenue(double amount)
