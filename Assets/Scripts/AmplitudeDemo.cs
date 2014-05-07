@@ -38,7 +38,11 @@ public class AmplitudeDemo : MonoBehaviour {
 	public void OnApplicationFocus(bool focus) {
 		if (focus) {
 			Amplitude.Instance.startSession();
-		} else {
+		}
+	}
+
+	public void OnApplicationPause(bool pause) {
+		if (pause) {
 			Amplitude.Instance.endSession();
 		}
 	}
