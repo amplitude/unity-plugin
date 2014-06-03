@@ -27,7 +27,13 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserProperties(string propertiesJson);
 	[DllImport ("__Internal")]
-	private static extern void _Amplitude_logRevenue(double amount);
+	private static extern void _Amplitude_logRevenueAmount(double amount);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_logRevenue(string productIdentifier, int quantity, double price);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_logRevenueWithReceipt(string productIdentifier, int quantity, double price, string receipt);
+	[DllImport ("__Internal")]
+	private static extern string _Amplitude_getDeviceId();
 #endif
 
 	public static Amplitude Instance {
@@ -177,7 +183,7 @@ public class Amplitude {
 		Log (string.Format("C# logRevenue {0}", amount));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			_Amplitude_logRevenue(amount);
+			_Amplitude_logRevenueAmount(amount);
 		}
 #endif
 
@@ -186,6 +192,51 @@ public class Amplitude {
 			pluginClass.CallStatic("logRevenue", amount);
 		}
 #endif
+	}
+
+	public void logRevenue(string purchaseIdentifier, int quantity, double price) {
+		Log (string.Format("C# logRevenue {0}, {1}, {2}", purchaseIdentifier, quantity, price));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_logRevenue(purchaseIdentifier, quantity, price);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("logRevenue", purchaseIdentifier, quantity, price);
+		}
+#endif
+	}
+
+	public void logRevenue(string purchaseIdentifier, int quantity, double price, string receipt, string receiptSignature) {
+		Log (string.Format("C# logRevenue {0}, {1}, {2} (with receipt)", purchaseIdentifier, quantity, price));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_logRevenueWithReceipt(purchaseIdentifier, quantity, price, receipt);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("logRevenue", purchaseIdentifier, quantity, price, receipt, receiptSignature);
+		}
+#endif
+	}
+
+	public string getDeviceId() {
+		#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			return _Amplitude_getDeviceId();
+		}
+		#endif
+		
+		#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			return pluginClass.CallStatic<string>("getDeviceId");
+		}
+		#endif
+		return null;
 	}
 	
 	public void startSession() {

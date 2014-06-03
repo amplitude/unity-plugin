@@ -1,6 +1,20 @@
 #import "AmplitudeCWrapper.h"
 #import "Amplitude.h"
+#import "AmplitudeARCMacros.h"
 
+
+// Used to allocate a C string on the heap for C#
+char* MakeCString(const char* string)
+{
+    if (string == NULL) {
+        return NULL;
+    }
+    
+    char* result = (char*) malloc(strlen(string) + 1);
+    strcpy(result, string);
+    
+    return result;
+}
 
 // Converts C style string to NSString
 NSString* ToNSString(const char* string)
@@ -60,7 +74,24 @@ void _Amplitude_setUserProperties(const char* properties)
 	[Amplitude setUserProperties:ToNSDictionary(properties)];
 }
 
-void _Amplitude_logRevenue(double amount)
+void _Amplitude_logRevenueAmount(double amount)
 {
 	[Amplitude logRevenue:[NSNumber numberWithDouble:amount]];
+}
+
+void _Amplitude_logRevenue(const char* productIdentifier, int quantity, double price)
+{
+    [Amplitude logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price]];
+}
+
+void _Amplitude_logRevenueWithReceipt(const char* productIdentifier, int quantity, double price, const char* receipt)
+{
+    NSData *receiptData = [[NSData alloc] initWithBase64EncodedString:ToNSString(receipt) options:0];
+    [Amplitude logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price] receipt:receiptData];
+    SAFE_ARC_RELEASE(receiptData);
+}
+
+const char * _Amplitude_getDeviceId()
+{
+    return MakeCString([[Amplitude getDeviceId] UTF8String]);
 }
