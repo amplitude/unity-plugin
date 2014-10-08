@@ -194,32 +194,32 @@ public class Amplitude {
 #endif
 	}
 
-	public void logRevenue(string purchaseIdentifier, int quantity, double price) {
-		Log (string.Format("C# logRevenue {0}, {1}, {2}", purchaseIdentifier, quantity, price));
+	public void logRevenue(string productId, int quantity, double price) {
+		Log (string.Format("C# logRevenue {0}, {1}, {2}", productId, quantity, price));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			_Amplitude_logRevenue(purchaseIdentifier, quantity, price);
+			_Amplitude_logRevenue(productId, quantity, price);
 		}
 #endif
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", purchaseIdentifier, quantity, price);
+			pluginClass.CallStatic("logRevenue", productId, quantity, price);
 		}
 #endif
 	}
 
-	public void logRevenue(string purchaseIdentifier, int quantity, double price, string receipt, string receiptSignature) {
-		Log (string.Format("C# logRevenue {0}, {1}, {2} (with receipt)", purchaseIdentifier, quantity, price));
+	public void logRevenue(string productId, int quantity, double price, string receipt, string receiptSignature) {
+		Log (string.Format("C# logRevenue {0}, {1}, {2} (with receipt)", productId, quantity, price));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
-			_Amplitude_logRevenueWithReceipt(purchaseIdentifier, quantity, price, receipt);
+			_Amplitude_logRevenueWithReceipt(productId, quantity, price, receipt);
 		}
 #endif
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", purchaseIdentifier, quantity, price, receipt, receiptSignature);
+			pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature);
 		}
 #endif
 	}
