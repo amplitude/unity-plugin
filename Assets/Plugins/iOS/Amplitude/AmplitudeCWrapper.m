@@ -1,6 +1,6 @@
 #import "AmplitudeCWrapper.h"
 #import "Amplitude.h"
-#import "AmplitudeARCMacros.h"
+#import "AMPARCMacros.h"
 
 
 // Used to allocate a C string on the heap for C#

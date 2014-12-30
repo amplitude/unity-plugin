@@ -4,7 +4,8 @@ import os, sys
 import subprocess
 import objc_helper
 import os_helper
-import java_helper
+import glob
+from mod_pbxproj import XcodeProject
 from subprocess import call
 
 argv = sys.argv
@@ -33,125 +34,14 @@ if player == 'iPhone':
   #   Modifying the XCode project, messy!
   #
   pbxProjPath = os.path.join(installPath, "Unity-iPhone.xcodeproj/project.pbxproj")
+  project = XcodeProject.Load(pbxProjPath)
+  classes = project.get_or_create_group('Classes')
+  amplitude = project.get_or_create_group('Amplitude', path='Amplitude', parent=classes, tree='<group>')
+  for f in sorted(glob.glob(newAmplitudeLocation + '/Amplitude/*.[hm]')):
+    project.add_file(os.path.basename(f), parent=amplitude, tree='<group>')
 
-  import time
-  import uuid
-
-  class XcodeUUIDgenerator:
-    def __init__(self):
-      self.time = int(time.time())
-      self.pid = os.getpid()
-      self.node = uuid.getnode()
-
-    def generate(self):
-      self.time += 1
-      return ('%08x%04x%012x' % (self.time, self.pid, self.node)).upper()
-
-  uuid_gen = XcodeUUIDgenerator()
-
-
-  resource_ids = {}
-
-  def get_resource_id(name):
-    if name in resource_ids:
-      resource_id = resource_ids[name]
-    else:
-      resource_id = uuid_gen.generate()
-      resource_ids[name] = resource_id
-    return resource_id
-
-  def get_resource(name):
-    return '{resource_id} /* {name} */'.format(resource_id = get_resource_id(name), name = name)
-
-  def create_pbxBuildFile(filename):
-    build_file = filename + " in Sources"
-    return "{build_file_resource} = {{isa = PBXBuildFile; fileRef = {file_resource}; }};".format(
-      build_file_resource = get_resource(build_file), file_resource = get_resource(filename))
-
-  importList = [
-    create_pbxBuildFile("AmplitudeLocationManagerDelegate.m"),
-    create_pbxBuildFile("Amplitude.m"),
-    create_pbxBuildFile("AmplitudeCWrapper.m"),
-    ]
-
-  def create_pbxFileReference(filename, file_encoding=4, last_known_file_type='sourcecode.c.h', source_tree='"<group>"'):
-    return '{file_resource} = {{isa = PBXFileReference; fileEncoding = {file_encoding}; lastKnownFileType = {last_known_file_type}; path = "{filename}"; sourceTree = {source_tree}; }};'.format(
-      file_resource = get_resource(filename), filename=filename, file_encoding=file_encoding, last_known_file_type=last_known_file_type, source_tree=source_tree)
-
-  fileRefList = [
-    create_pbxFileReference("AmplitudeARCMacros.h", last_known_file_type='sourcecode.c.h'),
-    create_pbxFileReference("AmplitudeLocationManagerDelegate.h", last_known_file_type='sourcecode.c.h'),
-    create_pbxFileReference("AmplitudeLocationManagerDelegate.m", last_known_file_type='sourcecode.c.objc'),
-    create_pbxFileReference("Amplitude.h", last_known_file_type='sourcecode.c.h'),
-    create_pbxFileReference("Amplitude.m", last_known_file_type='sourcecode.c.objc'),
-    create_pbxFileReference("AmplitudeCWrapper.h", last_known_file_type='sourcecode.c.h'),
-    create_pbxFileReference("AmplitudeCWrapper.m", last_known_file_type='sourcecode.c.objc'),
-    ]
-
-  def create_pbxGroup(name, children):
-    group = [
-      '{group_resource} = {{'.format(group_resource = get_resource(name)),
-      '    isa = PBXGroup;',
-      '    children = ('
-      ]
-    for child in children:
-      group.append('            {child_resource},'.format(child_resource = get_resource(child)))
-    group.extend([
-        '    );',
-        '    path = {name};'.format(name = name),
-        '    sourceTree = "<group>";',
-        '};'])
-    return group
-             
-  groupCode = []
-  groupCode.extend(create_pbxGroup('Amplitude', [
-        'AmplitudeARCMacros.h',
-        'AmplitudeLocationManagerDelegate.h',
-        'AmplitudeLocationManagerDelegate.m',
-        'Amplitude.h',
-        'Amplitude.m',
-        'AmplitudeCWrapper.h',
-        'AmplitudeCWrapper.m',
-        ]))
-
-
-  def create_pbx_folder_group_reference(name):
-    return '{resource},'.format(resource = get_resource(name))
-
-  def create_pbx_source_build_phase_code(name):
-    return '{resource},'.format(resource = get_resource(name + ' in Sources'))
-
-  objc_helper.add_into_classes(pbxProjPath, importList, fileRefList, groupCode, [create_pbx_folder_group_reference('Amplitude')],
-                               [
-      create_pbx_source_build_phase_code('AmplitudeLocationManagerDelegate.m'),
-      create_pbx_source_build_phase_code('Amplitude.m'),
-      create_pbx_source_build_phase_code('AmplitudeCWrapper.m'),
-      ])
-
-  def create_framework_build_file(name):
-    return '{build_file_resource} = {{isa = PBXBuildFile; fileRef = {file_resource}; }};'.format(
-      build_file_resource = get_resource(name + ' in Frameworks'), file_resource = get_resource(name))
-
-  def create_framework_file_ref(name):
-    return '{resource} = {{isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = {name}; path = System/Library/Frameworks/{name}; sourceTree = SDKROOT; }};'.format(
-      resource = get_resource(name), name = name)
-
-  def create_framework_build_file_ref(name):
-    return '{resource},'.format(resource = get_resource(name + ' in Frameworks'))
-
-  def create_framework_ref(name):
-    return '{resource},'.format(resource = get_resource(name))
-
-  def add_framework(framework):
-    objc_helper.add_framework(pbxProjPath, [create_framework_build_file(framework)],
-                              [create_framework_file_ref(framework)],
-                              [create_framework_build_file_ref(framework)],
-                              [create_framework_ref(framework)])
-
-  #
-  #   Adding UIKit.framework
-  #
-  add_framework('UIKit.framework')
+  project.add_file('System/Library/Frameworks/UIKit.framework', tree='SDKROOT')
+  project.save()
 
   #
   #		Setting GCC Objective C exceptions to TRUE
