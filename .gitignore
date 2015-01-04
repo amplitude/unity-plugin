@@ -9,3 +9,5 @@
 *.pidb
 *.user
 *.userprefs
+
+.DS_Store
