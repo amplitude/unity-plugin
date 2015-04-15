@@ -14,7 +14,6 @@ update-android:
 	-git rm $(ANDROID_ASSETS)/*jar
 	wget "$(ANDROID_URL)/$(ANDROID_JAR)" -O $(ANDROID_ASSETS)/$(ANDROID_JAR)
 	git add $(ANDROID_ASSETS)/$(ANDROID_JAR)
-	git mv $(ANDROID_ASSETS)/amplitude-unity-*.jar.meta $(ANDROID_ASSETS)/$(ANDROID_JAR).meta
 
 update-ios:
 	wget "$(IOS_MASTER_URL)" -O master.zip
