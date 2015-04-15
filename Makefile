@@ -4,6 +4,10 @@ ANDROID_VERSION:=$(shell curl "$(ANDROID_URL)/pom.xml" | grep -o "version>[^<]*<
 ANDROID_JAR=amplitude-unity-$(ANDROID_VERSION).jar
 ANDROID_ASSETS=Assets/Plugins/Android
 
+IOS_MASTER_URL=https://github.com/amplitude/Amplitude-iOS/archive/master.zip
+IOS_ASSETS=Assets/Plugins/iOS/Amplitude
+
+
 update: update-android update-ios
 
 update-android:
@@ -12,9 +16,12 @@ update-android:
 	git add $(ANDROID_ASSETS)/$(ANDROID_JAR)
 	git mv $(ANDROID_ASSETS)/amplitude-unity-*.jar.meta $(ANDROID_ASSETS)/$(ANDROID_JAR).meta
 
-
 update-ios:
-
+	wget "$(IOS_MASTER_URL)" -O master.zip
+	unzip master.zip
+	cp -R Amplitude-iOS-master/Amplitude/* $(IOS_ASSETS)/
+	git add -A $(IOS_ASSETS)/
+	rm -rf master.zip Amplitude-iOS-master/
 
 .PHONY: clean
 .PHONY: test

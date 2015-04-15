@@ -178,6 +178,12 @@ public class Amplitude {
 
 	public void setOptOut(bool enabled) {
 		Log (string.Format("C# setOptOut {0}", enabled));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_setOptOut(enabled);
+		}
+#endif
+
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setOptOut", enabled);

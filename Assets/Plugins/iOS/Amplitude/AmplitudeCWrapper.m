@@ -48,50 +48,55 @@ NSDictionary* ToNSDictionary(const char* data)
 void _Amplitude_init(const char* apiKey, const char* userId)
 {
 	if (userId) {
-	    [Amplitude initializeApiKey:ToNSString(apiKey)
+	    [[Amplitude instance] initializeApiKey:ToNSString(apiKey)
 	                         userId:ToNSString(userId)];
 	} else {
-		[Amplitude initializeApiKey:ToNSString(apiKey)];
+		[[Amplitude instance] initializeApiKey:ToNSString(apiKey)];
 	}
 }
 
 void _Amplitude_logEvent(const char* event, const char* properties)
 {
 	if (properties) {
-    	[Amplitude logEvent:ToNSString(event) withEventProperties:ToNSDictionary(properties)];
+    	[[Amplitude instance] logEvent:ToNSString(event) withEventProperties:ToNSDictionary(properties)];
 	} else {
-		[Amplitude logEvent:ToNSString(event)];
+		[[Amplitude instance] logEvent:ToNSString(event)];
 	}
 }
 
 void _Amplitude_setUserId(const char* event)
 {
-	[Amplitude setUserId:ToNSString(event)];
+	[[Amplitude instance] setUserId:ToNSString(event)];
 }
 
 void _Amplitude_setUserProperties(const char* properties)
 {
-	[Amplitude setUserProperties:ToNSDictionary(properties)];
+	[[Amplitude instance] setUserProperties:ToNSDictionary(properties)];
+}
+
+void _Amplitude_setOptOut(const bool enabled)
+{
+    [[Amplitude instance] setOptOut:enabled];
 }
 
 void _Amplitude_logRevenueAmount(double amount)
 {
-	[Amplitude logRevenue:[NSNumber numberWithDouble:amount]];
+	[[Amplitude instance] logRevenue:[NSNumber numberWithDouble:amount]];
 }
 
 void _Amplitude_logRevenue(const char* productIdentifier, int quantity, double price)
 {
-    [Amplitude logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price]];
+    [[Amplitude instance] logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price]];
 }
 
 void _Amplitude_logRevenueWithReceipt(const char* productIdentifier, int quantity, double price, const char* receipt)
 {
     NSData *receiptData = [[NSData alloc] initWithBase64EncodedString:ToNSString(receipt) options:0];
-    [Amplitude logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price] receipt:receiptData];
+    [[Amplitude instance] logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price] receipt:receiptData];
     SAFE_ARC_RELEASE(receiptData);
 }
 
 const char * _Amplitude_getDeviceId()
 {
-    return MakeCString([[Amplitude getDeviceId] UTF8String]);
+    return MakeCString([[[Amplitude instance] getDeviceId] UTF8String]);
 }

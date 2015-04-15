@@ -36,16 +36,22 @@
 @interface Amplitude : NSObject
 
 #pragma mark - Properties
-@property (readonly) NSString *apiKey;
-@property (readonly) NSString *userId;
-@property (readonly) NSString *deviceId;
-
+@property (nonatomic, readonly) NSString *apiKey;
+@property (nonatomic, readonly) NSString *userId;
+@property (nonatomic, readonly) NSString *deviceId;
+@property (nonatomic, assign) BOOL optOut;
 
 #pragma mark - Methods
+
++ (Amplitude *)instance;
 
 - (void)initializeApiKey:(NSString*) apiKey;
 
 - (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId;
+
+- (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId startSession:(BOOL)startSession;
+
+- (void)startSession;
 
 - (void)logEvent:(NSString*) eventType;
 
@@ -61,7 +67,11 @@
 
 - (void)setUserProperties:(NSDictionary*) userProperties;
 
+- (void)setUserProperties:(NSDictionary*) userProperties replace:(BOOL) replace;
+
 - (void)setUserId:(NSString*) userId;
+
+- (void)setOptOut:(BOOL)enabled;
 
 - (void)enableLocationListening;
 

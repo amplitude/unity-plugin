@@ -17,6 +17,7 @@
 #import "AMPARCMacros.h"
 #import "AMPConstants.h"
 #import "AMPDeviceInfo.h"
+#import "AMPURLConnection.h"
 #import <math.h>
 #import <sys/socket.h>
 #import <sys/sysctl.h>
@@ -28,46 +29,39 @@
 #include <sys/sysctl.h>
 
 @interface Amplitude ()
-@property NSOperationQueue *backgroundQueue;
-@property BOOL initialized;
+
+@property (nonatomic, retain) NSOperationQueue *backgroundQueue;
+@property (nonatomic, retain) NSMutableDictionary *eventsData;
+@property (nonatomic, assign) BOOL initialized;
+@property (nonatomic, assign) BOOL sslPinningEnabled;
+
 @end
 
-@implementation Amplitude
-
-NSString *_userId;
-NSString *_deviceId;
-AMPDeviceInfo *_deviceInfo;
-NSDictionary *_userProperties;
-
-long long _sessionId = -1;
-BOOL sessionStarted = NO;
-BOOL updateScheduled = NO;
-BOOL updatingCurrently = NO;
-BOOL _initialized = NO;
-
-BOOL locationListeningEnabled = YES;
-BOOL useAdvertisingIdForDeviceId = NO;
-
-NSMutableDictionary *propertyList;
-NSString *propertyListPath;
-NSMutableDictionary *eventsData;
-NSString *eventsDataPath;
-
-NSOperationQueue *mainQueue;
-NSOperationQueue *initializerQueue;
-NSOperationQueue *_backgroundQueue;
-UIBackgroundTaskIdentifier uploadTaskID;
-
-CLLocationManager *locationManager;
-CLLocation *lastKnownLocation;
-AMPLocationManagerDelegate *locationManagerDelegate;
-
+@implementation Amplitude {
+    AMPDeviceInfo *_deviceInfo;
+    NSString *_eventsDataPath;
+    NSOperationQueue *_initializerQueue;
+    NSOperationQueue *_mainQueue;
+    CLLocation *_lastKnownLocation;
+    BOOL _locationListeningEnabled;
+    CLLocationManager *_locationManager;
+    AMPLocationManagerDelegate *_locationManagerDelegate;
+    NSMutableDictionary *_propertyList;
+    NSString *_propertyListPath;
+    long long _sessionId;
+    BOOL _sessionStarted;
+    BOOL _updateScheduled;
+    BOOL _updatingCurrently;
+    UIBackgroundTaskIdentifier _uploadTaskID;
+    BOOL _useAdvertisingIdForDeviceId;
+    NSDictionary *_userProperties;
+}
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 #pragma mark - Static methods
 
-+ (id)instance {
++ (Amplitude *)instance {
     static Amplitude *_instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -146,79 +140,95 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 - (id)init
 {
     if (self = [super init]) {
-        initializerQueue = [[NSOperationQueue alloc] init];
+
+#if AMPLITUDE_SSL_PINNING
+        _sslPinningEnabled = YES;
+#else
+        _sslPinningEnabled = NO;
+#endif
+
+        _initialized = NO;
+        _locationListeningEnabled = YES;
+        _sessionId = -1;
+        _sessionStarted = NO;
+        _updateScheduled = NO;
+        _updatingCurrently = NO;
+        _useAdvertisingIdForDeviceId = NO;
+
+        _initializerQueue = [[NSOperationQueue alloc] init];
         _backgroundQueue = [[NSOperationQueue alloc] init];
         // Force method calls to happen in FIFO order by only allowing 1 concurrent operation
         [_backgroundQueue setMaxConcurrentOperationCount:1];
         // Ensure initialize finishes running asynchronously before other calls are run
         [_backgroundQueue setSuspended:YES];
+        // Name the queue so runOnBackgroundQueue can tell which queue an operation is running
+        _backgroundQueue.name = @"BACKGROUND";
         
-        [initializerQueue addOperationWithBlock:^{
+        [_initializerQueue addOperationWithBlock:^{
             
             _deviceInfo = [[AMPDeviceInfo alloc] init];
 
-            mainQueue = SAFE_ARC_RETAIN([NSOperationQueue mainQueue]);
-            uploadTaskID = UIBackgroundTaskInvalid;
+            _mainQueue = SAFE_ARC_RETAIN([NSOperationQueue mainQueue]);
+            _uploadTaskID = UIBackgroundTaskInvalid;
             
             NSString *eventsDataDirectory = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
             
-            propertyListPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.plist"]);
-            eventsDataPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.archiveDict"]);
-
+            _propertyListPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.plist"]);
+            _eventsDataPath = SAFE_ARC_RETAIN([eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.archiveDict"]);
 
             // Copy any old data files to new file paths
             NSString *oldEventsDataDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
             NSString *oldPropertyListPath = [oldEventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.plist"];
             NSString *oldEventsDataPath = [oldEventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.archiveDict"];
-            [self moveFileIfNotExists:oldPropertyListPath to:propertyListPath];
-            [self moveFileIfNotExists:oldEventsDataPath to:eventsDataPath];
+            [self moveFileIfNotExists:oldPropertyListPath to:_propertyListPath];
+            [self moveFileIfNotExists:oldEventsDataPath to:_eventsDataPath];
 
             // Load propertyList object
-            propertyList = SAFE_ARC_RETAIN([self deserializePList:propertyListPath]);
-            if (!propertyList) {
-                propertyList = SAFE_ARC_RETAIN([NSMutableDictionary dictionary]);
-                [propertyList setObject:[NSNumber numberWithLongLong:0LL] forKey:@"max_id"];
+            _propertyList = SAFE_ARC_RETAIN([self deserializePList:_propertyListPath]);
+            if (!_propertyList) {
+                _propertyList = SAFE_ARC_RETAIN([NSMutableDictionary dictionary]);
+                [_propertyList setObject:[NSNumber numberWithLongLong:0LL] forKey:@"max_id"];
                 BOOL success = [self savePropertyList];
                 if (!success) {
                     NSLog(@"ERROR: Unable to save propertyList to file on initialization");
                 }
             } else {
-                AMPLITUDE_LOG(@"Loaded from %@", propertyListPath);
+                AMPLITUDE_LOG(@"Loaded from %@", _propertyListPath);
             }
 
             // Load eventData object
-            eventsData = SAFE_ARC_RETAIN([self unarchive:eventsDataPath]);
-            if (!eventsData) {
-                // Create new eventsData object
-                eventsData = SAFE_ARC_RETAIN([NSMutableDictionary dictionary]);
-                [eventsData setObject:[NSMutableArray array] forKey:@"events"];
-                [eventsData setObject:[NSNumber numberWithLongLong:0LL] forKey:@"max_id"];
+            _eventsData = SAFE_ARC_RETAIN([self unarchive:_eventsDataPath]);
+            if (!_eventsData) {
+                // Create new _eventsData object
+                _eventsData = SAFE_ARC_RETAIN([NSMutableDictionary dictionary]);
+                [_eventsData setObject:[NSMutableArray array] forKey:@"events"];
+                [_eventsData setObject:[NSNumber numberWithLongLong:0LL] forKey:@"max_id"];
                 BOOL success = [self saveEventsData];
                 if (!success) {
                     NSLog(@"ERROR: Unable to save eventsData to file on initialization");
                 }
             } else {
-                AMPLITUDE_LOG(@"Loaded from %@", eventsDataPath);
+                AMPLITUDE_LOG(@"Loaded from %@", _eventsDataPath);
             }
-            
+
             [self initializeDeviceId];
-            
+
             [_backgroundQueue setSuspended:NO];
         }];
 
         // CLLocationManager must be created on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
             Class CLLocationManager = NSClassFromString(@"CLLocationManager");
-            locationManager = [[CLLocationManager alloc] init];
-            locationManagerDelegate = [[AMPLocationManagerDelegate alloc] init];
+            _locationManager = [[CLLocationManager alloc] init];
+            _locationManagerDelegate = [[AMPLocationManagerDelegate alloc] init];
             SEL setDelegate = NSSelectorFromString(@"setDelegate:");
-            [locationManager performSelector:setDelegate withObject:locationManagerDelegate];
+            [_locationManager performSelector:setDelegate withObject:_locationManagerDelegate];
         });
 
         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
         [center addObserver:self
                    selector:@selector(enterForeground)
-                       name:UIApplicationWillEnterForegroundNotification
+                       name:UIApplicationDidBecomeActiveNotification
                      object:nil];
         [center addObserver:self
                    selector:@selector(enterBackground)
@@ -228,14 +238,35 @@ AMPLocationManagerDelegate *locationManagerDelegate;
     return self;
 };
 
+- (void) removeObservers
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [center removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
 - (void) dealloc {
+    [self removeObservers];
+
+    // Release properties
+    SAFE_ARC_RELEASE(_apiKey);
+    SAFE_ARC_RELEASE(_backgroundQueue);
+    SAFE_ARC_RELEASE(_deviceId);
+    SAFE_ARC_RELEASE(_eventsData);
     SAFE_ARC_RELEASE(_userId);
-    SAFE_ARC_RELEASE(propertyList);
-    SAFE_ARC_RELEASE(propertyListPath);
-    SAFE_ARC_RELEASE(eventsData);
-    SAFE_ARC_RELEASE(eventsDataPath);
-    SAFE_ARC_RELEASE(mainQueue);
-    SAFE_ARC_RELEASE(lastKnownLocation);
+
+    // Release instance variables
+    SAFE_ARC_RELEASE(_deviceInfo);
+    SAFE_ARC_RELEASE(_eventsDataPath);
+    SAFE_ARC_RELEASE(_initializerQueue);
+    SAFE_ARC_RELEASE(_mainQueue);
+    SAFE_ARC_RELEASE(_lastKnownLocation);
+    SAFE_ARC_RELEASE(_locationManager);
+    SAFE_ARC_RELEASE(_locationManagerDelegate);
+    SAFE_ARC_RELEASE(_propertyList);
+    SAFE_ARC_RELEASE(_propertyListPath);
+    SAFE_ARC_RELEASE(_userProperties);
+
     SAFE_ARC_SUPER_DEALLOC();
 }
 
@@ -246,41 +277,66 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId
 {
+    UIApplicationState state = [UIApplication sharedApplication].applicationState;
+    [self initializeApiKey:apiKey userId:userId startSession:(state != UIApplicationStateBackground)];
+}
+
+/**
+ * Initialize Amplitude with a given apiKey and userId. Optionally, start a session at the same time.
+ */
+- (void)initializeApiKey:(NSString*) apiKey userId:(NSString*) userId startSession:(BOOL)startSession
+{
     if (apiKey == nil) {
         NSLog(@"ERROR: apiKey cannot be nil in initializeApiKey:");
         return;
     }
-    
+
     if (![self isArgument:apiKey validType:[NSString class] methodName:@"initializeApiKey:"]) {
         return;
     }
     if (userId != nil && ![self isArgument:userId validType:[NSString class] methodName:@"initializeApiKey:"]) {
         return;
     }
-    
+
     if ([apiKey length] == 0) {
         NSLog(@"ERROR: apiKey cannot be blank in initializeApiKey:");
         return;
     }
-    
+
     (void) SAFE_ARC_RETAIN(apiKey);
     SAFE_ARC_RELEASE(_apiKey);
     _apiKey = apiKey;
     
-    [_backgroundQueue addOperationWithBlock:^{
-        @synchronized (eventsData) {
+    [self runOnBackgroundQueue:^{
+        @synchronized (_eventsData) {
             if (userId != nil) {
                 [self setUserId:userId];
             } else {
-                _userId = SAFE_ARC_RETAIN([eventsData objectForKey:@"user_id"]);
+                _userId = SAFE_ARC_RETAIN([_eventsData objectForKey:@"user_id"]);
             }
         }
     }];
 
-    if (!_initialized) {
-        _initialized = YES;
-
+    if (startSession) {
         [self enterForeground];
+    }
+
+    _initialized = YES;
+}
+
+/**
+ * Run a block in the background. If already in the background, run immediately.
+ */
+- (BOOL)runOnBackgroundQueue:(void (^)(void))block
+{
+    if ([[NSOperationQueue currentQueue].name isEqualToString:@"BACKGROUND"]) {
+        NSLog(@"Already running in the background.");
+        block();
+        return NO;
+    }
+    else {
+        [_backgroundQueue addOperationWithBlock:block];
+        return YES;
     }
 }
 
@@ -311,51 +367,60 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling logEvent:");
         return;
     }
+
     if (timestamp == nil) {
         timestamp = [NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000];
     }
     
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         
         NSMutableDictionary *event = [NSMutableDictionary dictionary];
-        
-        @synchronized (eventsData) {
+
+        @synchronized (_eventsData) {
+            // Respect the opt-out setting by not sending or storing any events.
+            if ([[_eventsData objectForKey:@"opt_out"] boolValue])  {
+                NSLog(@"User has opted out of tracking. Event %@ not logged.", eventType);
+                return;
+            }
+
             // Increment propertyList max_id and save immediately
-            NSNumber *propertyListMaxId = [NSNumber numberWithLongLong:[[propertyList objectForKey:@"max_id"] longLongValue] + 1];
-            [propertyList setObject: propertyListMaxId forKey:@"max_id"];
+            NSNumber *propertyListMaxId = [NSNumber numberWithLongLong:[[_propertyList objectForKey:@"max_id"] longLongValue] + 1];
+            [_propertyList setObject: propertyListMaxId forKey:@"max_id"];
             [self savePropertyList];
-            
-            // Increment eventsData max_id
-            long long newId = [[eventsData objectForKey:@"max_id"] longLongValue] + 1;
-            
+
+            // Increment _eventsData max_id
+            long long newId = [[_eventsData objectForKey:@"max_id"] longLongValue] + 1;
+
             [event setValue:eventType forKey:@"event_type"];
             [event setValue:[NSNumber numberWithLongLong:newId] forKey:@"event_id"];
             [event setValue:[self replaceWithEmptyJSON:eventProperties] forKey:@"event_properties"];
             [event setValue:[self replaceWithEmptyJSON:apiProperties] forKey:@"api_properties"];
             [event setValue:[self replaceWithEmptyJSON:_userProperties] forKey:@"user_properties"];
-            
+
             [self addBoilerplate:event timestamp:timestamp maxIdCheck:propertyListMaxId];
             [self refreshSessionTime:timestamp];
-            
-            [[eventsData objectForKey:@"events"] addObject:event];
-            [eventsData setObject:[NSNumber numberWithLongLong:newId] forKey:@"max_id"];
-            
-            if ([[eventsData objectForKey:@"events"] count] >= kAMPEventMaxCount) {
+
+            [[_eventsData objectForKey:@"events"] addObject:event];
+            [_eventsData setObject:[NSNumber numberWithLongLong:newId] forKey:@"max_id"];
+
+            AMPLITUDE_LOG(@"Logged %@ Event", event[@"event_type"]);
+
+            if ([[_eventsData objectForKey:@"events"] count] >= kAMPEventMaxCount) {
                 // Delete old events if list starting to become too large to comfortably work with in memory
-                [[eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, kAMPEventRemoveBatchSize)];
+                [[_eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, kAMPEventRemoveBatchSize)];
                 [self saveEventsData];
-            } else if ([[eventsData objectForKey:@"events"] count] >= kAMPEventRemoveBatchSize && [[eventsData objectForKey:@"events"] count] % kAMPEventRemoveBatchSize == 0) {
+            } else if ([[_eventsData objectForKey:@"events"] count] >= kAMPEventRemoveBatchSize && [[_eventsData objectForKey:@"events"] count] % kAMPEventRemoveBatchSize == 0) {
                 [self saveEventsData];
             }
-            
-            if ([[eventsData objectForKey:@"events"] count] >= kAMPEventUploadThreshold) {
+
+            if ([[_eventsData objectForKey:@"events"] count] >= kAMPEventUploadThreshold) {
                 [self uploadEvents];
             } else {
                 [self uploadEventsWithDelay:kAMPEventUploadPeriodSeconds];
             }
 
         }
-        
+
     }];
 }
 
@@ -379,9 +444,9 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         @"version": kAMPVersion
     };
     [event setValue:library forKey:@"library"];
-    
+
     NSMutableDictionary *apiProperties = [event valueForKey:@"api_properties"];
-    
+
     [apiProperties setValue:propertyListMaxId forKey:@"max_id"];
     NSString* advertiserID = _deviceInfo.advertiserID;
     if (advertiserID) {
@@ -392,23 +457,23 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         [apiProperties setValue:vendorID forKey:@"ios_idfv"];
     }
     
-    if (lastKnownLocation != nil) {
-        @synchronized (locationManager) {
+    if (_lastKnownLocation != nil) {
+        @synchronized (_locationManager) {
             NSMutableDictionary *location = [NSMutableDictionary dictionary];
-            
+
             // Need to use NSInvocation because coordinate selector returns a C struct
             SEL coordinateSelector = NSSelectorFromString(@"coordinate");
-            NSMethodSignature *coordinateMethodSignature = [lastKnownLocation methodSignatureForSelector:coordinateSelector];
+            NSMethodSignature *coordinateMethodSignature = [_lastKnownLocation methodSignatureForSelector:coordinateSelector];
             NSInvocation *coordinateInvocation = [NSInvocation invocationWithMethodSignature:coordinateMethodSignature];
-            [coordinateInvocation setTarget:lastKnownLocation];
+            [coordinateInvocation setTarget:_lastKnownLocation];
             [coordinateInvocation setSelector:coordinateSelector];
             [coordinateInvocation invoke];
             CLLocationCoordinate2D lastKnownLocationCoordinate;
             [coordinateInvocation getReturnValue:&lastKnownLocationCoordinate];
-            
+
             [location setValue:[NSNumber numberWithDouble:lastKnownLocationCoordinate.latitude] forKey:@"lat"];
             [location setValue:[NSNumber numberWithDouble:lastKnownLocationCoordinate.longitude] forKey:@"lng"];
-            
+
             [apiProperties setValue:location forKey:@"location"];
         }
     }
@@ -444,7 +509,16 @@ AMPLocationManagerDelegate *locationManagerDelegate;
     [apiProperties setValue:productIdentifier forKey:@"productId"];
     [apiProperties setValue:[NSNumber numberWithInteger:quantity] forKey:@"quantity"];
     [apiProperties setValue:price forKey:@"price"];
-    [apiProperties setValue:[receipt base64Encoding] forKey:@"receipt"];
+
+    if ([receipt respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
+        [apiProperties setValue:[receipt base64EncodedStringWithOptions:0] forKey:@"receipt"];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+        [apiProperties setValue:[receipt base64Encoding] forKey:@"receipt"];
+#pragma clang diagnostic pop
+    }
+
     [self logEvent:@"revenue_amount" withEventProperties:nil apiProperties:apiProperties withTimestamp:nil];
 }
 
@@ -452,10 +526,10 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)uploadEventsWithDelay:(int) delay
 {
-    if (!updateScheduled) {
-        updateScheduled = YES;
+    if (!_updateScheduled) {
+        _updateScheduled = YES;
         
-        [mainQueue addOperationWithBlock:^{
+        [_mainQueue addOperationWithBlock:^{
             [self performSelector:@selector(uploadEventsExecute) withObject:nil afterDelay:delay];
         }];
     }
@@ -463,9 +537,9 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)uploadEventsExecute
 {
-    updateScheduled = NO;
+    _updateScheduled = NO;
     
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         [self uploadEvents];
     }];
 }
@@ -481,21 +555,27 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         NSLog(@"ERROR: apiKey cannot be nil or empty, set apiKey with initializeApiKey: before calling uploadEvents:");
         return;
     }
-    
+
     @synchronized ([Amplitude class]) {
-        if (updatingCurrently) {
+        if (_updatingCurrently) {
             return;
         }
-        updatingCurrently = YES;
+        _updatingCurrently = YES;
     }
     
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         
-        @synchronized (eventsData) {
-            NSMutableArray *events = [eventsData objectForKey:@"events"];
+        @synchronized (_eventsData) {
+            // Don't communicate with the server if the user has opted out.
+            if ([[_eventsData objectForKey:@"opt_out"] boolValue])  {
+                _updatingCurrently = NO;
+                return;
+            }
+
+            NSMutableArray *events = [_eventsData objectForKey:@"events"];
             long long numEvents = limit ? fminl([events count], limit) : [events count];
             if (numEvents == 0) {
-                updatingCurrently = NO;
+                _updatingCurrently = NO;
                 return;
             }
             NSArray *uploadEvents = [events subarrayWithRange:NSMakeRange(0, (int) numEvents)];
@@ -507,12 +587,12 @@ AMPLocationManagerDelegate *locationManagerDelegate;
             }
             @catch (NSException *exception) {
                 NSLog(@"ERROR: NSJSONSerialization error: %@", exception.reason);
-                updatingCurrently = NO;
+                _updatingCurrently = NO;
                 return;
             }
             if (error != nil) {
                 NSLog(@"ERROR: NSJSONSerialization error: %@", error);
-                updatingCurrently = NO;
+                _updatingCurrently = NO;
                 return;
             }
             if (eventsDataLocal) {
@@ -520,7 +600,7 @@ AMPLocationManagerDelegate *locationManagerDelegate;
                 [self makeEventUploadPostRequest:kAMPEventLogUrl events:eventsString lastEventIDUploaded:lastEventIDUploaded];
            }
         }
-        
+
     }];
 }
 
@@ -528,9 +608,9 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 {
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     [request setTimeoutInterval:60.0];
-    
+
     NSString *apiVersionString = [[NSNumber numberWithInt:kAMPApiVersion] stringValue];
-    
+
     NSMutableData *postData = [[NSMutableData alloc] init];
     [postData appendData:[@"v=" dataUsingEncoding:NSUTF8StringEncoding]];
     [postData appendData:[apiVersionString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -538,89 +618,95 @@ AMPLocationManagerDelegate *locationManagerDelegate;
     [postData appendData:[_apiKey dataUsingEncoding:NSUTF8StringEncoding]];
     [postData appendData:[@"&e=" dataUsingEncoding:NSUTF8StringEncoding]];
     [postData appendData:[[self urlEncodeString:events] dataUsingEncoding:NSUTF8StringEncoding]];
-    
+
     // Add timestamp of upload
     [postData appendData:[@"&upload_time=" dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *timestampString = [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000] stringValue];
     [postData appendData:[timestampString dataUsingEncoding:NSUTF8StringEncoding]];
-    
+
     // Add checksum
     [postData appendData:[@"&checksum=" dataUsingEncoding:NSUTF8StringEncoding]];
     NSString *checksumData = [NSString stringWithFormat: @"%@%@%@%@", apiVersionString, _apiKey, events, timestampString];
     NSString *checksum = [self md5HexDigest: checksumData];
     [postData appendData:[checksum dataUsingEncoding:NSUTF8StringEncoding]];
-    
+
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[postData length]] forHTTPHeaderField:@"Content-Length"];
-    
+
     [request setHTTPBody:postData];
     AMPLITUDE_LOG(@"Events: %@", events);
-    
+
     SAFE_ARC_RELEASE(postData);
-    
+
+    // If pinning is enabled, use the AMPURLConnection that handles it.
+#if AMPLITUDE_SSL_PINNING
+    id Connection = (self.sslPinningEnabled ? [AMPURLConnection class] : [NSURLConnection class]);
+    [Connection sendAsynchronousRequest:request queue:_backgroundQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+#else
     [NSURLConnection sendAsynchronousRequest:request queue:_backgroundQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
-     {
-         BOOL uploadSuccessful = NO;
-         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-         if (response != nil) {
-             if ([httpResponse statusCode] == 200) {
-                 NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                 if ([result isEqualToString:@"success"]) {
-                     // success, remove existing events from dictionary
-                     uploadSuccessful = YES;
-                     @synchronized (eventsData) {
-                         long long numberToRemove = 0;
-                         long long i = 0;
-                         for (id event in [eventsData objectForKey:@"events"]) {
-                             i++;
-                             if ([[event objectForKey:@"event_id"] longLongValue] == lastEventIDUploaded) {
-                                 numberToRemove = i;
-                                 break;
-                             }
-                         }
-                         [[eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, (int) numberToRemove)];
-                     }
-                 } else if ([result isEqualToString:@"invalid_api_key"]) {
-                     NSLog(@"ERROR: Invalid API Key, make sure your API key is correct in initializeApiKey:");
-                 } else if ([result isEqualToString:@"bad_checksum"]) {
-                     NSLog(@"ERROR: Bad checksum, post request was mangled in transit, will attempt to reupload later");
-                 } else if ([result isEqualToString:@"request_db_write_failed"]) {
-                     NSLog(@"ERROR: Couldn't write to request database on server, will attempt to reupload later");
-                 } else {
-                     NSLog(@"ERROR: %@, will attempt to reupload later", result);
-                 }
-                 SAFE_ARC_RELEASE(result);
-             } else {
-                 NSLog(@"ERROR: Connection response received:%ld, %@", (long)[httpResponse statusCode],
-                       SAFE_ARC_AUTORELEASE([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]));
-             }
-         } else if (error != nil) {
-             if ([error code] == -1009) {
-                 AMPLITUDE_LOG(@"No internet connection (not connected to internet), unable to upload events");
-             } else if ([error code] == -1003) {
-                 AMPLITUDE_LOG(@"No internet connection (hostname not found), unable to upload events");
-             } else if ([error code] == -1001) {
-                 AMPLITUDE_LOG(@"No internet connection (request timed out), unable to upload events");
-             } else {
-                 NSLog(@"ERROR: Connection error:%@", error);
-             }
-         } else {
-             NSLog(@"ERROR: response empty, error empty for NSURLConnection");
-         }
-         
-         [self saveEventsData];
-         
-         updatingCurrently = NO;
-         
-         if (uploadSuccessful && [[eventsData objectForKey:@"events"] count] > kAMPEventUploadThreshold) {
-             [self uploadEventsWithLimit:0];
-         } else if (uploadTaskID != UIBackgroundTaskInvalid) {
-             // Upload finished, allow background task to be ended
-             [[UIApplication sharedApplication] endBackgroundTask:uploadTaskID];
-             uploadTaskID = UIBackgroundTaskInvalid;
-         }
-     }];
+#endif
+    {
+        BOOL uploadSuccessful = NO;
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+        if (response != nil) {
+            if ([httpResponse statusCode] == 200) {
+                NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                if ([result isEqualToString:@"success"]) {
+                    // success, remove existing events from dictionary
+                    uploadSuccessful = YES;
+                    @synchronized (_eventsData) {
+                        long long numberToRemove = 0;
+                        long long i = 0;
+                        for (id event in [_eventsData objectForKey:@"events"]) {
+                            i++;
+                            if ([[event objectForKey:@"event_id"] longLongValue] == lastEventIDUploaded) {
+                                numberToRemove = i;
+                                break;
+                            }
+                        }
+                        [[_eventsData objectForKey:@"events"] removeObjectsInRange:NSMakeRange(0, (int) numberToRemove)];
+                    }
+                } else if ([result isEqualToString:@"invalid_api_key"]) {
+                    NSLog(@"ERROR: Invalid API Key, make sure your API key is correct in initializeApiKey:");
+                } else if ([result isEqualToString:@"bad_checksum"]) {
+                    NSLog(@"ERROR: Bad checksum, post request was mangled in transit, will attempt to reupload later");
+                } else if ([result isEqualToString:@"request_db_write_failed"]) {
+                    NSLog(@"ERROR: Couldn't write to request database on server, will attempt to reupload later");
+                } else {
+                    NSLog(@"ERROR: %@, will attempt to reupload later", result);
+                }
+                SAFE_ARC_RELEASE(result);
+            } else {
+                NSLog(@"ERROR: Connection response received:%ld, %@", (long)[httpResponse statusCode],
+                    SAFE_ARC_AUTORELEASE([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]));
+            }
+        } else if (error != nil) {
+            if ([error code] == -1009) {
+                AMPLITUDE_LOG(@"No internet connection (not connected to internet), unable to upload events");
+            } else if ([error code] == -1003) {
+                AMPLITUDE_LOG(@"No internet connection (hostname not found), unable to upload events");
+            } else if ([error code] == -1001) {
+                AMPLITUDE_LOG(@"No internet connection (request timed out), unable to upload events");
+            } else {
+                NSLog(@"ERROR: Connection error:%@", error);
+            }
+        } else {
+            NSLog(@"ERROR: response empty, error empty for NSURLConnection");
+        }
+
+        [self saveEventsData];
+
+        _updatingCurrently = NO;
+
+        if (uploadSuccessful && [[_eventsData objectForKey:@"events"] count] > kAMPEventUploadThreshold) {
+            [self uploadEventsWithLimit:0];
+        } else if (_uploadTaskID != UIBackgroundTaskInvalid) {
+            // Upload finished, allow background task to be ended
+            [[UIApplication sharedApplication] endBackgroundTask:_uploadTaskID];
+            _uploadTaskID = UIBackgroundTaskInvalid;
+        }
+    }];
 }
 
 #pragma mark - application lifecycle methods
@@ -629,30 +715,30 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 {
     [self updateLocation];
     [self startSession];
-    if (uploadTaskID != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:uploadTaskID];
-        uploadTaskID = UIBackgroundTaskInvalid;
+    if (_uploadTaskID != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:_uploadTaskID];
+        _uploadTaskID = UIBackgroundTaskInvalid;
     }
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         [self uploadEvents];
     }];
 }
 
 - (void)enterBackground
 {
-    if (uploadTaskID != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:uploadTaskID];
+    if (_uploadTaskID != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:_uploadTaskID];
     }
-    uploadTaskID = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+    _uploadTaskID = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
         //Took too long, manually stop
-        if (uploadTaskID != UIBackgroundTaskInvalid) {
-            [[UIApplication sharedApplication] endBackgroundTask:uploadTaskID];
-            uploadTaskID = UIBackgroundTaskInvalid;
+        if (_uploadTaskID != UIBackgroundTaskInvalid) {
+            [[UIApplication sharedApplication] endBackgroundTask:_uploadTaskID];
+            _uploadTaskID = UIBackgroundTaskInvalid;
         }
     }];
-    
+
     [self endSession];
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         [self saveEventsData];
         [self uploadEventsWithLimit:0];
     }];
@@ -664,44 +750,40 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 {
     NSNumber *now = [NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970] * 1000];
     
-    [mainQueue addOperationWithBlock:^{
+    [_mainQueue addOperationWithBlock:^{
         // Remove turn off session later callback
         [NSObject cancelPreviousPerformRequestsWithTarget:self
                                                  selector:@selector(turnOffSessionLaterExecute)
                                                    object:self];
     }];
-    
-    [_backgroundQueue addOperationWithBlock:^{
-        
-        @synchronized (eventsData) {
-            
-            // Session has not been started yet, check overlap with previous session
-            NSNumber *previousSessionTime = [eventsData objectForKey:@"previous_session_time"];
+
+    [self runOnBackgroundQueue:^{
+        @synchronized (_eventsData) {
+            // Check overlap with previous session
+            NSNumber *previousSessionTime = [_eventsData objectForKey:@"previous_session_time"];
             long long timeDelta = [now longLongValue] - [previousSessionTime longLongValue];
             
-            if (!sessionStarted || _sessionId < 0) {
-                if (timeDelta < kAMPMinTimeBetweenSessionsMillis) {
-                    _sessionId = [[eventsData objectForKey:@"previous_session_id"] longLongValue];
-                } else {
-                    _sessionId = [now longLongValue];
-                    [eventsData setValue:[NSNumber numberWithLongLong:_sessionId] forKey:@"previous_session_id"];
-                }
-            } else {
-                if (timeDelta > kAMPSessionTimeoutMillis) {
-                    // Session has expired
-                    _sessionId = [now longLongValue];
-                    [eventsData setValue:[NSNumber numberWithLongLong:_sessionId] forKey:@"previous_session_id"];
-                }
-                // else _sessionId = previous session id
-            }
-        }
-        
-        sessionStarted = YES;
-    }];
+            BOOL sessionExists = _sessionStarted && _sessionId >= 0;
+            BOOL sessionExpired = timeDelta > kAMPSessionTimeoutMillis;
 
-    NSMutableDictionary *apiProperties = [NSMutableDictionary dictionary];
-    [apiProperties setValue:@"session_start" forKey:@"special"];
-    [self logEvent:@"session_start" withEventProperties:nil apiProperties:apiProperties withTimestamp:now];
+            if (!sessionExists && timeDelta < kAMPMinTimeBetweenSessionsMillis) {
+                // The previous session happened recently enough to be considered the same session. Use it.
+                _sessionId = [[_eventsData objectForKey:@"previous_session_id"] longLongValue];
+            } else if (!sessionExists || sessionExpired) {
+                // Session has expired or doesn't exist.
+                _sessionId = [now longLongValue];
+                [_eventsData setValue:[NSNumber numberWithLongLong:_sessionId] forKey:@"previous_session_id"];
+            }
+            // else _sessionId = previous session id
+
+            if (!_sessionStarted) {
+                NSMutableDictionary *apiProperties = [NSMutableDictionary dictionary];
+                [apiProperties setValue:@"session_start" forKey:@"special"];
+                [self logEvent:@"session_start" withEventProperties:nil apiProperties:apiProperties withTimestamp:now];
+            }
+            _sessionStarted = YES;
+        }
+    }];
 }
 
 - (void)endSession
@@ -710,26 +792,35 @@ AMPLocationManagerDelegate *locationManagerDelegate;
     [apiProperties setValue:@"session_end" forKey:@"special"];
     [self logEvent:@"session_end" withEventProperties:nil apiProperties:apiProperties withTimestamp:nil];
     
-    [_backgroundQueue addOperationWithBlock:^{
-        sessionStarted = NO;
+    [self runOnBackgroundQueue:^{
+        @synchronized (_eventsData) {
+            _sessionStarted = NO;
+        }
     }];
     
-    [mainQueue addOperationWithBlock:^{
+    [_mainQueue addOperationWithBlock:^{
         [self performSelector:@selector(turnOffSessionLaterExecute) withObject:nil afterDelay:kAMPMinTimeBetweenSessionsMillis];
     }];
 }
 
+/**
+ * Update the session timer if there's a running session.
+ */
 - (void)refreshSessionTime:(NSNumber*) timestamp
 {
-    @synchronized (eventsData) {
-        [eventsData setValue:timestamp forKey:@"previous_session_time"];
+    if (_sessionId < 0) {
+        return;
+    }
+
+    @synchronized (_eventsData) {
+        [_eventsData setValue:timestamp forKey:@"previous_session_time"];
     }
 }
 
 - (void)turnOffSessionLaterExecute
 {
-    [_backgroundQueue addOperationWithBlock:^{
-        if (!sessionStarted) {
+    [self runOnBackgroundQueue:^{
+        if (!_sessionStarted) {
             _sessionId = -1;
         }
     }];
@@ -739,11 +830,27 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)setUserProperties:(NSDictionary*) userProperties
 {
+    [self setUserProperties:userProperties replace:NO];
+}
+
+- (void)setUserProperties:(NSDictionary*) userProperties replace:(BOOL) replace
+{
     if (![self isArgument:userProperties validType:[NSDictionary class] methodName:@"setUserProperties:"]) {
         return;
     }
+
     (void) SAFE_ARC_RETAIN(userProperties);
-    SAFE_ARC_RELEASE(_userProperties);
+
+    // Merge the given properties into the existing set if not asked to replace.
+    if (!replace && _userProperties) {
+        NSMutableDictionary *mergedProperties = [_userProperties mutableCopy];
+        [mergedProperties addEntriesFromDictionary:userProperties];
+
+        (void) SAFE_ARC_AUTORELEASE(userProperties);
+        userProperties = mergedProperties;
+    }
+
+    (void) SAFE_ARC_AUTORELEASE(_userProperties);
     _userProperties = userProperties;
 }
 
@@ -753,28 +860,43 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         return;
     }
     
-    [_backgroundQueue addOperationWithBlock:^{
+    [self runOnBackgroundQueue:^{
         (void) SAFE_ARC_RETAIN(userId);
         SAFE_ARC_RELEASE(_userId);
         _userId = userId;
-        @synchronized (eventsData) {
-            [eventsData setObject:_userId forKey:@"user_id"];
+        @synchronized (_eventsData) {
+            [_eventsData setObject:_userId forKey:@"user_id"];
             [self saveEventsData];
         }
     }];
+}
+
+- (void)setOptOut:(BOOL)enabled
+{
+    [self runOnBackgroundQueue:^{
+        @synchronized (_eventsData) {
+            [_eventsData setObject:[NSNumber numberWithBool:enabled] forKey:@"opt_out"];
+            [self saveEventsData];
+        }
+    }];
+}
+
+- (BOOL)optOut
+{
+    return [_eventsData[@"opt_out"] boolValue];
 }
 
 #pragma mark - location methods
 
 - (void)updateLocation
 {
-    if (locationListeningEnabled) {
-        CLLocation *location = [locationManager location];
-        @synchronized (locationManager) {
+    if (_locationListeningEnabled) {
+        CLLocation *location = [_locationManager location];
+        @synchronized (_locationManager) {
             if (location != nil) {
                 (void) SAFE_ARC_RETAIN(location);
-                SAFE_ARC_RELEASE(lastKnownLocation);
-                lastKnownLocation = location;
+                SAFE_ARC_RELEASE(_lastKnownLocation);
+                _lastKnownLocation = location;
             }
         }
     }
@@ -782,18 +904,18 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)enableLocationListening
 {
-    locationListeningEnabled = YES;
+    _locationListeningEnabled = YES;
     [self updateLocation];
 }
 
 - (void)disableLocationListening
 {
-    locationListeningEnabled = NO;
+    _locationListeningEnabled = NO;
 }
 
 - (void)useAdvertisingIdForDeviceId
 {
-    useAdvertisingIdForDeviceId = YES;
+    _useAdvertisingIdForDeviceId = YES;
 }
 
 #pragma mark - Getters for device data
@@ -804,14 +926,14 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (NSString*) initializeDeviceId
 {
-    @synchronized (eventsData) {
+    @synchronized (_eventsData) {
         if (_deviceId == nil) {
-            _deviceId = [eventsData objectForKey:@"device_id"];
+            _deviceId = SAFE_ARC_RETAIN([_eventsData objectForKey:@"device_id"]);
             if (_deviceId == nil ||
                 [_deviceId isEqualToString:@"e3f5536a141811db40efd6400f1d0a4e"] ||
                 [_deviceId isEqualToString:@"04bab7ee75b9a58d39b8dc54e8851084"]) {
-                _deviceId = [self _getDeviceId];
-                [eventsData setObject:_deviceId forKey:@"device_id"];
+                _deviceId = SAFE_ARC_RETAIN([self _getDeviceId]);
+                [_eventsData setObject:_deviceId forKey:@"device_id"];
             }
         }
     }
@@ -821,18 +943,18 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 - (NSString*)_getDeviceId
 {
     NSString *deviceId = nil;
-    if (useAdvertisingIdForDeviceId) {
-        deviceId = _deviceInfo.advertiserID;
+    if (_useAdvertisingIdForDeviceId) {
+        deviceId = SAFE_ARC_AUTORELEASE(_deviceInfo.advertiserID);
     }
 
     // return identifierForVendor
     if (!deviceId) {
-        deviceId = _deviceInfo.vendorID;
+        deviceId = SAFE_ARC_AUTORELEASE(_deviceInfo.vendorID);
     }
-    
+
     if (!deviceId) {
         // Otherwise generate random ID
-        deviceId = _deviceInfo.generateUUID;
+        deviceId = SAFE_ARC_AUTORELEASE(_deviceInfo.generateUUID);
     }
     return deviceId;
 }
@@ -857,6 +979,9 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         } else {
             return obj;
         }
+    }
+    if ([obj isKindOfClass:[NSDate class]]) {
+        return [obj description];
     }
     if ([obj isKindOfClass:[NSArray class]]) {
         NSMutableArray *arr = [NSMutableArray array];
@@ -900,7 +1025,7 @@ AMPLocationManagerDelegate *locationManagerDelegate;
     const char* str = [input UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     CC_MD5(str, (CC_LONG) strlen(str), result);
-    
+
     NSMutableString *ret = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];
     for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
         [ret appendFormat:@"%02x",result[i]];
@@ -934,15 +1059,15 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 
 - (void)printEventsCount
 {
-    NSLog(@"Events count:%ld", (long) [[eventsData objectForKey:@"events"] count]);
+    NSLog(@"Events count:%ld", (long) [[_eventsData objectForKey:@"events"] count]);
 }
 
 #pragma mark - Filesystem
 
 - (BOOL)saveEventsData
 {
-    @synchronized (eventsData) {
-        BOOL success = [self archive:eventsData toFile:eventsDataPath];
+    @synchronized (_eventsData) {
+        BOOL success = [self archive:_eventsData toFile:_eventsDataPath];
         if (!success) {
             NSLog(@"ERROR: Unable to save eventsData to file");
         }
@@ -951,8 +1076,8 @@ AMPLocationManagerDelegate *locationManagerDelegate;
 }
 
 - (BOOL)savePropertyList {
-    @synchronized (propertyList) {
-        BOOL success = [self serializePList:propertyList toFile:propertyListPath];
+    @synchronized (_propertyList) {
+        BOOL success = [self serializePList:_propertyList toFile:_propertyListPath];
         if (!success) {
             NSLog(@"Error: Unable to save propertyList to file");
         }
@@ -1004,7 +1129,7 @@ AMPLocationManagerDelegate *locationManagerDelegate;
         NSLog(@"ERROR: Unable to serialize propertyList:%@", error);
     }
     return FALSE;
-    
+
 }
 
 - (id)unarchive:(NSString*)path {
