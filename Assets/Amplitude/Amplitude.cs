@@ -27,6 +27,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserProperties(string propertiesJson);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setOptOut(bool enabled);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueAmount(double amount);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenue(string productIdentifier, int quantity, double price);
@@ -173,7 +175,16 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
+	public void setOptOut(bool enabled) {
+		Log (string.Format("C# setOptOut {0}", enabled));
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setOptOut", enabled);
+		}
+#endif
+	}
+
 	[System.Obsolete("Please call setUserProperties instead", false)]
 	public void setGlobalUserProperties(IDictionary<string, object> properties) {
 		setUserProperties(properties);

@@ -10,4 +10,7 @@
 *.user
 *.userprefs
 
+*.pyc
+*.pyc.meta
+
 .DS_Store
