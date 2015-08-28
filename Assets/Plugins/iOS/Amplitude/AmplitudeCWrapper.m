@@ -9,10 +9,10 @@ char* MakeCString(const char* string)
     if (string == NULL) {
         return NULL;
     }
-    
+
     char* result = (char*) malloc(strlen(string) + 1);
     strcpy(result, string);
-    
+
     return result;
 }
 
@@ -62,6 +62,15 @@ void _Amplitude_logEvent(const char* event, const char* properties)
 	} else {
 		[[Amplitude instance] logEvent:ToNSString(event)];
 	}
+}
+
+void _Amplitude_logOutOfSessionEvent(const char* event, const char* properties)
+{
+    if (properties) {
+        [[Amplitude instance] logEvent:ToNSString(event) withEventProperties:ToNSDictionary(properties) outOfSession:true];
+    } else {
+        [[Amplitude instance] logEvent:ToNSString(event) withEventProperties:nil outOfSession:true];
+    }
 }
 
 void _Amplitude_setUserId(const char* event)

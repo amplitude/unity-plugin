@@ -16,12 +16,14 @@ public class Amplitude {
 
 	private static Amplitude instance;
 	public bool logging = false;
-	
+
 #if UNITY_IPHONE
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_init(string apiKey, string userId);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logEvent(string evt, string propertiesJson);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_logOutOfSessionEvent(string evt, string propertiesJson);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserId(string userId);
 	[DllImport ("__Internal")]
@@ -44,11 +46,11 @@ public class Amplitude {
 			if(instance == null) {
 				instance = new Amplitude();
 			}
-			
+
 			return instance;
 		}
 	}
-	
+
 	public Amplitude() : base() {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
@@ -57,13 +59,13 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
 	protected void Log(string message) {
 		if(!logging) return;
-		
+
 		Debug.Log(message);
 	}
-	
+
 	public void init(string apiKey) {
 		Log (string.Format("C# init {0}", apiKey));
 #if UNITY_IPHONE
@@ -82,7 +84,7 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
 	public void init(string apiKey, string userId) {
 		Log (string.Format("C# init {0} with userId {1}", apiKey, userId));
 #if UNITY_IPHONE
@@ -101,7 +103,7 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
 	public void logEvent(string evt) {
 		Log (string.Format("C# sendEvent {0}", evt));
 #if UNITY_IPHONE
@@ -116,7 +118,7 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
 	public void logEvent(string evt, IDictionary<string, object> properties) {
 		string propertiesJson;
 		if (properties != null) {
@@ -138,7 +140,27 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
+	public void logEvent(string evt, IDictionary<string, object> properties, bool outOfSession) {
+		string propertiesJson;
+		if (properties != null) {
+			propertiesJson = Json.Serialize(properties);
+		} else {
+			propertiesJson = Json.Serialize(new Dictionary<string, object>());
+		}
+
+		Log(string.Format("C# sendEvent {0} with properties {1} and outOfSession {2}", evt, propertiesJson, outOfSession));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			if (outOfSession) {
+				_Amplitude_logOutOfSessionEvent(evt, propertiesJson);
+			} else {
+				_Amplitude_logEvent(evt, propertiesJson);
+			}
+		}
+#endif
+	}
+
 	public void setUserId(string userId) {
 		Log (string.Format("C# setUserId {0}", userId));
 #if UNITY_IPHONE
@@ -153,7 +175,7 @@ public class Amplitude {
 		}
 #endif
 	}
-	
+
 	public void setUserProperties(IDictionary<string, object> properties) {
 		string propertiesJson;
 		if (properties != null) {
@@ -162,7 +184,7 @@ public class Amplitude {
 			propertiesJson = Json.Serialize(new Dictionary<string, object>());
 		}
 
-		Log (string.Format("C# setUserProperties {0}", propertiesJson));		
+		Log (string.Format("C# setUserProperties {0}", propertiesJson));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_setUserProperties(propertiesJson);
@@ -195,7 +217,7 @@ public class Amplitude {
 	public void setGlobalUserProperties(IDictionary<string, object> properties) {
 		setUserProperties(properties);
 	}
-	
+
 	public void logRevenue(double amount) {
 		Log (string.Format("C# logRevenue {0}", amount));
 #if UNITY_IPHONE
@@ -218,7 +240,7 @@ public class Amplitude {
 			_Amplitude_logRevenue(productId, quantity, price);
 		}
 #endif
-		
+
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("logRevenue", productId, quantity, price);
@@ -247,7 +269,7 @@ public class Amplitude {
 			return _Amplitude_getDeviceId();
 		}
 		#endif
-		
+
 		#if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			return pluginClass.CallStatic<string>("getDeviceId");
@@ -255,7 +277,7 @@ public class Amplitude {
 		#endif
 		return null;
 	}
-	
+
 	public void startSession() {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
