@@ -41,9 +41,9 @@ A session is a period of time that a user has the app in the foreground. Events 
 
 You can also log events as out of session. Out of session events have a `session_id` of `-1` and are not considered part of the current session, meaning they do not extend the current session (useful for things like push notifications). You can log events as out of session by setting input parameter `outOfSession` to `true` when calling `logEvent()`:
 
-    ```java
-    Amplitude.getInstance().logEvent("EVENT", null, true);
-    ```
+```C#
+Amplitude.Instance.logEvent("EVENT", null, true);
+```
 
 # Setting Custom User IDs #
 
