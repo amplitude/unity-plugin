@@ -23,33 +23,13 @@ For iOS and Android specific documentation, see [iOS README](https://github.com/
     }
     ```
 
-5. Add a `startSession()` call to `OnApplicationFocus` in the main script in your project:
-
-    ```C#
-    public void OnApplicationFocus(bool focus) {
-      if (focus) {
-        Amplitude.Instance.startSession();
-      }
-    }
-    ```
-
-6. Add an `endSession()` call to `OnApplicationPause` in the main script in your project. This call also ensures data is uploaded before the app closes:
-
-    ```C#
-    public void OnApplicationPause(bool pause) {
-      if (pause) {
-        Amplitude.Instance.endSession();
-      }
-    }
-    ```
-
-7. To track an event anywhere in your app, call:
+5. To track an event anywhere in your app, call:
 
     ```C#
     Amplitude.Instance.logEvent("EVENT_IDENTIFIER_HERE");
     ```
 
-8. Events are saved locally. Uploads are batched to occur every 30 events and every 30 seconds. After calling `logEvent()` in your app, you will immediately see data appear on the Amplitude website.
+6. Events are saved locally. Uploads are batched to occur every 30 events and every 30 seconds. After calling `logEvent()` in your app, you will immediately see data appear on the Amplitude website.
 
 # Tracking Events #
 
@@ -57,9 +37,13 @@ It's important to think about what types of events you care about as a developer
 
 # Tracking Sessions #
 
-A session is a period of time that a user has the app in the foreground. Calls to `startSession()` and `endSession()` track the duration of a session. Sessions within 10 seconds of each other are merged into a single session when they are reported in Amplitude.
+A session is a period of time that a user has the app in the foreground. Events that are logged within the same session will have the same `session_id`. Sessions are handled automatically now; you no longer have to manually call `startSession()` or `endSession()`.
 
-Calling `startSession()` in `OnApplicationFocus` will generate a start session event every time the app regains focus or comes out of a locked screen. Calling `endSession()` in `OnApplicationPause` will generate an end session event every time the app moves to the background.
+You can also log events as out of session. Out of session events have a `session_id` of `-1` and are not considered part of the current session, meaning they do not extend the current session (useful for things like push notifications). You can log events as out of session by setting input parameter `outOfSession` to `true` when calling `logEvent()`:
+
+    ```java
+    Amplitude.getInstance().logEvent("EVENT", null, true);
+    ```
 
 # Setting Custom User IDs #
 

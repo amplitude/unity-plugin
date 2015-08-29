@@ -6,14 +6,14 @@ public class Bar : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
-	
+
 	void OnGUI () {
 
 		// Make a background box
@@ -28,7 +28,7 @@ public class Bar : MonoBehaviour {
 				{"float_gprop", 1.0}
 			};
 			amplitude.setUserProperties(userProperties);
-			
+
 			Dictionary<string, object> demoOptions = new Dictionary<string, object>()
 			{
 				{"Bucket" , "A" },

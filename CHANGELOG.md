@@ -1,12 +1,16 @@
+## August 28, 2015
+* Update Android to v2.0.2 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Deprecated startSession and endSession
+
 ## August 27, 2015
-* Update iOS to version 3.0.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Update iOS to v3.0.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
 
 ## April 17, 2015
 * Update Android to v1.6.2 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
 
 ## April 15, 2015
-* Update iOS to version 2.4.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
-* Update Android to version 1.6.1 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Update iOS to v2.4.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Update Android to v1.6.1 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
 
 ## January 4, 2015
 * Update iOS library to v2.2.4 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)

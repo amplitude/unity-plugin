@@ -78,7 +78,10 @@ public class Amplitude {
 		if (Application.platform == RuntimePlatform.Android) {
 			using(AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
 				using(AndroidJavaObject unityActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity")) {
-					pluginClass.CallStatic("init", unityActivity, apiKey);
+					using(AndroidJavaObject unityApplication = unityActivity.Call<AndroidJavaObject>("getApplication")) {
+						pluginClass.CallStatic("init", unityActivity, apiKey);
+						pluginClass.CallStatic("enableForegroundTracking", unityApplication);
+					}
 				}
 			}
 		}
@@ -97,7 +100,10 @@ public class Amplitude {
 		if (Application.platform == RuntimePlatform.Android) {
 			using(AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
 				using(AndroidJavaObject unityActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity")) {
-					pluginClass.CallStatic("init", unityActivity, apiKey, userId);
+					using (AndroidJavaObject unityApplication = unityActivity.Call<AndroidJavaObject>("getApplication")) {
+						pluginClass.CallStatic("init", unityActivity, apiKey, userId);
+						pluginClass.CallStatic("enableForegroundTracking", unityApplication);
+					}
 				}
 			}
 		}
@@ -157,6 +163,12 @@ public class Amplitude {
 			} else {
 				_Amplitude_logEvent(evt, propertiesJson);
 			}
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("logEvent", evt, propertiesJson, outOfSession);
 		}
 #endif
 	}
@@ -278,19 +290,9 @@ public class Amplitude {
 		return null;
 	}
 
-	public void startSession() {
-#if UNITY_ANDROID
-		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("startSession");
-		}
-#endif
-	}
+	// This method is deprecated
+	public void startSession() { return; }
 
-	public void endSession() {
-#if UNITY_ANDROID
-		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("endSession");
-		}
-#endif
-	}
+	// This method is deprecated
+	public void endSession() { return; }
 }
