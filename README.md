@@ -45,6 +45,11 @@ You can also log events as out of session. Out of session events have a `session
 Amplitude.Instance.logEvent("EVENT", null, true);
 ```
 
+By default start and end session events are no longer sent. To renable add this line before initializing the SDK:
+```C#
+Amplitude.Instance.trackSessionEvents(true);
+```
+
 # Setting Custom User IDs #
 
 If your app has its own login system that you want to track users with, you can call `setUserId()` at any time:

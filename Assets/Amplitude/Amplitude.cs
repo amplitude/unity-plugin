@@ -38,6 +38,8 @@ public class Amplitude {
 	private static extern void _Amplitude_logRevenueWithReceipt(string productIdentifier, int quantity, double price, string receipt);
 	[DllImport ("__Internal")]
 	private static extern string _Amplitude_getDeviceId();
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_
 #endif
 
 	public static Amplitude Instance {
@@ -288,6 +290,18 @@ public class Amplitude {
 		}
 		#endif
 		return null;
+	}
+
+	public void trackSessionEvents(bool enabled) {
+		Log (string.Format ("C# trackSessionEvents {0}", enabled));
+#if UNITY_IPHONE
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("trackSessionEvents", enabled);
+		}
+#endif
 	}
 
 	// This method is deprecated
