@@ -47,7 +47,9 @@ Amplitude.Instance.logEvent("EVENT", null, true);
 
 By default start and end session events are no longer sent. To renable add this line before initializing the SDK:
 ```C#
-Amplitude.Instance.trackSessionEvents(true);
+Amplitude amplitude = Amplitude.Instance;
+amplitude.trackSessionEvents(true);
+amplitude.init("YOUR_API_KEY_HERE");
 ```
 
 # Setting Custom User IDs #

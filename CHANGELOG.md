@@ -1,5 +1,7 @@
 ## October 26, 2015
 * Update Android to v2.2.0 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Update iOS to v3.2.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Add toggle to track session events.
 
 ## August 28, 2015
 * Update Android to v2.0.2 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
