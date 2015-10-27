@@ -9,6 +9,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		Debug.Log ("awake");
 		Amplitude amplitude = Amplitude.Instance;
 		amplitude.logging = true;
+		amplitude.trackSessionEvents (true);
 		amplitude.init("a2dbce0e18dfe5f8e74493843ff5c053");
 		Debug.Log(amplitude.getDeviceId());
 	}

@@ -276,18 +276,27 @@ public class Amplitude {
 	}
 
 	public string getDeviceId() {
-		#if UNITY_IPHONE
+#if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			return _Amplitude_getDeviceId();
 		}
-		#endif
+#endif
 
-		#if UNITY_ANDROID
+#if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			return pluginClass.CallStatic<string>("getDeviceId");
 		}
-		#endif
+#endif
 		return null;
+	}
+
+	public void trackSessionEvents(bool enabled) {
+		Log (string.Format("C# trackSessionEvents {0}", enabled));
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("trackSessionEvents", enabled);
+		}
+#endif
 	}
 
 	// This method is deprecated
