@@ -10,6 +10,7 @@
 #import "AMPIdentify.h"
 #import "AMPARCMacros.h"
 #import "AMPConstants.h"
+#import "AMPUtils.h"
 
 @interface AMPIdentify()
 @end
@@ -50,6 +51,12 @@
     return self;
 }
 
+- (AMPIdentify*)append:(NSString*) property value:(NSObject*) value
+{
+    [self addToUserProperties:AMP_OP_APPEND property:property value:value];
+    return self;
+}
+
 - (AMPIdentify*)set:(NSString*) property value:(NSObject*) value
 {
     [self addToUserProperties:AMP_OP_SET property:property value:value];
@@ -81,7 +88,7 @@
         operations = [NSMutableDictionary dictionary];
         [_userPropertyOperations setObject:operations forKey:operation];
     }
-    [operations setObject:value forKey:property];
+    [operations setObject:[AMPUtils makeJSONSerializable:value] forKey:property];
     [_userProperties addObject:property];
 }
 

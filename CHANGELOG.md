@@ -1,3 +1,8 @@
+## January 3, 2016
+* Update iOS to v3.4.1 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Remove dependency on FMDB, use built-in SQLite3 library.
+* Updated README to including directions on adding native SQLite3 to iOS build.
+
 ## October 26, 2015
 * Update Android to v2.2.0 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
 * Update iOS to v3.2.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
