@@ -1,6 +1,7 @@
 #import "AmplitudeCWrapper.h"
 #import "Amplitude.h"
 #import "AMPARCMacros.h"
+#import "AMPIdentify.h"
 
 
 // Used to allocate a C string on the heap for C#
@@ -112,5 +113,74 @@ const char * _Amplitude_getDeviceId()
 
 void _Amplitude_trackingSessionEvents(const bool enabled)
 {
-    [Amplitude instance].trackingSessionEvents = true;
+    [[Amplitude instance] setTrackingSessionEvents:enabled];
 }
+
+// User Property Operations
+void _Amplitude_unsetUserProperty(const char* property)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] unset:ToNSString(property)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceBoolUserProperty(const char* property, const bool value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[NSNumber numberWithBool:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceDoubleUserProperty(const char* property, const double value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceFloatUserProperty(const char* property, const float value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceIntUserProperty(const char* property, const int value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceLongUserProperty(const char* property, const long long value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceStringUserProperty(const char* property, const char* value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceBoolArrayUserProperty(const char* property, const bool[] value)
+{
+    int length = sizeof(value)/sizeof(bool);
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithBool:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:array];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceIntArrayUserProperty(const char* property, const int[] value)
+{
+    int length = sizeof(value)/sizeof(int);
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+      [array addObject:[NSNumber numberWithInt:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:array];
+    [[Amplitude instance] identify:identify];
+}
+
+
