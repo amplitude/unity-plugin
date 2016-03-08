@@ -44,21 +44,27 @@ public class AmplitudeDemo : MonoBehaviour {
 			{"key3", "value3"},
 			{"key4", "value4"}
 		};
-		amplitude.setOnceUserPropertyDict ("dictValue", dictValue);
+//		amplitude.setOnceUserPropertyDict ("dictValue", dictValue);
 
 		List<int> intList = new List<int> ();
 		intList.Add (4);
 		intList.Add (5);
 		intList.Add (6);
-		amplitude.setUserPropertyList ("intList", intList);
+//		amplitude.setUserPropertyList ("intList", intList);
 
 		List<string> stringList = new List<string> ();
 		stringList.Add ("string2");
 		stringList.Add ("list2");
-		amplitude.setUserPropertyList ("stringList", stringList);
+//		amplitude.setUserPropertyList ("stringList", stringList);
 
-		amplitude.addUserPropertyFloat ("floatValue", 10.0f);
-		amplitude.addUserPropertyInt ("intValue", -1);
+//		amplitude.addUserPropertyFloat ("floatValue", 10.0f);
+//		amplitude.addUserPropertyInt ("intValue", -1);
+
+		amplitude.appendUserPropertyInt ("newIntValue", 15);
+		amplitude.appendUserPropertyBool ("intValue", false);
+
+		amplitude.appendUserPropertyIntArray ("intList", new int[]{7, 8, 9});
+		amplitude.appendUserPropertyList ("stringList", stringList);
 	}
 
 	// Update is called once per frame
