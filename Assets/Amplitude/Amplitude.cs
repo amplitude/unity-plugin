@@ -100,6 +100,18 @@ public class Amplitude {
 	private static extern void _Amplitude_setUserPropertyLongArray(string property, long[] value, int length);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserPropertyStringArray(string property, string[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyDouble(string property, double value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyFloat(string property, float value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyInt(string property, int value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyLong(string property, long value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyString(string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_addUserPropertyDict(string property, string values);
 #endif
 
 	public static Amplitude Instance {
@@ -846,6 +858,101 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyDouble(string property, double value) {
+		Log (string.Format("C# addUserPropertyDouble {0}, {1}", property, value));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyDouble(property, value);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyFloat(string property, float value) {
+		Log (string.Format("C# addUserPropertyFloat {0}, {1}", property, value));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyFloat(property, value);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyInt(string property, int value) {
+		Log (string.Format("C# addUserPropertyInt {0}, {1}", property, value));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyInt(property, value);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyLong(string property, long value) {
+		Log (string.Format("C# addUserPropertyLong {0}, {1}", property, value));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyLong(property, value);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyString(string property, string value) {
+		Log (string.Format("C# addUserPropertyString {0}, {1}", property, value));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyString(property, value);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void addUserPropertyDict(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+		
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# addUserPropertyDict {0}, {1}", property, valuesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_addUserPropertyDict(property, valuesJson);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
 		}
 #endif
 	}

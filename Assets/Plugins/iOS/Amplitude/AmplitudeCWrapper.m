@@ -363,3 +363,39 @@ void _Amplitude_setUserPropertyStringArray(const char* property, const char* val
     AMPIdentify *identify = [[AMPIdentify identify] set:ToNSString(property) value:array];
     [[Amplitude instance] identify:identify];
 }
+
+void _Amplitude_addUserPropertyDouble(const char* property, const double value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_addUserPropertyFloat(const char* property, const float value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_addUserPropertyInt(const char* property, const int value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_addUserPropertyLong(const char* property, const long long value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_addUserPropertyString(const char* property, const char* value)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_addUserPropertyDict(const char* property, const char* values)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] add:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instance] identify:identify];
+}

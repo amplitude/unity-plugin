@@ -56,6 +56,9 @@ public class AmplitudeDemo : MonoBehaviour {
 		stringList.Add ("string2");
 		stringList.Add ("list2");
 		amplitude.setUserPropertyList ("stringList", stringList);
+
+		amplitude.addUserPropertyFloat ("floatValue", 10.0f);
+		amplitude.addUserPropertyInt ("intValue", -1);
 	}
 
 	// Update is called once per frame
