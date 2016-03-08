@@ -41,6 +41,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(bool enabled);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_clearUserProperties();
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_unsetUserProperty(string property);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOnceUserPropertyBool(string property, bool value);
@@ -54,6 +56,10 @@ public class Amplitude {
 	private static extern void _Amplitude_setOnceUserPropertyLong(string property, long value);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOnceUserPropertyString(string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setOnceUserPropertyDict(string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setOnceUserPropertyList(string property, string values);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOnceUserPropertyBoolArray(string property, bool[] value, int length);
 	[DllImport ("__Internal")]
@@ -78,6 +84,10 @@ public class Amplitude {
 	private static extern void _Amplitude_setUserPropertyLong(string property, long value);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserPropertyString(string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setUserPropertyDict(string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setUserPropertyList(string property, string values);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserPropertyBoolArray(string property, bool[] value, int length);
 	[DllImport ("__Internal")]
@@ -358,6 +368,21 @@ public class Amplitude {
 	}
 
 // User Property Operations
+// ClearUserProperties
+	public void clearUserProperties() {
+		Log (string.Format("C# clearUserProperties"));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_clearUserProperties();
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
 
 // Unset
 	public void unsetUserProperty(string property) {
@@ -462,6 +487,50 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void setOnceUserPropertyDict(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# setOnceUserPropertyDict {0}, {1}", property, valuesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_setOnceUserPropertyDict(property, valuesJson);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
+		}
+#endif
+	}
+
+	public void setOnceUserPropertyList<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# setOnceUserPropertyList {0}, {1}", property, valuesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_setOnceUserPropertyList(property, valuesJson);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
 		}
 #endif
 	}
@@ -643,6 +712,50 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+		}
+#endif
+	}
+
+	public void setUserPropertyDict(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+		
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# setUserPropertyDict {0}, {1}", property, valuesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_setUserPropertyDict(property, valuesJson);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
+		}
+#endif
+	}
+	
+	public void setUserPropertyList<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+		
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# setUserPropertyList {0}, {1}", property, valuesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_setUserPropertyList(property, valuesJson);
+		}
+#endif
+		
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setUserProperties", propertiesJson);
 		}
 #endif
 	}

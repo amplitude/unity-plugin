@@ -38,6 +38,24 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.setUserPropertyStringArray ("stringArray", new string[]{"replace", "existing", "strings"});
 		amplitude.setUserPropertyFloatArray ("floatArray", new float[]{123.45f, 678.9f});
 		amplitude.setUserPropertyDoubleArray ("doubleArray", new double[]{123.45, 678.9});
+
+		Dictionary<string, object> dictValue = new Dictionary<string, object>()
+		{
+			{"key3", "value3"},
+			{"key4", "value4"}
+		};
+		amplitude.setOnceUserPropertyDict ("dictValue", dictValue);
+
+		List<int> intList = new List<int> ();
+		intList.Add (4);
+		intList.Add (5);
+		intList.Add (6);
+		amplitude.setUserPropertyList ("intList", intList);
+
+		List<string> stringList = new List<string> ();
+		stringList.Add ("string2");
+		stringList.Add ("list2");
+		amplitude.setUserPropertyList ("stringList", stringList);
 	}
 
 	// Update is called once per frame

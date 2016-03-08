@@ -117,6 +117,11 @@ void _Amplitude_trackingSessionEvents(const bool enabled)
 }
 
 // User Property Operations
+void _Amplitude_clearUserProperties()
+{
+    [[Amplitude instance] clearUserProperties];
+}
+
 void _Amplitude_unsetUserProperty(const char* property)
 {
     AMPIdentify *identify = [[AMPIdentify identify] unset:ToNSString(property)];
@@ -156,6 +161,22 @@ void _Amplitude_setOnceUserPropertyLong(const char* property, const long long va
 void _Amplitude_setOnceUserPropertyString(const char* property, const char* value)
 {
     AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceUserPropertyDict(const char* property, const char* values)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setOnceUserPropertyList(const char* property, const char* values)
+{
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] setOnce:ToNSString(property) value:[dict objectForKey:@"list"]];
     [[Amplitude instance] identify:identify];
 }
 
@@ -258,6 +279,22 @@ void _Amplitude_setUserPropertyLong(const char* property, const long long value)
 void _Amplitude_setUserPropertyString(const char* property, const char* value)
 {
     AMPIdentify *identify = [[AMPIdentify identify] set:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setUserPropertyDict(const char* property, const char* values)
+{
+    AMPIdentify *identify = [[AMPIdentify identify] set:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instance] identify:identify];
+}
+
+void _Amplitude_setUserPropertyList(const char* property, const char* values)
+{
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] set:ToNSString(property) value:[dict objectForKey:@"list"]];
     [[Amplitude instance] identify:identify];
 }
 
