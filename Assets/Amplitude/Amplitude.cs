@@ -893,7 +893,7 @@ public class Amplitude {
 
 // add
 	public void addUserProperty(string property, double value) {
-		Log (string.Format("C# addUserPropertyDouble {0}, {1}", property, value));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyDouble(property, value);
@@ -902,13 +902,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("addUserProperty", property, value);
 		}
 #endif
 	}
 
 	public void addUserProperty(string property, float value) {
-		Log (string.Format("C# addUserPropertyFloat {0}, {1}", property, value));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyFloat(property, value);
@@ -917,13 +917,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("addUserProperty", property, value);
 		}
 #endif
 	}
 
 	public void addUserProperty(string property, int value) {
-		Log (string.Format("C# addUserPropertyInt {0}, {1}", property, value));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyInt(property, value);
@@ -932,13 +932,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("addUserProperty", property, value);
 		}
 #endif
 	}
 
 	public void addUserProperty(string property, long value) {
-		Log (string.Format("C# addUserPropertyLong {0}, {1}", property, value));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyLong(property, value);
@@ -947,13 +947,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("addUserProperty", property, value);
 		}
 #endif
 	}
 
 	public void addUserProperty(string property, string value) {
-		Log (string.Format("C# addUserPropertyString {0}, {1}", property, value));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyString(property, value);
@@ -962,7 +962,7 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("addUserProperty", property, value);
 		}
 #endif
 	}
@@ -973,7 +973,7 @@ public class Amplitude {
 		}
 		
 		string valuesJson = Json.Serialize (values);
-		Log (string.Format("C# addUserPropertyDict {0}, {1}", property, valuesJson));
+		Log (string.Format("C# addUserProperty {0}, {1}", property, valuesJson));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_addUserPropertyDict(property, valuesJson);
@@ -982,14 +982,14 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-//			pluginClass.CallStatic("setUserProperties", valuesJson);
+			pluginClass.CallStatic("addUserPropertyDict", property, valuesJson);
 		}
 #endif
 	}
 
 // append
 	public void appendUserProperty(string property, bool value) {
-		Log (string.Format("C# appendUserPropertyBool {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyBool(property, value);
@@ -998,13 +998,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, double value) {
-		Log (string.Format("C# appendUserPropertyDouble {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyDouble(property, value);
@@ -1013,13 +1013,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, float value) {
-		Log (string.Format("C# appendUserPropertyFloat {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyFloat(property, value);
@@ -1028,13 +1028,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, int value) {
-		Log (string.Format("C# appendUserPropertyInt {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyInt(property, value);
@@ -1043,13 +1043,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, long value) {
-		Log (string.Format("C# appendUserPropertyLong {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyLong(property, value);
@@ -1058,13 +1058,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, string value) {
-		Log (string.Format("C# appendUserPropertyString {0}, {1}", property, value));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, value));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyString(property, value);
@@ -1073,7 +1073,7 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, value);
 		}
 #endif
 	}
@@ -1084,7 +1084,7 @@ public class Amplitude {
 		}
 		
 		string valuesJson = Json.Serialize (values);
-		Log (string.Format("C# appendUserPropertyDict {0}, {1}", property, valuesJson));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, valuesJson));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyDict(property, valuesJson);
@@ -1093,7 +1093,7 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-//			pluginClass.CallStatic("appendUserProperties", propertiesJson);
+			pluginClass.CallStatic("appendUserPropertyDict", property, valuesJson);
 		}
 #endif
 	}
@@ -1108,7 +1108,7 @@ public class Amplitude {
 			{"list", values}
 		};
 		string valuesJson = Json.Serialize (wrapper);
-		Log (string.Format("C# appendUserPropertyList {0}, {1}", property, valuesJson));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, valuesJson));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyList(property, valuesJson);
@@ -1117,13 +1117,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-//			pluginClass.CallStatic("appendUserProperties", propertiesJson);
+			pluginClass.CallStatic("appendUserPropertyList", property, valuesJson);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, bool[] array) {
-		Log (string.Format("C# appendUserPropertyBoolArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyBoolArray(property, array, array.Length);
@@ -1132,13 +1132,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, double[] array) {
-		Log (string.Format("C# appendUserPropertyDoubleArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyDoubleArray(property, array, array.Length);
@@ -1147,13 +1147,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, float[] array) {
-		Log (string.Format("C# appendUserPropertyFloatArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyFloatArray(property, array, array.Length);
@@ -1162,13 +1162,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, int[] array) {
-		Log (string.Format("C# appendUserPropertyIntArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyIntArray(property, array, array.Length);
@@ -1177,13 +1177,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, long[] array) {
-		Log (string.Format("C# appendUserPropertyLongArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyLongArray(property, array, array.Length);
@@ -1192,13 +1192,13 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}
 	
 	public void appendUserProperty(string property, string[] array) {
-		Log (string.Format("C# appendUserPropertyStringArray {0}, {1}", property, array));
+		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
 #if UNITY_IPHONE
 		if (Application.platform == RuntimePlatform.IPhonePlayer) {
 			_Amplitude_appendUserPropertyStringArray(property, array, array.Length);
@@ -1207,7 +1207,7 @@ public class Amplitude {
 		
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			//          pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("appendUserProperty", property, array);
 		}
 #endif
 	}

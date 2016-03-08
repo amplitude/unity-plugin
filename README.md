@@ -84,21 +84,21 @@ Amplitude.Instance.logEvent("Sent Message", demoOptions);
 
 # User Properties and User Property Operations #
 
-The Amplitude Unity Plugin supports the operations `set`, `setOnce`, `unset`, and `add` on individual user properties. Each operation is performed on a single user property, and updates its value accordingly. The method names follow this format: [operation]UserProperty[valueType]. For example the set operation allows you to set a given user property to a boolean, double, int, float, etc, and you would call the corresponding methods to do so: setUserPropertyBool, setUserPropertyInt, setUserPropertyFloat, etc. The provided method signatures will tell you what value types are allowed for each operation.
+The Amplitude Unity Plugin supports the operations `set`, `setOnce`, `unset`, and `add` on individual user properties. Each operation is performed on a single user property, and updates its value accordingly. The method names follow this format: [operation]UserProperty. For example the set operation allows you to set a given user property to a boolean, double, int, float, etc, and you would call setUserProperty to do so. The provided method signatures will tell you what value types are allowed for each operation.
 
 1. `set`: this sets the value of a user property.
 
     ```C#
-    Amplitude.Instance.setUserPropertyString("gender", "female");
-    Amplitude.Instance.setUserPropertyInt("age", 20);
-    Amplitude.Instance.setUserPropertyFloatArray("some float values", new float[]{20f, 15.3f, 4.8f});
+    Amplitude.Instance.setUserProperty("gender", "female"); // string value
+    Amplitude.Instance.setUserProperty("age", 20); // int value
+    Amplitude.Instance.setUserProperty("some float values", new float[]{20f, 15.3f, 4.8f}); // float array
     ```
 
 2. `setOnce`: this sets the value of a user property only once. Subsequent `setOnce` operations on that user property will be ignored. In the below example, `sign_up_date` will be set once to `08/24/2015`, and the following setOnce to `09/14/2015` will be ignored:
 
     ```C#
-    Amplitude.Instance.setOnceUserPropertyString("sign_up_date", "08/24/2015");
-    Amplitude.Instance.setOnceUserPropertyString("sign_up_date", "09/14/2015");
+    Amplitude.Instance.setOnceUserProperty("sign_up_date", "08/24/2015");
+    Amplitude.Instance.setOnceUserProperty("sign_up_date", "09/14/2015");
     ```
 
 3. `unset`: this will unset and remove a user property.
@@ -111,8 +111,8 @@ The Amplitude Unity Plugin supports the operations `set`, `setOnce`, `unset`, an
 4. `add`: this will increment a user property by some numerical value. If the user property does not have a value set yet, it will be initialized to 0 before being incremented.
 
     ```C#
-    Amplitude.Instance.addUserPropertyDouble("karma", 1.5);
-    Amplitude.Instance.addUserPropertyInt("friends", 1);
+    Amplitude.Instance.addUserProperty("karma", 1.5);
+    Amplitude.Instance.addUserProperty("friends", 1);
     ```
 
     Note: string values are allowed as they will be convered to their numerical equivalent. Dictionary values are also allowed as they will be flattened during processing.
@@ -120,8 +120,8 @@ The Amplitude Unity Plugin supports the operations `set`, `setOnce`, `unset`, an
 5. `append`: this will append a value or values to a user property. If the user property does not have a value set yet, it will be initialized to an empty list before the new values are appended. If the user property has an existing value and it is not a list, it will be converted into a list with the new value appended.
 
     ```C#
-    Amplitude.Instance.appendUserPropertyString("ab-tests", "new_user_tests");
-    Amplitude.Instance.appendUserPropertyIntArray("some_list", new int[]{1, 2, 3, 4});
+    Amplitude.Instance.appendUserProperty("ab-tests", "new_user_tests");
+    Amplitude.Instance.appendUserProperty("some_list", new int[]{1, 2, 3, 4});
     ```
 
 ### Arrays in User Properties ###
@@ -132,7 +132,7 @@ The Amplitude Unity Plugin supports arrays in user properties. Any of the user p
 List<double> list = new List<double>();
 list.add(2.5);
 list.add(6.8);
-Amplitude.Instance.appendUserPropertyList("my_list", list);
+Amplitude.Instance.appendUserProperty("my_list", list);
 ```
 
 ### Setting Multiple Properties with `setUserProperties` ###
