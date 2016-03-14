@@ -5,7 +5,7 @@
 
 NSString *const kAMPLibrary = @"amplitude-ios";
 NSString *const kAMPPlatform = @"iOS";
-NSString *const kAMPVersion = @"3.4.1";
+NSString *const kAMPVersion = @"3.5.0";
 NSString *const kAMPEventLogDomain = @"api.amplitude.com";
 NSString *const kAMPEventLogUrl = @"https://api.amplitude.com/";
 const int kAMPApiVersion = 3;
@@ -22,6 +22,7 @@ const int kAMPMaxStringLength = 1024;
 NSString *const IDENTIFY_EVENT = @"$identify";
 NSString *const AMP_OP_ADD = @"$add";
 NSString *const AMP_OP_APPEND = @"$append";
+NSString *const AMP_OP_CLEAR_ALL = @"$clearAll";
 NSString *const AMP_OP_SET = @"$set";
 NSString *const AMP_OP_SET_ONCE = @"$setOnce";
 NSString *const AMP_OP_UNSET = @"$unset";

@@ -1,3 +1,8 @@
+## March 7, 2016
+* Updated iOS to v3.5.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Updated Android to v2.5.0 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Added support for User Property Operations. Please see [README](https://github.com/amplitude/unity-plugin#user-properties-and-user-property-operations) for more information.
+
 ## January 3, 2016
 * Update iOS to v3.4.1 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
 * Remove dependency on FMDB, use built-in SQLite3 library.

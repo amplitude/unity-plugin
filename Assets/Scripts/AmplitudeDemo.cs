@@ -16,7 +16,7 @@ public class AmplitudeDemo : MonoBehaviour {
 
 	void Start() {
 		Amplitude amplitude = Amplitude.Instance;
-		amplitude.setUserId("unity_plugin");
+		amplitude.setUserId("unity_plugin2");
 /*		Dictionary<string, object> userProperties = new Dictionary<string, object>()
 		{
 			{"float_gprop", 1.0}
@@ -30,6 +30,41 @@ public class AmplitudeDemo : MonoBehaviour {
 		};
 		amplitude.logEvent("unity event 2", demoOptions);
 		amplitude.logRevenue(0.03);*/
+		amplitude.setOnceUserProperty("bool", true);
+		amplitude.setOnceUserProperty("boolArray", new bool[]{true, false, false});
+		amplitude.setOnceUserProperty("stringArray", new string[]{"this", "is", "a", "test"});
+		amplitude.unsetUserProperty("bool");
+		amplitude.setUserProperty("string", "this is a test");
+		amplitude.setUserProperty("stringArray", new string[]{"replace", "existing", "strings"});
+		amplitude.setUserProperty("floatArray", new float[]{123.45f, 678.9f});
+		amplitude.setUserProperty("doubleArray", new double[]{123.45, 678.9});
+
+		Dictionary<string, object> dictValue = new Dictionary<string, object>()
+		{
+			{"key3", "value3"},
+			{"key4", "value4"}
+		};
+		amplitude.setOnceUserProperty ("dictValue", dictValue);
+
+		List<int> intList = new List<int> ();
+		intList.Add (4);
+		intList.Add (5);
+		intList.Add (6);
+		amplitude.setOnceUserProperty ("intList", intList);
+
+		List<string> stringList = new List<string> ();
+		stringList.Add ("string2");
+		stringList.Add ("list2");
+		amplitude.setUserProperty("stringList", stringList);
+
+		amplitude.addUserProperty("floatValue", 10.0f);
+		amplitude.addUserProperty("intValue", -1);
+
+		amplitude.appendUserProperty("newIntValue", 15);
+		amplitude.appendUserProperty("intValue", false);
+
+		amplitude.appendUserProperty("intList", new int[]{7, 8, 9});
+		amplitude.appendUserProperty("stringList", stringList);
 	}
 
 	// Update is called once per frame
