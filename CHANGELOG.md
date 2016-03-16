@@ -1,3 +1,6 @@
+## March 16, 2016
+* Updated Android to v2.5.1 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+
 ## March 7, 2016
 * Updated iOS to v3.5.0 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
 * Updated Android to v2.5.0 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
