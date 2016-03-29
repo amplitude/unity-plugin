@@ -40,6 +40,8 @@
 @property (nonatomic, strong, readonly) NSString *apiKey;
 @property (nonatomic, strong, readonly) NSString *userId;
 @property (nonatomic, strong, readonly) NSString *deviceId;
+@property (nonatomic, strong, readonly) NSString *instanceName;
+@property (nonatomic ,strong, readonly) NSString *propertyListPath;
 @property (nonatomic, assign) BOOL optOut;
 
 /*!
@@ -82,6 +84,8 @@
 
 + (Amplitude *)instance;
 
++ (Amplitude *)instanceWithName:(NSString*) instanceName;
+
 /*!
  @method
 
@@ -115,7 +119,7 @@
  Tracks an event
 
  @param eventType                The name of the event you wish to track.
- @param eventProperties          You can attach additional data to any event by passing a NSDictionary object.
+ @param eventProperties          You can attach additional data to any event by passing a NSDictionary object with property: value pairs.
  @param outOfSession             If YES, will track the event as out of session. Useful for push notification events.
 
  @discussion
@@ -123,10 +127,9 @@
  After calling logEvent in your app, you will immediately see data appear on the Amplitude Website.
 
  It's important to think about what types of events you care about as a developer. You should aim to track
- between 10 and 100 types of events within your app. Common event types are different screens within the app,
+ between 50 and 200 types of events within your app. Common event types are different screens within the app,
  actions the user initiates (such as pressing a button), and events you want the user to complete
  (such as filling out a form, completing a level, or making a payment).
- Contact us if you want assistance determining what would be best for you to track. (contact@amplitude.com)
  */
 - (void)logEvent:(NSString*) eventType;
 - (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties;
@@ -189,6 +192,7 @@
  Adds properties that are tracked on the user level.
 
  @param userProperties          An NSDictionary containing any additional data to be tracked.
+ @param replace                 This is deprecated. In earlier versions of this SDK, this replaced the in-memory userProperties dictionary with the input, but now userProperties are no longer stored in memory.
 
  @discussion
  Property keys must be <code>NSString</code> objects and values must be serializable.
@@ -241,7 +245,7 @@
  @param enabled                  Whether tracking opt out should be enabled or disabled.
 
  @discussion
- If the user wants to opt out of all tracking, use this method to enable opt out for them. Once opt out is enabled, no events will be saved locally or sent to the server. Calling this method again with enabled set to false will turn tracking back on for the user.
+ If the user wants to opt out of all tracking, use this method to enable opt out for them. Once opt out is enabled, no events will be saved locally or sent to the server. Calling this method again with enabled set to NO will turn tracking back on for the user.
  */
 - (void)setOptOut:(BOOL)enabled;
 
@@ -254,7 +258,7 @@
  @param offline                  Whether logged events should be sent to Amplitude servers.
 
  @discussion
- If you want to stop logged events from being sent to Amplitude severs, use this method to set the client to offline. Once offline is enabled, logged events will not be sent to the server until offline is disabled. Calling this method again with offline set to false will allow events to be sent to server
+ If you want to stop logged events from being sent to Amplitude severs, use this method to set the client to offline. Once offline is enabled, logged events will not be sent to the server until offline is disabled. Calling this method again with offline set to NO will allow events to be sent to server
      and the client will attempt to send events that have been queued while offline.
  */
 - (void)setOffline:(BOOL)offline;

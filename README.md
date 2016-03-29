@@ -31,7 +31,7 @@ For iOS and Android specific documentation, see [iOS README](https://github.com/
 
 6. Events are saved locally. Uploads are batched to occur every 30 events and every 30 seconds. After calling `logEvent()` in your app, you will immediately see data appear on the Amplitude website.
 
-NOTE if you are building your Unity project as an iOS app: Amplitude's iOS SDK requires the SQLite library, which is included in iOS but requires an additional build flag to enable. In Xcode, in your project's `Build Settings` and your Target's `Build Settings`, under `Linking` -> `Other Linker Flags`, add the flag `-lsqlite3`.
+NOTE if you are building your Unity project as an iOS app: Amplitude's iOS SDK requires the SQLite library, which is included in iOS but may require an additional build flag to enable. In Xcode, in your project's `Build Settings` and your Target's `Build Settings`, under `Linking` -> `Other Linker Flags`, add the flag `-lsqlite3.0`.
 
 # Tracking Events #
 
