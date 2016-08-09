@@ -2,6 +2,7 @@
 #import "Amplitude.h"
 #import "AMPARCMacros.h"
 #import "AMPIdentify.h"
+#import "AMPRevenue.h"
 
 
 // Used to allocate a C string on the heap for C#
@@ -104,6 +105,29 @@ void _Amplitude_logRevenueWithReceipt(const char* productIdentifier, int quantit
     NSData *receiptData = [[NSData alloc] initWithBase64EncodedString:ToNSString(receipt) options:0];
     [[Amplitude instance] logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price] receipt:receiptData];
     SAFE_ARC_RELEASE(receiptData);
+}
+
+void _Amplitude_logRevenueWithReceiptAndProperties(const char* productIdentifier, int quantity, double price, const char* receipt, const char* revenueType, const char* properties)
+{
+    NSData *receiptData = nil;
+    AMPRevenue *revenue = [[[AMPRevenue revenue] setQuantity:quantity] setPrice:[NSNumber numberWithDouble:price]];
+    if (productIdentifier) {
+        [revenue setProductIdentifier:ToNSString(productIdentifier)];
+    }
+    if (receipt) {
+        receiptData = [[NSData alloc] initWithBase64EncodedString:ToNSString(receipt) options:0];
+        [revenue setReceipt:receiptData];
+    }
+    if (revenueType) {
+        [revenue setRevenueType:ToNSString(revenueType)];
+    }
+    if (properties) {
+        [revenue setEventProperties:ToNSDictionary(properties)];
+    }
+    [[Amplitude instance] logRevenueV2:revenue];
+    if (receiptData) {
+        SAFE_ARC_RELEASE(receiptData)
+    }
 }
 
 const char * _Amplitude_getDeviceId()

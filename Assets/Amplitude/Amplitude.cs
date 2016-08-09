@@ -37,6 +37,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueWithReceipt(string productIdentifier, int quantity, double price, string receipt);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_logRevenueWithReceiptAndProperties(string productIdentifier, int quantity, double price, string receipt, string revenueType, string propertiesJson);
+	[DllImport ("__Internal")]
 	private static extern string _Amplitude_getDeviceId();
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(bool enabled);
@@ -374,6 +376,28 @@ public class Amplitude {
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature);
 		}
+#endif
+	}
+
+	public void logRevenue(string productId, int quantity, double price, string receipt, string receiptSignature, string revenueType, IDictionary<string, object> eventProperties) {
+		string propertiesJson;
+		if (eventProperties != null) {
+			propertiesJson = Json.Serialize(eventProperties);
+		} else {
+			propertiesJson = Json.Serialize(new Dictionary<string, object>());
+		}
+
+		Log (string.Format("C# logRevenue {0}, {1}, {2}, {3}, {4} (with receipt)", productId, quantity, price, revenueType, propertiesJson));
+#if UNITY_IPHONE
+		if (Application.platform == RuntimePlatform.IPhonePlayer) {
+			_Amplitude_logRevenueWithReceiptAndProperties(productId, quantity, price, receipt, revenueType, propertiesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		//		if (Application.platform == RuntimePlatform.Android) {
+		//		pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature);
+		//		}
 #endif
 	}
 
