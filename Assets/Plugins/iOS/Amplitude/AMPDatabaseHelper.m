@@ -112,7 +112,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
     }
     instanceName = [instanceName lowercaseString];
 
-    if (self = [super init]) {
+    if ((self = [super init])) {
         NSString *databaseDirectory = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
         NSString *databasePath = [databaseDirectory stringByAppendingPathComponent:@"com.amplitude.database"];
         if (![instanceName isEqualToString:kAMPDefaultInstance]) {
@@ -122,7 +122,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
         _queue = dispatch_queue_create([QUEUE_NAME UTF8String], NULL);
         dispatch_queue_set_specific(_queue, kDispatchQueueKey, (__bridge void *)self, NULL);
         if (![[NSFileManager defaultManager] fileExistsAtPath:_databasePath]) {
-            [self createTables];
+            (void)[self createTables];
         }
     }
     return self;
@@ -383,7 +383,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
 
             id eventImmutable = [NSJSONSerialization JSONObjectWithData:eventData options:0 error:NULL];
             if (eventImmutable == nil) {
-                NSLog(@"Error JSON deserialization of event id %lld from table %@", eventId, table);
+                AMPLITUDE_LOG(@"Error JSON deserialization of event id %lld from table %@", eventId, table);
                 continue;
             }
 
@@ -419,7 +419,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
         if ([table isEqualToString:STORE_TABLE_NAME]) {
             success &= sqlite3_bind_text(stmt, 2, [(NSString *)value UTF8String], -1, SQLITE_STATIC) == SQLITE_OK;
         } else {
-            success &= sqlite3_bind_int64(stmt, 2, [(NSNumber*)value integerValue]) == SQLITE_OK;
+            success &= sqlite3_bind_int64(stmt, 2, [(NSNumber*)value longLongValue]) == SQLITE_OK;
         }
 
         if (!success) {
@@ -434,7 +434,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
     }];
 
     if (!success) {
-        [self resetDB:NO]; // not much we can do, just start fresh
+        (void) [self resetDB:NO]; // not much we can do, just start fresh
     }
     return success;
 }
@@ -458,7 +458,7 @@ static NSString *const GET_VALUE = @"SELECT %@, %@ FROM %@ WHERE %@ = ?;";
     }];
 
     if (!success) {
-        [self resetDB:NO]; // not much we can do, just start fresh
+        (void) [self resetDB:NO]; // not much we can do, just start fresh
     }
     return success;
 }

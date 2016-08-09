@@ -38,7 +38,14 @@ public class Bar : MonoBehaviour {
 			amplitude.logRevenue(0.03);
 			amplitude.logRevenue("sku", 1, 1.99);
 			if (Application.platform == RuntimePlatform.IPhonePlayer) {
-				amplitude.logRevenue("sku", 1, 1.99, "cmVjZWlwdA==", null);
+//				amplitude.logRevenue("sku", 1, 1.99, "cmVjZWlwdA==", null);
+				Dictionary<string, object> revenueProperties = new Dictionary<string, object>()
+				{
+					{"car", "blue"},
+					{"price", 12.99}
+				};
+				amplitude.logRevenue ("sku", 1, 1.99, "cmVjZWlwdA==", null, "purchase", revenueProperties);
+
 			} else if (Application.platform == RuntimePlatform.Android) {
 				amplitude.logRevenue("sku", 1, 1.99, "receipt", "receiptSignature");
 			}

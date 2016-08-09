@@ -175,6 +175,20 @@ if (Application.platform == RuntimePlatform.IPhonePlayer) {
 }
 ```
 
+The logRevenue method also allows for tracking revenueType and event properties on the revenue event.
+```C#
+Dictionary<string, object> eventProperties = new Dictionary<string, object>() {
+  {"Bucket" , "A" },
+  {"color" , "blue"}
+};
+
+if (Application.platform == RuntimePlatform.IPhonePlayer) {
+  Amplitude.Instance.logRevenue("sku", 1, 1.99, "cmVjZWlwdA==", null, "purchase", eventProperties);
+} else if (Application.platform == RuntimePlatform.Android) {
+  Amplitude.Instance.logRevenue("sku", 1, 1.99, "receipt", "receiptSignature", "purchase", eventProperties);
+}
+```
+
 # Allowing Users to Opt Out
 
 To stop all event and session logging for a user, call setOptOut:
