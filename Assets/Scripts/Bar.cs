@@ -37,17 +37,16 @@ public class Bar : MonoBehaviour {
 			amplitude.logEvent("unity event 2", demoOptions);
 			amplitude.logRevenue(0.03);
 			amplitude.logRevenue("sku", 1, 1.99);
+			amplitude.logRevenue("sku", 1, 1.99, "cmVjZWlwdA==", null);
+			Dictionary<string, object> revenueProperties = new Dictionary<string, object>()
+			{
+				{"car", "blue"},
+				{"price", 12.99}
+			};
 			if (Application.platform == RuntimePlatform.IPhonePlayer) {
-//				amplitude.logRevenue("sku", 1, 1.99, "cmVjZWlwdA==", null);
-				Dictionary<string, object> revenueProperties = new Dictionary<string, object>()
-				{
-					{"car", "blue"},
-					{"price", 12.99}
-				};
 				amplitude.logRevenue ("sku", 1, 1.99, "cmVjZWlwdA==", null, "purchase", revenueProperties);
-
 			} else if (Application.platform == RuntimePlatform.Android) {
-				amplitude.logRevenue("sku", 1, 1.99, "receipt", "receiptSignature");
+				amplitude.logRevenue("sku", 1, 1.99, "receipt", "receiptSignature", "purchase", revenueProperties);
 			}
 		}
 	}

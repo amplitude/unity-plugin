@@ -395,9 +395,9 @@ public class Amplitude {
 #endif
 
 #if UNITY_ANDROID
-		//		if (Application.platform == RuntimePlatform.Android) {
-		//		pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature);
-		//		}
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature, revenueType, propertiesJson);
+		}
 #endif
 	}
 

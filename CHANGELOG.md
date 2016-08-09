@@ -1,6 +1,7 @@
 ## August 9, 2016
 * Updated iOS to v3.8.3 [iOS Changelog](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
-* Added support for logging revenue with revenueType and event properties [(see readme)](https://github.com/amplitude/unity-plugin#tracking-revenue).
+* Updated Android to v2.9.2 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Added support for logging revenue with revenueType and event properties [(see readme)](https://github.com/amplitude/unity-plugin#tracking-revenue)
 
 ## March 29, 2016
 * Updated Android to v2.6.0 [Android Changelog](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
