@@ -5,7 +5,7 @@
 
 NSString *const kAMPLibrary = @"amplitude-ios";
 NSString *const kAMPPlatform = @"iOS";
-NSString *const kAMPVersion = @"3.8.3";
+NSString *const kAMPVersion = @"3.9.0";
 NSString *const kAMPEventLogDomain = @"api.amplitude.com";
 NSString *const kAMPEventLogUrl = @"https://api.amplitude.com/";
 NSString *const kAMPDefaultInstance = @"$default_instance";
@@ -19,6 +19,7 @@ const int kAMPEventRemoveBatchSize = 20;
 const int kAMPEventUploadPeriodSeconds = 30; // 30s
 const long kAMPMinTimeBetweenSessionsMillis = 5 * 60 * 1000; // 5m
 const int kAMPMaxStringLength = 1024;
+const int kAMPMaxPropertyKeys = 1000;
 
 NSString *const IDENTIFY_EVENT = @"$identify";
 NSString *const AMP_OP_ADD = @"$add";
