@@ -426,9 +426,9 @@ public class Amplitude {
 #endif
 
 #if UNITY_ANDROID
-//		if (Application.platform == RuntimePlatform.Android) {
-//			pluginClass.CallStatic<string>("regenerateDeviceId");
-//		}
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("regenerateDeviceId");
+		}
 #endif
 	}
 
