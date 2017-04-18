@@ -54,6 +54,8 @@
 @property (nonatomic, assign) BOOL initialized;
 @property (nonatomic, assign) BOOL sslPinningEnabled;
 @property (nonatomic, assign) long long sessionId;
+@property (nonatomic, assign) BOOL backoffUpload;
+@property (nonatomic, assign) int backoffUploadBatchSize;
 
 @end
 
@@ -92,8 +94,6 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
     AMPLocationManagerDelegate *_locationManagerDelegate;
 
     BOOL _inForeground;
-    BOOL _backoffUpload;
-    int _backoffUploadBatchSize;
     BOOL _offline;
 }
 
@@ -250,7 +250,7 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 
             _uploadTaskID = UIBackgroundTaskInvalid;
             
-            NSString *eventsDataDirectory = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+            NSString *eventsDataDirectory = [AMPUtils platformDataDirectory];
             NSString *propertyListPath = [eventsDataDirectory stringByAppendingPathComponent:@"com.amplitude.plist"];
             if (![_instanceName isEqualToString:kAMPDefaultInstance]) {
                 propertyListPath = [NSString stringWithFormat:@"%@_%@", propertyListPath, _instanceName]; // namespace pList with instance name
@@ -542,6 +542,16 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 - (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties withGroups:(NSDictionary*) groups outOfSession:(BOOL)outOfSession
 {
     [self logEvent:eventType withEventProperties:eventProperties withApiProperties:nil withUserProperties:nil withGroups:groups withTimestamp:nil outOfSession:outOfSession];
+}
+
+- (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties withGroups:(NSDictionary*) groups withLongLongTimestamp:(long long) timestamp outOfSession:(BOOL)outOfSession
+{
+    [self logEvent:eventType withEventProperties:eventProperties withApiProperties:nil withUserProperties:nil withGroups:groups withTimestamp:[NSNumber numberWithLongLong:timestamp] outOfSession:outOfSession];
+}
+
+- (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties withGroups:(NSDictionary*) groups withTimestamp:(NSNumber*) timestamp outOfSession:(BOOL)outOfSession
+{
+    [self logEvent:eventType withEventProperties:eventProperties withApiProperties:nil withUserProperties:nil withGroups:groups withTimestamp:timestamp outOfSession:outOfSession];
 }
 
 - (void)logEvent:(NSString*) eventType withEventProperties:(NSDictionary*) eventProperties withApiProperties:(NSDictionary*) apiProperties withUserProperties:(NSDictionary*) userProperties withGroups:(NSDictionary*) groups withTimestamp:(NSNumber*) timestamp outOfSession:(BOOL) outOfSession
@@ -839,7 +849,7 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
             return;
         }
 
-        [self makeEventUploadPostRequest:kAMPEventLogUrl events:eventsString maxEventId:maxEventId maxIdentifyId:maxIdentifyId];
+        [self makeEventUploadPostRequest:kAMPEventLogUrl events:eventsString numEvents:numEvents maxEventId:maxEventId maxIdentifyId:maxIdentifyId];
         SAFE_ARC_RELEASE(eventsString);
     }];
 }
@@ -919,7 +929,7 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
     return SAFE_ARC_AUTORELEASE(results);
 }
 
-- (void)makeEventUploadPostRequest:(NSString*) url events:(NSString*) events maxEventId:(long long) maxEventId maxIdentifyId:(long long) maxIdentifyId
+- (void)makeEventUploadPostRequest:(NSString*) url events:(NSString*) events numEvents:(long) numEvents maxEventId:(long long) maxEventId maxIdentifyId:(long long) maxIdentifyId
 {
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     [request setTimeoutInterval:60.0];
@@ -987,7 +997,7 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
                 SAFE_ARC_RELEASE(result);
             } else if ([httpResponse statusCode] == 413) {
                 // If blocked by one massive event, drop it
-                if (_backoffUpload && _backoffUploadBatchSize == 1) {
+                if (numEvents == 1) {
                     if (maxEventId >= 0) {
                         (void) [self.dbHelper removeEvent: maxEventId];
                     }
@@ -998,8 +1008,8 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 
                 // server complained about length of request, backoff and try again
                 _backoffUpload = YES;
-                int numEvents = fminl([self.dbHelper getEventCount], _backoffUploadBatchSize);
-                _backoffUploadBatchSize = (int)ceilf(numEvents / 2.0f);
+                long newNumEvents = MIN(numEvents, _backoffUploadBatchSize);
+                _backoffUploadBatchSize = MAX((int)ceilf(newNumEvents / 2.0f), 1);
                 AMPLITUDE_LOG(@"Request too large, will decrease size and attempt to reupload");
                 _updatingCurrently = NO;
                 [self uploadEventsWithLimit:_backoffUploadBatchSize];
@@ -1232,10 +1242,15 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 
 - (void)identify:(AMPIdentify *)identify
 {
+    [self identify:identify outOfSession:NO];
+}
+
+- (void)identify:(AMPIdentify *)identify outOfSession:(BOOL) outOfSession
+{
     if (identify == nil || [identify.userPropertyOperations count] == 0) {
         return;
     }
-    [self logEvent:IDENTIFY_EVENT withEventProperties:nil withApiProperties:nil withUserProperties:identify.userPropertyOperations withGroups:nil withTimestamp:nil outOfSession:NO];
+    [self logEvent:IDENTIFY_EVENT withEventProperties:nil withApiProperties:nil withUserProperties:identify.userPropertyOperations withGroups:nil withTimestamp:nil outOfSession:outOfSession];
 }
 
 #pragma mark - configurations
@@ -1350,6 +1365,13 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
     }];
 }
 
+- (void)regenerateDeviceId
+{
+    [self runOnBackgroundQueue:^{
+        [self setDeviceId:[AMPDeviceInfo generateUUID]];
+    }];
+}
+
 #pragma mark - location methods
 
 - (void)updateLocation
@@ -1421,7 +1443,7 @@ static NSString *const SEQUENCE_NUMBER = @"sequence_number";
 
     if (!deviceId) {
         // Otherwise generate random ID
-        deviceId = _deviceInfo.generateUUID;
+        deviceId = [AMPDeviceInfo generateUUID];
     }
     return SAFE_ARC_AUTORELEASE([[NSString alloc] initWithString:deviceId]);
 }
