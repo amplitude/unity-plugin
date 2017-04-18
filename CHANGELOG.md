@@ -1,3 +1,8 @@
+## April 17, 2017
+* Updated Android to v2.13.3 [release notes](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
+* Updated iOS to v3.14.1 [release notes](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
+* Add support for tvOS
+
 ## October 12, 2016
 * Updated Android to v2.10.0 [release notes](https://github.com/amplitude/Amplitude-Android/releases/tag/v2.10.0)
 

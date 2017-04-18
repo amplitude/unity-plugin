@@ -135,6 +135,11 @@ const char * _Amplitude_getDeviceId()
     return MakeCString([[[Amplitude instance] getDeviceId] UTF8String]);
 }
 
+void _Amplitude_regenerateDeviceId()
+{
+    [[Amplitude instance] regenerateDeviceId];
+}
+
 void _Amplitude_trackingSessionEvents(const bool enabled)
 {
     [[Amplitude instance] setTrackingSessionEvents:enabled];
