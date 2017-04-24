@@ -1,3 +1,6 @@
+## April 24, 2017
+* Migrate setup instructions and plugin documentation in README to Zendesk
+
 ## April 17, 2017
 * Updated Android to v2.13.3 [release notes](https://github.com/amplitude/Amplitude-Android/blob/master/CHANGELOG.md)
 * Updated iOS to v3.14.1 [release notes](https://github.com/amplitude/Amplitude-iOS/blob/master/CHANGELOG.md)
