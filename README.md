@@ -6,10 +6,6 @@ A plugin to simplify the integration of [Amplitude](https://www.amplitude.com) i
 # Setup and Documentation #
 Please see our [installation guide](https://amplitude.zendesk.com/hc/en-us/articles/115002991968-Unity-Plugin-Installation) for instructions on installing and using our Unity Plugin.
 
-# Other Helpful Documentation #
-* [iOS](https://amplitude.zendesk.com/hc/en-us/articles/115002278527-iOS-SDK-Installation)
-* [Android](https://amplitude.zendesk.com/hc/en-us/articles/115002935588-Android-SDK-Installation)
-
 # Changelog #
 Click [here](https://github.com/amplitude/unity-plugin/blob/master/CHANGELOG.md) to view the Unity Plugin Changelog.
 
