@@ -36,6 +36,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.unsetUserProperty("bool");
 		amplitude.setUserProperty("string", "this is a test");
 		amplitude.setUserProperty("stringArray", new string[]{"replace", "existing", "strings"});
+		amplitude.appendUserProperty("stringArray", new string[]{ "append", "more", "strings" });
 		amplitude.setUserProperty("floatArray", new float[]{123.45f, 678.9f});
 		amplitude.setUserProperty("doubleArray", new double[]{123.45, 678.9});
 
