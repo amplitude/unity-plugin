@@ -1,3 +1,6 @@
+## August 2, 2017
+* Fix tvOS support
+
 ## April 24, 2017
 * Migrate setup instructions and plugin documentation in README to Zendesk
 
