@@ -1,3 +1,6 @@
+## September 18, 2017
+* Updated iOS to v4.0.1 [release notes](https://github.com/amplitude/Amplitude-iOS/releases)
+
 ## August 2, 2017
 * Fix tvOS support
 
