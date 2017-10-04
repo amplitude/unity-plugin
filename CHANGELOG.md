@@ -1,3 +1,6 @@
+## October 4, 2017
+* Updated Android to v2.15.0 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
+
 ## September 18, 2017
 * Updated iOS to v4.0.1 [release notes](https://github.com/amplitude/Amplitude-iOS/releases)
 
