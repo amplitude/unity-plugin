@@ -1,3 +1,6 @@
+## October 23, 2017
+* Updated iOS to v4.0.4 [release notes](https://github.com/amplitude/Amplitude-iOS/releases/latest)
+
 ## October 16, 2017
 * Updated iOS to v4.0.3 [release notes](https://github.com/amplitude/Amplitude-iOS/releases/latest)
 
