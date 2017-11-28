@@ -76,4 +76,9 @@ public class AmplitudeDemo : MonoBehaviour {
 	public void OnApplicationFocus(bool focus) {}
 
 	public void OnApplicationPause(bool pause) {}
+
+	public void onApplicationQuit() {
+		Debug.Log ("Quitting application - attempting to log amplitude event");
+		Amplitude.Instance.logEvent ("session over");
+	}
 }
