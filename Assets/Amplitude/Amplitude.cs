@@ -279,6 +279,21 @@ public class Amplitude {
 #endif
 	}
 
+	public void logEvent(string evt, string propertiesJson) {
+		Log(string.Format("C# sendEvent {0} with properties {1}", evt, propertiesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_logEvent(evt, propertiesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("logEvent", evt, propertiesJson);
+		}
+#endif
+	}
+
 	public void setUserId(string userId) {
 		Log (string.Format("C# setUserId {0}", userId));
 #if (UNITY_IPHONE || UNITY_TVOS)
