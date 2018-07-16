@@ -1,3 +1,6 @@
+## July 16, 2018
+* Updated Android to v2.18.1 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
+
 ## November 27, 2017
 * Updated Android to v2.16.0 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
 
