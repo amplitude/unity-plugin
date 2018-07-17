@@ -145,6 +145,11 @@ void _Amplitude_trackingSessionEvents(const bool enabled)
     [[Amplitude instance] setTrackingSessionEvents:enabled];
 }
 
+long long _Amplitude_getSessionId()
+{
+    return [[Amplitude instance] getSessionId];
+}
+
 // User Property Operations
 void _Amplitude_clearUserProperties()
 {
