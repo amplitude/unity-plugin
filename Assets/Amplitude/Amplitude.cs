@@ -45,6 +45,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(bool enabled);
 	[DllImport ("__Internal")]
+	private static extern long _Amplitude_getSessionId();
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_clearUserProperties();
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_unsetUserProperty(string property);
@@ -445,6 +447,23 @@ public class Amplitude {
 			pluginClass.CallStatic("trackSessionEvents", enabled);
 		}
 #endif
+	}
+
+	public long getSessionId() {
+
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			return _Amplitude_getSessionId();
+		}
+#endif
+
+#if UNITY_ANDROID
+//		if (Application.platform == RuntimePlatform.Android) {
+//			return pluginClass.CallStatic("getSessionId");
+//		}
+#endif
+
+		return -1;
 	}
 
 // User Property Operations
