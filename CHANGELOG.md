@@ -1,4 +1,6 @@
 ## July 16, 2018
+* Added `getSessionId()` to fetch the current session ID.
+* Updated iOS to v4.2.1 [release notes](https://github.com/amplitude/Amplitude-iOS/releases/latest)
 * Updated Android to v2.18.1 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
 
 ## November 27, 2017
