@@ -1,3 +1,6 @@
+## September 24, 2018
+* Fix issue with regenerateDeviceId() that was causing crashes in iOS
+
 ## July 16, 2018
 * Added `getSessionId()` to fetch the current session ID.
 * Updated iOS to v4.2.1 [release notes](https://github.com/amplitude/Amplitude-iOS/releases/latest)

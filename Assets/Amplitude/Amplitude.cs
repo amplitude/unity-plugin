@@ -41,7 +41,7 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern string _Amplitude_getDeviceId();
 	[DllImport ("__Internal")]
-	private static extern string _Amplitude_regenerateDeviceId();
+	private static extern void _Amplitude_regenerateDeviceId();
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(bool enabled);
 	[DllImport ("__Internal")]
