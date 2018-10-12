@@ -211,8 +211,8 @@ public class Amplitude {
 			using(AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
 				using(AndroidJavaObject unityActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity")) {
 					using(AndroidJavaObject unityApplication = unityActivity.Call<AndroidJavaObject>("getApplication")) {
-						pluginClass.CallStatic("init", unityActivity, apiKey);
-						pluginClass.CallStatic("enableForegroundTracking", unityApplication);
+						pluginClass.CallStatic("init", instanceName, unityActivity, apiKey);
+						pluginClass.CallStatic("enableForegroundTracking", instanceName, unityApplication);
 					}
 				}
 			}
@@ -233,8 +233,8 @@ public class Amplitude {
 			using(AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
 				using(AndroidJavaObject unityActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity")) {
 					using (AndroidJavaObject unityApplication = unityActivity.Call<AndroidJavaObject>("getApplication")) {
-						pluginClass.CallStatic("init", unityActivity, apiKey, userId);
-						pluginClass.CallStatic("enableForegroundTracking", unityApplication);
+						pluginClass.CallStatic("init", instanceName, unityActivity, apiKey, userId);
+						pluginClass.CallStatic("enableForegroundTracking", instanceName, unityApplication);
 					}
 				}
 			}
@@ -252,7 +252,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logEvent", evt);
+			pluginClass.CallStatic("logEvent", instanceName, evt);
 		}
 #endif
 	}
@@ -274,7 +274,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logEvent", evt, propertiesJson);
+			pluginClass.CallStatic("logEvent", instanceName, evt, propertiesJson);
 		}
 #endif
 	}
@@ -300,7 +300,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logEvent", evt, propertiesJson, outOfSession);
+			pluginClass.CallStatic("logEvent", instanceName, evt, propertiesJson, outOfSession);
 		}
 #endif
 	}
@@ -315,7 +315,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserId", userId);
+			pluginClass.CallStatic("setUserId", instanceName, userId);
 		}
 #endif
 	}
@@ -337,7 +337,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperties", propertiesJson);
+			pluginClass.CallStatic("setUserProperties", instanceName, propertiesJson);
 		}
 #endif
 	}
@@ -352,7 +352,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOptOut", enabled);
+			pluginClass.CallStatic("setOptOut", instanceName, enabled);
 		}
 #endif
 	}
@@ -372,7 +372,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", amount);
+			pluginClass.CallStatic("logRevenue", instanceName, amount);
 		}
 #endif
 	}
@@ -387,7 +387,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", productId, quantity, price);
+			pluginClass.CallStatic("logRevenue", instanceName, productId, quantity, price);
 		}
 #endif
 	}
@@ -402,7 +402,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature);
+			pluginClass.CallStatic("logRevenue", instanceName, productId, quantity, price, receipt, receiptSignature);
 		}
 #endif
 	}
@@ -424,7 +424,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("logRevenue", productId, quantity, price, receipt, receiptSignature, revenueType, propertiesJson);
+			pluginClass.CallStatic("logRevenue", instanceName, productId, quantity, price, receipt, receiptSignature, revenueType, propertiesJson);
 		}
 #endif
 	}
@@ -438,7 +438,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			return pluginClass.CallStatic<string>("getDeviceId");
+			return pluginClass.CallStatic<string>("getDeviceId", instanceName);
 		}
 #endif
 		return null;
@@ -453,7 +453,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("regenerateDeviceId");
+			pluginClass.CallStatic("regenerateDeviceId", instanceName);
 		}
 #endif
 	}
@@ -468,7 +468,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("trackSessionEvents", enabled);
+			pluginClass.CallStatic("trackSessionEvents", instanceName, enabled);
 		}
 #endif
 	}
@@ -483,7 +483,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			return pluginClass.CallStatic<long>("getSessionId");
+			return pluginClass.CallStatic<long>("getSessionId", instanceName);
 		}
 #endif
 
@@ -502,7 +502,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("clearUserProperties");
+			pluginClass.CallStatic("clearUserProperties", instanceName);
 		}
 #endif
 	}
@@ -518,7 +518,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("unsetUserProperty", property);
+			pluginClass.CallStatic("unsetUserProperty", instanceName, property);
 		}
 #endif
 	}
@@ -534,7 +534,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -549,7 +549,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -564,7 +564,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -579,7 +579,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -594,7 +594,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -609,7 +609,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, value);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -629,7 +629,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserPropertyDict", property, valuesJson);
+			pluginClass.CallStatic("setOnceUserPropertyDict", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -653,7 +653,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserPropertyList", property, valuesJson);
+			pluginClass.CallStatic("setOnceUserPropertyList", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -668,7 +668,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -683,7 +683,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -698,7 +698,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -713,7 +713,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -728,7 +728,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -743,7 +743,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setOnceUserProperty", property, array);
+			pluginClass.CallStatic("setOnceUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -759,7 +759,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -774,7 +774,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -789,7 +789,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -804,7 +804,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -819,7 +819,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -834,7 +834,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, value);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -854,7 +854,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, valuesJson);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -878,7 +878,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserPropertyList", property, valuesJson);
+			pluginClass.CallStatic("setUserPropertyList", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -893,7 +893,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -908,7 +908,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -923,7 +923,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -938,7 +938,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -953,7 +953,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -968,7 +968,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setUserProperty", property, array);
+			pluginClass.CallStatic("setUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -985,7 +985,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserProperty", property, value);
+			pluginClass.CallStatic("addUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1000,7 +1000,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserProperty", property, value);
+			pluginClass.CallStatic("addUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1015,7 +1015,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserProperty", property, value);
+			pluginClass.CallStatic("addUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1030,7 +1030,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserProperty", property, value);
+			pluginClass.CallStatic("addUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1045,7 +1045,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserProperty", property, value);
+			pluginClass.CallStatic("addUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1065,7 +1065,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("addUserPropertyDict", property, valuesJson);
+			pluginClass.CallStatic("addUserPropertyDict", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -1081,7 +1081,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1096,7 +1096,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1111,7 +1111,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1126,7 +1126,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1141,7 +1141,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1156,7 +1156,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, value);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, value);
 		}
 #endif
 	}
@@ -1176,7 +1176,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserPropertyDict", property, valuesJson);
+			pluginClass.CallStatic("appendUserPropertyDict", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -1200,7 +1200,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserPropertyList", property, valuesJson);
+			pluginClass.CallStatic("appendUserPropertyList", instanceName, property, valuesJson);
 		}
 #endif
 	}
@@ -1215,7 +1215,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -1230,7 +1230,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -1245,7 +1245,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -1260,7 +1260,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -1275,7 +1275,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
@@ -1290,7 +1290,7 @@ public class Amplitude {
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("appendUserProperty", property, array);
+			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
 		}
 #endif
 	}
