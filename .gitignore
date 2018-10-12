@@ -13,3 +13,4 @@
 *.userprefs
 
 .DS_Store
+.vscode/
