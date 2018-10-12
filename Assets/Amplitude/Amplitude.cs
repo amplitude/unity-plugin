@@ -152,7 +152,7 @@ public class Amplitude {
 
 	public static Amplitude getInstance(string instanceName) {
 		if (string.IsNullOrEmpty(instanceName)) {
-			instanceName = "$defaultInstance";
+			instanceName = "$default_instance";
 		}
 		{
 			if (instances == null) {
@@ -180,7 +180,7 @@ public class Amplitude {
 
 	public Amplitude(string instanceName) : base() {
 		if (string.IsNullOrEmpty(instanceName)) {
-			instanceName = "$defaultInstance";
+			instanceName = "$default_instance";
 		}
 		this.instanceName = instanceName;
 
