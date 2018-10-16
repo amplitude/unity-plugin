@@ -151,23 +151,23 @@ public class Amplitude {
 #endif
 
 	public static Amplitude getInstance(string instanceName) {
-		if (string.IsNullOrEmpty(instanceName)) {
-			instanceName = "$default_instance";
+		string instanceKey = instanceName;
+		if (string.IsNullOrEmpty(instanceKey)) {
+			instanceKey = "$default_instance";
 		}
-		{
-			if (instances == null) {
-				instances = new Dictionary<string, Amplitude>();
-			}
 
-			Amplitude instance;
-			if (instances.TryGetValue(instanceName, out instance)) {
-				return instance;
-			}
-			else {
-				instance = new Amplitude(instanceName);
-				instances.Add(instanceName, instance);
-				return instance;
-			}
+		if (instances == null) {
+			instances = new Dictionary<string, Amplitude>();
+		}
+
+		Amplitude instance;
+		if (instances.TryGetValue(instanceKey, out instance)) {
+			return instance;
+		}
+		else {
+			instance = new Amplitude(instanceName);
+			instances.Add(instanceKey, instance);
+			return instance;
 		}
 	}
 
@@ -179,9 +179,6 @@ public class Amplitude {
 	}
 
 	public Amplitude(string instanceName) : base() {
-		if (string.IsNullOrEmpty(instanceName)) {
-			instanceName = "$default_instance";
-		}
 		this.instanceName = instanceName;
 
 #if UNITY_ANDROID

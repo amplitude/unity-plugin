@@ -19,13 +19,11 @@ public class AmplitudeDemo : MonoBehaviour {
 		app2.init("3653adbf32717221cacbf722f4671052");
 		Debug.Log(app2.getDeviceId());
 		app2.logEvent("logging to unity demo 2");
-		app2.setUserId("test demo user 2");
 		app2.logEvent("keep logging events");
 	}
 
 	void Start() {
 		Amplitude amplitude = Amplitude.Instance;
-		amplitude.setUserId("unity_plugin2");
 /*		Dictionary<string, object> userProperties = new Dictionary<string, object>()
 		{
 			{"float_gprop", 1.0}
@@ -76,7 +74,8 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.appendUserProperty("intList", new int[]{7, 8, 9});
 		amplitude.appendUserProperty("stringList", stringList);
 
-		amplitude.regenerateDeviceId();
+		amplitude.logEvent("this is a test");
+		Debug.Log(amplitude.getDeviceId());
 	}
 
 	// Update is called once per frame
