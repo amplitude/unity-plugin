@@ -67,7 +67,8 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.appendUserProperty("intList", new int[]{7, 8, 9});
 		amplitude.appendUserProperty("stringList", stringList);
 
-		amplitude.regenerateDeviceId();
+		amplitude.logEvent("this is a test");
+		Debug.Log(amplitude.getDeviceId());
 	}
 
 	// Update is called once per frame
