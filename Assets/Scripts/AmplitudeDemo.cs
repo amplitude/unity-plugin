@@ -16,7 +16,6 @@ public class AmplitudeDemo : MonoBehaviour {
 
 	void Start() {
 		Amplitude amplitude = Amplitude.Instance;
-		amplitude.setUserId("unity_plugin2");
 /*		Dictionary<string, object> userProperties = new Dictionary<string, object>()
 		{
 			{"float_gprop", 1.0}

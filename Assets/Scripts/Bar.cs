@@ -48,9 +48,6 @@ public class Bar : MonoBehaviour {
 			} else if (Application.platform == RuntimePlatform.Android) {
 				amplitude.logRevenue("sku", 1, 1.99, "receipt", "receiptSignature", "purchase", revenueProperties);
 			}
-
-			amplitude.regenerateDeviceId();
-			amplitude.logEvent("log event with new device id");
 		}
 	}
 }
