@@ -3,6 +3,7 @@
 #import "AMPARCMacros.h"
 #import "AMPIdentify.h"
 #import "AMPRevenue.h"
+#import "AMPTrackingOptions.h"
 
 
 // Used to allocate a C string on the heap for C#
@@ -25,6 +26,15 @@ NSString* ToNSString(const char* string)
         return [NSString stringWithUTF8String: string];
     else
         return nil;
+}
+
+// Helper method to safe get boolean from NSDictionary
+BOOL safeGetBoolFromDictionary(NSDictionary *dict, NSString *key, BOOL defaultValue) {
+    NSNumber *value = [dict objectForKey:key];
+    if (value == nil) {
+        return defaultValue;
+    }
+    return [value boolValue];
 }
 
 NSDictionary* ToNSDictionary(const char* data)
@@ -55,6 +65,61 @@ void _Amplitude_init(const char* instanceName, const char* apiKey, const char* u
     } else {
         [[Amplitude instanceWithName:ToNSString(instanceName)] initializeApiKey:ToNSString(apiKey)];
     }
+}
+
+void _Amplitude_setTrackingOptions(const char* instanceName, const char* trackingOptionsJson) {
+    // convert dictionary of tracking options into AMPTrackingOptions object
+    NSDictionary *trackingOptionsDict = ToNSDictionary(trackingOptionsJson);
+    AMPTrackingOptions *trackingOptions = [AMPTrackingOptions options];
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableCarrier", NO)) {
+        [trackingOptions disableCarrier];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableCity", NO)) {
+        [trackingOptions disableCity];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableCountry", NO)) {
+        [trackingOptions disableCountry];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableDeviceManufacturer", NO)) {
+        [trackingOptions disableDeviceManufacturer];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableDeviceModel", NO)) {
+        [trackingOptions disableDeviceModel];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableDMA", NO)) {
+        [trackingOptions disableDMA];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableIDFA", NO)) {
+        [trackingOptions disableIDFA];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableIDFV", NO)) {
+        [trackingOptions disableIDFV];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableIPAddress", NO)) {
+        [trackingOptions disableIPAddress];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableLanguage", NO)) {
+        [trackingOptions disableLanguage];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableLatLng", NO)) {
+        [trackingOptions disableLatLng];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableOSName", NO)) {
+        [trackingOptions disableOSName];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableOSVersion", NO)) {
+        [trackingOptions disableOSVersion];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disablePlatform", NO)) {
+        [trackingOptions disablePlatform];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableRegion", NO)) {
+        [trackingOptions disableRegion];
+    }
+    if (safeGetBoolFromDictionary(trackingOptionsDict, @"disableVersionName", NO)) {
+        [trackingOptions disableVersionName];
+    }
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setTrackingOptions:trackingOptions];
 }
 
 void _Amplitude_logEvent(const char* instanceName, const char* event, const char* properties)

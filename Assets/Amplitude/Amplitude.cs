@@ -23,6 +23,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_init(string instanceName, string apiKey, string userId);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setTrackingOptions(string instanceName, string trackingOptionsJson);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logEvent(string instanceName, string evt, string propertiesJson);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logOutOfSessionEvent(string instanceName, string evt, string propertiesJson);
@@ -237,6 +239,25 @@ public class Amplitude {
 			}
 		}
 #endif
+	}
+
+	public void setTrackingOptions(IDictionary<string, bool> trackingOptions) {
+		if (trackingOptions != null) {
+			string trackingOptionsJson = Json.Serialize(trackingOptions);
+
+			Log(string.Format("C# setting tracking options {0}", trackingOptionsJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+			if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+				_Amplitude_setTrackingOptions(instanceName, trackingOptionsJson);
+			}
+#endif
+
+#if UNITY_ANDROID
+			if (Application.platform == RuntimePlatform.Android) {
+				pluginClass.CallStatic("setTrackingOptions", instanceName, trackingOptionsJson);
+			}
+#endif
+		}
 	}
 
 	public void logEvent(string evt) {

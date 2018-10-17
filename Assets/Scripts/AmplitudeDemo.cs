@@ -13,9 +13,17 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.init("a2dbce0e18dfe5f8e74493843ff5c053");
 		Debug.Log(amplitude.getDeviceId());
 
+		Dictionary<string, bool> trackingOptions = new Dictionary<string, bool>();
+		trackingOptions.Add("disableCity", true);
+		trackingOptions.Add("disableIPAddress", true);
+		trackingOptions.Add("disableIDFV", true);
+		trackingOptions.Add("disableIDFA", true);
+		trackingOptions.Add("disableCountry", true);
+
 		Amplitude app2 = Amplitude.getInstance("app2");
 		app2.logging = true;
 		app2.trackSessionEvents (true);
+		app2.setTrackingOptions(trackingOptions);
 		app2.init("3653adbf32717221cacbf722f4671052");
 		Debug.Log(app2.getDeviceId());
 		app2.logEvent("logging to unity demo 2");
