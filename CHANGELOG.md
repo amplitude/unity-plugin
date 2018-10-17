@@ -1,3 +1,12 @@
+## October 17, 2018
+* Add ability to send data to multiple apps. The SDK supports multiple instances with different names and API keys. For example you would do:
+```c#
+Amplitude.getInstance("app2").init("API_KEY_FOR_APP_2");
+Amplitude.getInstance("app2").logEvent("this event goes to app 2");
+```
+This maintains backwards compatability so you can still use `Amplitude.instance` which maps to the default instance with no name: `Amplitude.getInstance()`.
+* Update Android to v2.20.0 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
+
 ## September 24, 2018
 * Fix issue with regenerateDeviceId() that was causing crashes in iOS
 
