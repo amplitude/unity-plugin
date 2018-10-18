@@ -7,7 +7,8 @@ public class AmplitudeDemo : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		Debug.Log ("awake");
-		Amplitude amplitude = Amplitude.Instance;
+		// Amplitude amplitude = Amplitude.Instance;
+		Amplitude amplitude = Amplitude.getInstance();
 		amplitude.logging = true;
 		amplitude.trackSessionEvents (true);
 		amplitude.init("a2dbce0e18dfe5f8e74493843ff5c053");

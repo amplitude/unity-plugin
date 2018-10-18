@@ -152,6 +152,9 @@ public class Amplitude {
 	private static extern void _Amplitude_appendUserPropertyStringArray(string instanceName, string property, string[] value, int length);
 #endif
 
+	public static Amplitude getInstance() {
+		return getInstance(null);
+	}
 	public static Amplitude getInstance(string instanceName) {
 		string instanceKey = instanceName;
 		if (string.IsNullOrEmpty(instanceKey)) {
@@ -176,7 +179,7 @@ public class Amplitude {
 	public static Amplitude Instance {
 		get
 		{
-			return getInstance(null);
+			return getInstance();
 		}
 	}
 
