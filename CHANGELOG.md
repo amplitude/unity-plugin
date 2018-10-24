@@ -1,4 +1,4 @@
-## October 17, 2018
+## October 23, 2018
 * Add ability to send data to multiple apps. The SDK supports multiple instances with different names and API keys. For example you would do:
 ```c#
 Amplitude.getInstance("app2").init("API_KEY_FOR_APP_2");
