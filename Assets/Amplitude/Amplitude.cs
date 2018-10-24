@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 public class Amplitude {
 
 	private static Dictionary<string, Amplitude> instances;
+	private static readonly object instanceLock = new object();
 
 #if UNITY_ANDROID
 	private static readonly string androidPluginName = "com.amplitude.unity.plugins.AmplitudePlugin";
@@ -161,18 +162,21 @@ public class Amplitude {
 			instanceKey = "$default_instance";
 		}
 
-		if (instances == null) {
-			instances = new Dictionary<string, Amplitude>();
-		}
+		lock(instanceLock)
+		{
+			if (instances == null) {
+				instances = new Dictionary<string, Amplitude>();
+			}
 
-		Amplitude instance;
-		if (instances.TryGetValue(instanceKey, out instance)) {
-			return instance;
-		}
-		else {
-			instance = new Amplitude(instanceName);
-			instances.Add(instanceKey, instance);
-			return instance;
+			Amplitude instance;
+			if (instances.TryGetValue(instanceKey, out instance)) {
+				return instance;
+			}
+			else {
+				instance = new Amplitude(instanceName);
+				instances.Add(instanceKey, instance);
+				return instance;
+			}
 		}
 	}
 
