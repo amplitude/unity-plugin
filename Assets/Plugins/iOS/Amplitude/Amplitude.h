@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 #import "AMPIdentify.h"
 #import "AMPRevenue.h"
+#import "AMPTrackingOptions.h"
 
 
 /**
@@ -431,6 +432,10 @@
 
 - (void)setGroup:(NSString*) groupType groupName:(NSObject*) groupName;
 
+- (void)groupIdentifyWithGroupType:(NSString*) groupType groupName:(NSObject*) groupName groupIdentify:(AMPIdentify *) groupIdentify;
+
+- (void)groupIdentifyWithGroupType:(NSString*) groupType groupName:(NSObject*) groupName groupIdentify:(AMPIdentify *) groupIdentify outOfSession:(BOOL) outOfSession;
+
 /**-----------------------------------------------------------------------------
  * @name Setting User and Device Identifiers
  * -----------------------------------------------------------------------------
@@ -438,11 +443,10 @@
 
 /**
  Sets the userId.
-
  @param userId                  If your app has its own login system that you want to track users with, you can set the userId.
-
  @see [Setting Custom UserIds](https://github.com/amplitude/Amplitude-iOS#setting-custom-user-ids)
  */
+
 - (void)setUserId:(NSString*) userId;
 
 /**
@@ -524,6 +528,8 @@
  **NOTE:** Must be called before initializeApiKey: is called to function.
  */
 - (void)disableIdfaTracking;
+
+- (void)setTrackingOptions:(AMPTrackingOptions*) options;
 
 /**-----------------------------------------------------------------------------
  * @name Other Methods
