@@ -85,6 +85,7 @@ public class AmplitudeDemo : MonoBehaviour {
 
 		amplitude.logEvent("this is a test");
 		Debug.Log(amplitude.getDeviceId());
+		amplitude.uploadEvents();
 	}
 
 	// Update is called once per frame

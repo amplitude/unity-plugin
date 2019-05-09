@@ -202,7 +202,7 @@ const char * _Amplitude_getDeviceId(const char* instanceName)
 
 void _Amplitude_uploadEvents(const char* instanceName)
 {
-    [[Amplitude instanceWithName:ToNSString(instanceWithName)] uploadEvents];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] uploadEvents];
 }
 
 void _Amplitude_regenerateDeviceId(const char* instanceName)
