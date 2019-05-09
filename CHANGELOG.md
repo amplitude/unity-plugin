@@ -1,3 +1,7 @@
+## Unreleased
+* Added `uploadEvents()` to force SDK to flush unsent events and identifies.
+* Updated Android to v2.23.0 [release notes](https://github.com/amplitude/Amplitude-Android/releases/latest)
+
 ## October 23, 2018
 * Add ability to send data to multiple apps. The SDK supports multiple instances with different names and API keys. For example you would do:
 ```c#
