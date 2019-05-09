@@ -46,6 +46,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern string _Amplitude_getDeviceId(string instanceName);
 	[DllImport ("__Internal")]
+	private static extern string _Amplitude_uploadEvents(string instanceName);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_regenerateDeviceId(string instanceName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(string instanceName, bool enabled);
@@ -464,6 +466,21 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			return pluginClass.CallStatic<string>("getDeviceId", instanceName);
+		}
+#endif
+		return null;
+	}
+
+	public string uploadEvents() {
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			return _Amplitude_uploadEvents(instanceName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			return pluginClass.CallStatic<string>("uploadEvents", instanceName);
 		}
 #endif
 		return null;

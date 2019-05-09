@@ -200,6 +200,11 @@ const char * _Amplitude_getDeviceId(const char* instanceName)
     return MakeCString([[[Amplitude instanceWithName:ToNSString(instanceName)] getDeviceId] UTF8String]);
 }
 
+void _Amplitude_uploadEvents(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceWithName)] uploadEvents];
+}
+
 void _Amplitude_regenerateDeviceId(const char* instanceName)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] regenerateDeviceId];
