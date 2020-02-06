@@ -10,7 +10,7 @@ Please see our [installation guide](https://amplitude.zendesk.com/hc/en-us/artic
 Click [here](https://github.com/amplitude/unity-plugin/blob/master/CHANGELOG.md) to view the Unity Plugin Changelog.
 
 # Android Dependencies Management
-com.amplitude.android-sdk a transitive library, it doesn't include any other dependencies. Other dependencies for com.amplitude.android-sdk are placed into Assets/Plugins/Android, but you can choose not to include those when importing our plugin if some have been included already.
+Our com.amplitude.android-sdk is a transitive library, it doesn't include any other dependencies. Other dependencies for com.amplitude.android-sdk are placed into Assets/Plugins/Android, but you can choose not to include those when importing our plugin if some have been included already.
 
 # Questions? #
 If you have questions about using or installing our Unity Plugin, you can send an email to [Amplitude Support](mailto:platform@amplitude.com).
