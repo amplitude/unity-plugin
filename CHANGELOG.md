@@ -1,3 +1,10 @@
+## February 6, 2020
+* Get rid of using com.amplitude.android-sdk fat jar, now it's transitive.
+* Other dependencies for com.amplitude.android-sdk are also placed into Assets/Plugins/Android, but you can choose not to include those if
+  some have been included already.
+* If you wanna build it yourself, notice that now we use [unity jar resolver](https://github.com/googlesamples/unity-jar-resolver) to automatic     manage dependencies.
+* Update Android to v2.24.1 [release notes](https://github.com/amplitude/Amplitude-Android/releases/tag/v2.24.1)
+
 ## October 23, 2018
 * Add ability to send data to multiple apps. The SDK supports multiple instances with different names and API keys. For example you would do:
 ```c#
