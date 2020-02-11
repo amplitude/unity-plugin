@@ -11,7 +11,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		Amplitude amplitude = Amplitude.getInstance();
 		amplitude.logging = true;
 		amplitude.trackSessionEvents (true);
-		amplitude.init("a2dbce0e18dfe5f8e74493843ff5c053");
+		amplitude.init("e7177d872ff62c0356c973848c7bffba");
 		Debug.Log(amplitude.getDeviceId());
 
 		Dictionary<string, bool> trackingOptions = new Dictionary<string, bool>();
@@ -33,19 +33,7 @@ public class AmplitudeDemo : MonoBehaviour {
 
 	void Start() {
 		Amplitude amplitude = Amplitude.Instance;
-/*		Dictionary<string, object> userProperties = new Dictionary<string, object>()
-		{
-			{"float_gprop", 1.0}
-		};
-		amplitude.setUserProperties(userProperties);
-
-		Dictionary<string, object> demoOptions = new Dictionary<string, object>()
-		{
-			{"Bucket" , "A" },
-			{"Credits" , 9001}
-		};
-		amplitude.logEvent("unity event 2", demoOptions);
-		amplitude.logRevenue(0.03);*/
+		amplitude.logRevenue(0.03);
 		amplitude.setOnceUserProperty("bool", true);
 		amplitude.setOnceUserProperty("boolArray", new bool[]{true, false, false});
 		amplitude.setOnceUserProperty("stringArray", new string[]{"this", "is", "a", "test"});
@@ -59,15 +47,17 @@ public class AmplitudeDemo : MonoBehaviour {
 		Dictionary<string, object> dictValue = new Dictionary<string, object>()
 		{
 			{"key3", "value3"},
-			{"key4", "value4"}
+			{"key4", "value4"},
+			{"keyFloat", (float)1.23},
+			{"keyDouble", 2.34}
 		};
-		amplitude.setOnceUserProperty ("dictValue", dictValue);
+		amplitude.setOnceUserProperty("dictValue", dictValue);
 
 		List<int> intList = new List<int> ();
 		intList.Add (4);
 		intList.Add (5);
 		intList.Add (6);
-		amplitude.setOnceUserProperty ("intList", intList);
+		amplitude.setOnceUserProperty("intList", intList);
 
 		List<string> stringList = new List<string> ();
 		stringList.Add ("string2");

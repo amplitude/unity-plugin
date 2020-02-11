@@ -540,7 +540,7 @@ namespace AmplitudeNS.MiniJSON {
                     builder.Append(value.ToString());
                 } else if (value is double
                     || value is decimal) {
-                    Console.WriteLine(Convert.ToDouble(value).ToString(CultureInfo.InvariantCulture));
+                    builder.Append(Convert.ToDouble(value).ToString(CultureInfo.InvariantCulture));
                 } else {
                     SerializeString(value.ToString());
                 }
