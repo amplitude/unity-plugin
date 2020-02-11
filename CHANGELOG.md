@@ -1,3 +1,7 @@
+## February 11, 2020
+* Fix event properties with floating numbers not showing up for some regions due to decimal separator with comma causing events not properly
+  parsed.
+
 ## February 6, 2020
 * Get rid of using com.amplitude.android-sdk fat jar, now it's transitive.
 * Other dependencies for com.amplitude.android-sdk are also placed into Assets/Plugins/Android, but you can choose not to include those if
