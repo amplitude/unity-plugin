@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -522,20 +523,25 @@ namespace AmplitudeNS.MiniJSON {
             }
 
             void SerializeOther(object value) {
-                if (value is float
-                    || value is int
+                // NOTE: When dealing with decimal point, it needs to be culture independent.
+                // When calling toString on floating numbers, the decimal point will be comma
+                // on those devices. Since for those countries, the decimal point is actually
+                // comma, but this will lead json to be invalid if we don't transform it.
+                if (value is float) {
+                    builder.Append(((float) value).ToString(CultureInfo.InvariantCulture));
+                } else if (value is int
                     || value is uint
                     || value is long
-                    || value is double
                     || value is sbyte
                     || value is byte
                     || value is short
                     || value is ushort
-                    || value is ulong
-                    || value is decimal) {
+                    || value is ulong) {
                     builder.Append(value.ToString());
-                }
-                else {
+                } else if (value is double
+                    || value is decimal) {
+                    Console.WriteLine(Convert.ToDouble(value).ToString(CultureInfo.InvariantCulture));
+                } else {
                     SerializeString(value.ToString());
                 }
             }
