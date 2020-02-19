@@ -16,8 +16,11 @@ NOTE: If you use proguard for obfuscation, please add following exception to you
 Click [here](https://github.com/amplitude/unity-plugin/blob/master/CHANGELOG.md) to view the Unity Plugin Changelog.
 
 # Android Dependencies Management
-Our com.amplitude.android-sdk is a transitive library, it doesn't include any other dependencies. Other dependencies for com.amplitude.android-sdk are placed into Assets/Plugins/Android, but you can choose not to include those when importing our plugin if some have been included already.
+Our `com.amplitude.android-sdk` is a transitive library, it doesn't include any other dependencies by itself. Other dependencies for `com.amplitude.android-sdk` are placed into `Assets/Plugins/Android`. We only use okhttp, the other dependencies you see are ones okhttp depends on (e.g. okio, jetbrain).
 
+If by any chance you have okhttp included in your project, feel free to choose not to include okhttp and its related dependencies by unchecking them.
+
+<img src="https://github.com/amplitude/unity-plugin/blob/master/import_tutorial.png" width="500">
 
 # Questions? #
 If you have questions about using or installing our Unity Plugin, you can send an email to [Amplitude Support](mailto:platform@amplitude.com).
