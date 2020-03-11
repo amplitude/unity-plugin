@@ -22,8 +22,8 @@ If by any chance you have okhttp included in your project, feel free to choose n
 
 <img src="https://github.com/amplitude/unity-plugin/blob/master/import_tutorial.png" width="500">
 
-# Questions? #
-If you have questions about using or installing our Unity Plugin, you can send an email to [Amplitude Support](mailto:platform@amplitude.com).
+# Need Help? #
+If you have any problems or issues over our SDK, feel free to create a github issue or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
 
 # License #
 ```text
