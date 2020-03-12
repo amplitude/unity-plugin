@@ -204,6 +204,10 @@ public class Amplitude {
 		Debug.Log(message);
 	}
 
+	protected void Log<T>(string message, string property, IEnumerable<T> array) {
+		Log (string.Format("{0} {1}, {2}: [{3}]", message, property, array, string.Join(", ", array)));
+	}
+
 	public void init(string apiKey) {
 		Log (string.Format("C# init {0}", apiKey));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -684,7 +688,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, bool[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyBoolArray(instanceName, property, array, array.Length);
@@ -699,7 +703,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, double[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyDoubleArray(instanceName, property, array, array.Length);
@@ -714,7 +718,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, float[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyFloatArray(instanceName, property, array, array.Length);
@@ -729,7 +733,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, int[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyIntArray(instanceName, property, array, array.Length);
@@ -744,7 +748,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, long[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyLongArray(instanceName, property, array, array.Length);
@@ -759,7 +763,7 @@ public class Amplitude {
 	}
 
 	public void setOnceUserProperty(string property, string[] array) {
-		Log (string.Format("C# setOnceUserProperty {0}, {1}", property, array));
+		Log ("C# setOnceUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setOnceUserPropertyStringArray(instanceName, property, array, array.Length);
@@ -909,7 +913,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, bool[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyBoolArray(instanceName, property, array, array.Length);
@@ -924,7 +928,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, double[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyDoubleArray(instanceName, property, array, array.Length);
@@ -939,7 +943,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, float[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyFloatArray(instanceName, property, array, array.Length);
@@ -954,7 +958,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, int[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyIntArray(instanceName, property, array, array.Length);
@@ -969,7 +973,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, long[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyLongArray(instanceName, property, array, array.Length);
@@ -984,7 +988,7 @@ public class Amplitude {
 	}
 
 	public void setUserProperty(string property, string[] array) {
-		Log (string.Format("C# setUserProperty {0}, {1}", property, array));
+		Log ("C# setUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_setUserPropertyStringArray(instanceName, property, array, array.Length);
@@ -1231,7 +1235,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, bool[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyBoolArray(instanceName, property, array, array.Length);
@@ -1246,7 +1250,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, double[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyDoubleArray(instanceName, property, array, array.Length);
@@ -1261,7 +1265,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, float[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyFloatArray(instanceName, property, array, array.Length);
@@ -1276,7 +1280,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, int[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyIntArray(instanceName, property, array, array.Length);
@@ -1291,7 +1295,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, long[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyLongArray(instanceName, property, array, array.Length);
@@ -1306,7 +1310,7 @@ public class Amplitude {
 	}
 
 	public void appendUserProperty(string property, string[] array) {
-		Log (string.Format("C# appendUserProperty {0}, {1}", property, array));
+		Log ("C# appendUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
 			_Amplitude_appendUserPropertyStringArray(instanceName, property, array, array.Length);
