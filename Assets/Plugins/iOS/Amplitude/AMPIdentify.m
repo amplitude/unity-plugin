@@ -1,9 +1,24 @@
 //
 //  AMPIdentify.m
-//  Amplitude
+//  Copyright (c) 2015 Amplitude Inc. (https://amplitude.com/)
 //
-//  Created by Daniel Jih on 10/5/15.
-//  Copyright © 2015 Amplitude. All rights reserved.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 #ifndef AMPLITUDE_DEBUG
@@ -18,22 +33,18 @@
 #endif
 #endif
 
-#import <Foundation/Foundation.h>
 #import "AMPIdentify.h"
-#import "AMPARCMacros.h"
 #import "AMPConstants.h"
 #import "AMPUtils.h"
 
 @interface AMPIdentify()
 @end
 
-@implementation AMPIdentify
-{
+@implementation AMPIdentify {
     NSMutableSet *_userProperties;
 }
 
-- (id)init
-{
+- (instancetype)init {
     if ((self = [super init])) {
         _userPropertyOperations = [[NSMutableDictionary alloc] init];
         _userProperties = [[NSMutableSet alloc] init];
@@ -41,20 +52,11 @@
     return self;
 }
 
-+ (instancetype)identify
-{
-    return SAFE_ARC_AUTORELEASE([[self alloc] init]);
++ (instancetype)identify {
+    return [[self alloc] init];
 }
 
-- (void)dealloc
-{
-    SAFE_ARC_RELEASE(_userPropertyOperations);
-    SAFE_ARC_RELEASE(_userProperties);
-    SAFE_ARC_SUPER_DEALLOC();
-}
-
-- (AMPIdentify*)add:(NSString*) property value:(NSObject*) value
-{
+- (AMPIdentify*)add:(NSString*) property value:(NSObject*) value {
     if ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSString class]]) {
         [self addToUserProperties:AMP_OP_ADD property:property value:value];
     } else {
@@ -63,14 +65,12 @@
     return self;
 }
 
-- (AMPIdentify*)append:(NSString*) property value:(NSObject*) value
-{
+- (AMPIdentify*)append:(NSString*) property value:(NSObject*) value {
     [self addToUserProperties:AMP_OP_APPEND property:property value:value];
     return self;
 }
 
-- (AMPIdentify*)clearAll
-{
+- (AMPIdentify*)clearAll {
     if ([_userPropertyOperations count] > 0) {
         if ([_userPropertyOperations objectForKey:AMP_OP_CLEAR_ALL] == nil) {
             AMPLITUDE_LOG(@"Need to send $clearAll on its own Identify object without any other operations, skipping $clearAll");
@@ -81,44 +81,39 @@
     return self;
 }
 
-- (AMPIdentify*)prepend:(NSString*) property value:(NSObject*) value
-{
+- (AMPIdentify*)prepend:(NSString*) property value:(NSObject*) value {
     [self addToUserProperties:AMP_OP_PREPEND property:property value:value];
     return self;
 }
 
-- (AMPIdentify*)set:(NSString*) property value:(NSObject*) value
-{
+- (AMPIdentify*)set:(NSString*) property value:(NSObject*) value {
     [self addToUserProperties:AMP_OP_SET property:property value:value];
     return self;
 }
 
-- (AMPIdentify*)setOnce:(NSString*) property value:(NSObject*) value
-{
+- (AMPIdentify*)setOnce:(NSString*) property value:(NSObject*) value {
     [self addToUserProperties:AMP_OP_SET_ONCE property:property value:value];
     return self;
 }
 
-- (AMPIdentify*)unset:(NSString*) property
-{
+- (AMPIdentify*)unset:(NSString*) property {
     [self addToUserProperties:AMP_OP_UNSET property:property value:@"-"];
     return self;
 }
 
-- (void)addToUserProperties:(NSString*)operation property:(NSString*) property value:(NSObject*) value
-{
+- (void)addToUserProperties:(NSString*)operation property:(NSString*) property value:(NSObject*) value {
     if (value == nil) {
         AMPLITUDE_LOG(@"Attempting to perform operation '%@' with nil value for property '%@', ignoring", operation, property);
         return;
     }
 
-    // check that clearAll wasn't already used in this Identify
+    // Check that clearAll wasn't already used in this Identify.
     if ([_userPropertyOperations objectForKey:AMP_OP_CLEAR_ALL] != nil) {
         AMPLITUDE_LOG(@"This Identify already contains a $clearAll operation, ignoring operation %@", operation);
         return;
     }
 
-    // check if property already used in a previous operation
+    // Check if property was already used in a previous operation.
     if ([_userProperties containsObject:property]) {
         AMPLITUDE_LOG(@"Already used property '%@' in previous operation, ignoring for operation '%@'", property, operation);
         return;

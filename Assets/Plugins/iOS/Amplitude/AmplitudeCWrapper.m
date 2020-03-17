@@ -155,6 +155,16 @@ void _Amplitude_setOptOut(const char* instanceName, const bool enabled)
     [[Amplitude instanceWithName:ToNSString(instanceName)] setOptOut:enabled];
 }
 
+void _Amplitude_setlibraryName(const char* instanceName, const char* libraryName)
+{
+    [Amplitude instanceWithName:ToNSString(instanceName)].libraryName = libraryName;
+}
+
+void _Amplitude_setLibraryVersion(const char* instanceName, const char* libraryVersion)
+{
+    [Amplitude instanceWithName:ToNSString(instanceName)].libraryVersion = libraryVersion;
+}
+
 void _Amplitude_logRevenueAmount(const char* instanceName, double amount)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenue:[NSNumber numberWithDouble:amount]];

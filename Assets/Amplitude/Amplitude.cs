@@ -36,6 +36,10 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOptOut(string instanceName, bool enabled);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setLibraryName(string instanceName, string libraryName);
+	[DllImport ("__Internal")]
+    private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueAmount(string instanceName, double amount);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenue(string instanceName, string productIdentifier, int quantity, double price);
@@ -378,6 +382,36 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setOptOut", instanceName, enabled);
+		}
+#endif
+	}
+
+	public void setLibraryName(string libraryName) {
+		Log (string.Format("C# setLibraryName {0}", libraryName));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setLibraryName(instanceName, libraryName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setLibraryName", instanceName, libraryName);
+		}
+#endif
+	}
+
+	public void setLibraryVersion(string libraryVersion) {
+		Log (string.Format("C# setLibraryVersion {0}", libraryVersion));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setLibraryVersion(instanceName, libraryVersion);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setLibraryVersion", instanceName, libraryVersion);
 		}
 #endif
 	}

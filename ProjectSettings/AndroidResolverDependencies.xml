@@ -1,10 +1,10 @@
 <dependencies>
   <packages>
-    <package>com.amplitude:android-sdk:2.24.1</package>
+    <package>com.amplitude:android-sdk:2.24.2</package>
     <package>com.squareup.okhttp3:okhttp:4.2.2</package>
   </packages>
   <files>
-    <file>Assets/Plugins/Android/com.amplitude.android-sdk-2.24.1.aar</file>
+    <file>Assets/Plugins/Android/com.amplitude.android-sdk-2.24.2.aar</file>
     <file>Assets/Plugins/Android/com.squareup.okhttp3.okhttp-4.2.2.jar</file>
     <file>Assets/Plugins/Android/com.squareup.okio.okio-2.2.2.jar</file>
     <file>Assets/Plugins/Android/org.jetbrains.annotations-13.0.jar</file>

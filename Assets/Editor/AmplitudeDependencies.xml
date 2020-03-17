@@ -4,7 +4,7 @@
       <repository>https://repo.maven.apache.org/maven2</repository>
     </repositories>
 
-    <androidPackage spec="com.amplitude:android-sdk:2.24.1">
+    <androidPackage spec="com.amplitude:android-sdk:2.24.2">
       <repositories>
         <repository>https://maven.google.com</repository>
       </repositories>
@@ -18,8 +18,8 @@
   </androidPackages>
 
   <iosPods>
-    <sources>
-      <source>https://cocoapods.mycompany.com/Specs</source>
-    </sources>
+    <!-- !!Only use this if you want to import our framework yourself!! -->
+    <!-- <iosPod name="Amplitude" version="~> 5.1.0" bitcodeEnabled="true"
+            minTargetSdk="10.0" /> -->
   </iosPods>
 </dependencies>

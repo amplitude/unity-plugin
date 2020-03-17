@@ -1,14 +1,41 @@
-#if AMPLITUDE_SSL_PINNING
 //
 //  AMPURLSession.m
-//  Amplitude
+//  Copyright (c) 2014 Amplitude Inc. (https://amplitude.com/)
 //
-//  Created by Daniel Jih on 9/14/17.
-//  Copyright (c) 2017 Amplitude. All rights reserved.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
+#if AMPLITUDE_SSL_PINNING
+
+#ifndef AMPLITUDE_DEBUG
+#define AMPLITUDE_DEBUG 0
+#endif
+
+#ifndef AMPLITUDE_LOG
+#if AMPLITUDE_DEBUG
+#   define AMPLITUDE_LOG(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
+#else
+#   define AMPLITUDE_LOG(...)
+#endif
+#endif
+
 #import "AMPURLSession.h"
-#import "AMPARCMacros.h"
 #import "AMPConstants.h"
 #import "ISPCertificatePinning.h"
 #import "ISPPinnedNSURLSessionDelegate.h"
@@ -30,8 +57,7 @@
     return _instance;
 }
 
-- (id)init
-{
+- (instancetype)init {
     if ((self = [super init])) {
         [AMPURLSession pinSSLCertificate:@[@"ComodoRsaCA", @"ComodoRsaDomainValidationCA"]];
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -40,15 +66,14 @@
     return self;
 }
 
-+ (void)pinSSLCertificate:(NSArray *)certFilenames
-{
++ (void)pinSSLCertificate:(NSArray *)certFilenames {
     // We pin the anchor/CA certificates
     NSMutableArray *certs = [NSMutableArray array];
     for (NSString *certFilename in certFilenames) {
         NSString *certPath =  [[NSBundle bundleForClass:[self class]] pathForResource:certFilename ofType:@"der"];
-        NSData *certData = SAFE_ARC_AUTORELEASE([[NSData alloc] initWithContentsOfFile:certPath]);
+        NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
         if (certData == nil) {
-            NSLog(@"Failed to load a certificate");
+            AMPLITUDE_LOG(@"Failed to load a certificate");
             return;
         }
         [certs addObject:certData];
@@ -58,24 +83,19 @@
     [pins setObject:certs forKey:kAMPEventLogDomain];
 
     if (pins == nil) {
-        NSLog(@"Failed to pin a certificate");
+        AMPLITUDE_LOG(@"Failed to pin a certificate");
         return;
     }
 
     // Save the SSL pins so that our connection delegates automatically use them
     if ([ISPCertificatePinning setupSSLPinsUsingDictionnary:pins] != YES) {
-        NSLog(@"Failed to pin the certificates");
-        SAFE_ARC_RELEASE(pins);
+        AMPLITUDE_LOG(@"Failed to pin the certificates");
         return;
     }
-    SAFE_ARC_RELEASE(pins);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [_sharedSession finishTasksAndInvalidate];
-    SAFE_ARC_RELEASE(_sharedSession);
-    SAFE_ARC_SUPER_DEALLOC();
 }
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
@@ -84,4 +104,5 @@
 }
 
 @end
+
 #endif

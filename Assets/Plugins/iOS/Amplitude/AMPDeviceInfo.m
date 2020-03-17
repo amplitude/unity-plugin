@@ -1,17 +1,50 @@
 //
 //  AMPDeviceInfo.m
+//  Copyright (c) 2014 Amplitude Inc. (https://amplitude.com/)
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
-#import <Foundation/Foundation.h>
-#import "AMPARCMacros.h"
+#import "AMPConstants.h"
 #import "AMPDeviceInfo.h"
 #import "AMPUtils.h"
-#import "AMPConstants.h"
-#import <UIKit/UIKit.h>
+
 #import <sys/sysctl.h>
+#import <sys/types.h>
 
-#include <sys/types.h>
+#if !TARGET_OS_OSX
+#import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#import <net/if.h>
+#import <net/if_dl.h>
+#endif
 
-@interface AMPDeviceInfo ()
+#ifndef AMPLITUDE_LOG
+#if AMPLITUDE_DEBUG
+#   define AMPLITUDE_LOG(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
+#else
+#   define AMPLITUDE_LOG(...)
+#endif
+#endif
+
+@interface AMPDeviceInfo()
 @end
 
 @implementation AMPDeviceInfo {
@@ -28,60 +61,56 @@
 @synthesize advertiserID = _advertiserID;
 @synthesize vendorID = _vendorID;
 
--(id) init: (BOOL) disableIdfaTracking {
+- (instancetype)init: (BOOL) disableIdfaTracking {
     self = [super init];
     _disableIdfaTracking = disableIdfaTracking;
     return self;
 }
 
-- (void) dealloc {
-    SAFE_ARC_RELEASE(_appVersion);
-    SAFE_ARC_RELEASE(_osVersion);
-    SAFE_ARC_RELEASE(_model);
-    SAFE_ARC_RELEASE(_carrier);
-    SAFE_ARC_RELEASE(_country);
-    SAFE_ARC_RELEASE(_language);
-    SAFE_ARC_RELEASE(_advertiserID);
-    SAFE_ARC_RELEASE(_vendorID);
-    SAFE_ARC_SUPER_DEALLOC();
-}
-
--(NSString*) appVersion {
+- (NSString*)appVersion {
     if (!_appVersion) {
-        _appVersion = SAFE_ARC_RETAIN([[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]);
+        _appVersion = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"];
     }
     return _appVersion;
 }
 
--(NSString*) osName {
+- (NSString*)osName {
     return kAMPOSName;
 }
 
--(NSString*) osVersion {
+- (NSString*)osVersion {
     if (!_osVersion) {
-        _osVersion = SAFE_ARC_RETAIN([[UIDevice currentDevice] systemVersion]);
+        #if !TARGET_OS_OSX
+        _osVersion = [[UIDevice currentDevice] systemVersion];
+        #else
+        NSOperatingSystemVersion systemVersion = [[NSProcessInfo processInfo] operatingSystemVersion];
+        _osVersion = [NSString stringWithFormat:@"%ld.%ld.%ld",
+                      systemVersion.majorVersion,
+                      systemVersion.minorVersion,
+                      systemVersion.patchVersion];
+        #endif
     }
     return _osVersion;
 }
 
--(NSString*) manufacturer {
+- (NSString*)manufacturer {
     return @"Apple";
 }
 
--(NSString*) model {
+- (NSString*)model {
     if (!_model) {
-        _model = SAFE_ARC_RETAIN([AMPDeviceInfo getPhoneModel]);
+        _model = [AMPDeviceInfo getDeviceModel];
     }
     return _model;
 }
 
--(NSString*) carrier {
+- (NSString*)carrier {
     if (!_carrier) {
         Class CTTelephonyNetworkInfo = NSClassFromString(@"CTTelephonyNetworkInfo");
         SEL subscriberCellularProvider = NSSelectorFromString(@"subscriberCellularProvider");
         SEL carrierName = NSSelectorFromString(@"carrierName");
         if (CTTelephonyNetworkInfo && subscriberCellularProvider && carrierName) {
-            networkInfo = SAFE_ARC_RETAIN([[NSClassFromString(@"CTTelephonyNetworkInfo") alloc] init]);
+            networkInfo = [[NSClassFromString(@"CTTelephonyNetworkInfo") alloc] init];
             id carrier = nil;
             id (*imp1)(id, SEL) = (id (*)(id, SEL))[networkInfo methodForSelector:subscriberCellularProvider];
             if (imp1) {
@@ -89,62 +118,68 @@
             }
             NSString* (*imp2)(id, SEL) = (NSString* (*)(id, SEL))[carrier methodForSelector:carrierName];
             if (imp2) {
-                _carrier = SAFE_ARC_RETAIN(imp2(carrier, carrierName));
+                _carrier = imp2(carrier, carrierName);
             }
         }
         // unable to fetch carrier information
         if (!_carrier) {
-            _carrier = SAFE_ARC_RETAIN(@"Unknown");
+            _carrier = @"Unknown";
         }
     }
     return _carrier;
 }
 
--(NSString*) country {
+- (NSString*)country {
     if (!_country) {
-        _country = SAFE_ARC_RETAIN([[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey:
-            NSLocaleCountryCode value:
-            [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]]);
+        _country = [[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey: NSLocaleCountryCode
+                                                                               value: [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]];
     }
     return _country;
 }
 
--(NSString*) language {
+- (NSString*)language {
     if (!_language) {
-        _language = SAFE_ARC_RETAIN([[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey:
-            NSLocaleLanguageCode value:[[NSLocale preferredLanguages] objectAtIndex:0]]);
+        _language = [[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey: NSLocaleLanguageCode
+                                                                                value: [[NSLocale preferredLanguages] objectAtIndex:0]];
     }
     return _language;
 }
 
--(NSString*) advertiserID {
+- (NSString*)advertiserID {
     if (!_disableIdfaTracking && !_advertiserID) {
+#if !TARGET_OS_OSX
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= (float) 6.0) {
+#endif
             NSString *advertiserId = [AMPDeviceInfo getAdvertiserID:5];
             if (advertiserId != nil &&
                 ![advertiserId isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-                _advertiserID = SAFE_ARC_RETAIN(advertiserId);
+                _advertiserID = advertiserId;
             }
         }
+#if !TARGET_OS_OSX
     }
+#endif
     return _advertiserID;
 }
 
--(NSString*) vendorID {
+- (NSString*)vendorID {
     if (!_vendorID) {
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= (float) 6.0) {
+#if !TARGET_OS_OSX
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0) {
+#endif
             NSString *identifierForVendor = [AMPDeviceInfo getVendorID:5];
             if (identifierForVendor != nil &&
                 ![identifierForVendor isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-                _vendorID = SAFE_ARC_RETAIN(identifierForVendor);
+                _vendorID = identifierForVendor;
             }
         }
+#if !TARGET_OS_OSX
     }
+#endif
     return _vendorID;
 }
 
-+ (NSString*)getAdvertiserID:(int) maxAttempts
-{
++ (NSString*)getAdvertiserID:(int) maxAttempts {
     Class ASIdentifierManager = NSClassFromString(@"ASIdentifierManager");
     SEL sharedManager = NSSelectorFromString(@"sharedManager");
     SEL advertisingIdentifier = NSSelectorFromString(@"advertisingIdentifier");
@@ -175,9 +210,12 @@
     }
 }
 
-+ (NSString*)getVendorID:(int) maxAttempts
-{
++ (NSString*)getVendorID:(int) maxAttempts {
+#if !TARGET_OS_OSX
     NSString *identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+#else
+    NSString *identifier = [self getMacAddress];
+#endif
     if (identifier == nil && maxAttempts > 0) {
         // Try again every 5 seconds
         [NSThread sleepForTimeInterval:5.0];
@@ -187,25 +225,28 @@
     }
 }
 
-+ (NSString*)generateUUID
-{
++ (NSString*)generateUUID {
     // Add "R" at the end of the ID to distinguish it from advertiserId
     NSString *result = [[AMPUtils generateUUID] stringByAppendingString:@"R"];
     return result;
 }
 
-+ (NSString*)getPlatformString
-{
++ (NSString*)getPlatformString {
+#if !TARGET_OS_OSX
+    const char *sysctl_name = "hw.machine";
+#else
+    const char *sysctl_name = "hw.model";
+#endif
     size_t size;
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    sysctlbyname(sysctl_name, NULL, &size, NULL, 0);
     char *machine = malloc(size);
-    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    sysctlbyname(sysctl_name, machine, &size, NULL, 0);
     NSString *platform = [NSString stringWithUTF8String:machine];
     free(machine);
     return platform;
 }
 
-+ (NSString*)getPhoneModel{
++ (NSString*)getDeviceModel {
     NSString *platform = [self getPlatformString];
     if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1";
     if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
@@ -268,6 +309,84 @@
     if ([platform isEqualToString:@"iPad6,8"])      return @"iPad Pro";
     if ([platform isEqualToString:@"i386"])         return @"Simulator";
     if ([platform isEqualToString:@"x86_64"])       return @"Simulator";
+    if ([platform hasPrefix:@"MacBookAir"])         return @"MacBook Air";
+    if ([platform hasPrefix:@"MacBookPro"])         return @"MacBook Pro";
+    if ([platform hasPrefix:@"MacBook"])            return @"MacBook";
+    if ([platform hasPrefix:@"MacPro"])             return @"Mac Pro";
+    if ([platform hasPrefix:@"Macmini"])            return @"Mac Mini";
+    if ([platform hasPrefix:@"iMac"])               return @"iMac";
+    if ([platform hasPrefix:@"Xserve"])             return @"Xserve";
     return platform;
 }
+
+// For mac only!!!
+#if TARGET_OS_OSX
++ (NSString *)getMacAddress {
+    int                 mgmtInfoBase[6];
+    char                *msgBuffer = NULL;
+    size_t              length;
+    unsigned char       macAddress[6];
+    struct if_msghdr    *interfaceMsgStruct;
+    struct sockaddr_dl  *socketStruct;
+    NSString            *errorFlag = NULL;
+    bool                msgBufferAllocated = false;
+
+    // Setup the management Information Base (mib)
+    mgmtInfoBase[0] = CTL_NET;        // Request network subsystem
+    mgmtInfoBase[1] = AF_ROUTE;       // Routing table info
+    mgmtInfoBase[2] = 0;
+    mgmtInfoBase[3] = AF_LINK;        // Request link layer information
+    mgmtInfoBase[4] = NET_RT_IFLIST;  // Request all configured interfaces
+
+    // With all configured interfaces requested, get handle index
+    if ((mgmtInfoBase[5] = if_nametoindex("en0")) == 0) {
+        errorFlag = @"if_nametoindex failure";
+    } else {
+        // Get the size of the data available (store in len)
+        if (sysctl(mgmtInfoBase, 6, NULL, &length, NULL, 0) < 0) {
+            errorFlag = @"sysctl mgmtInfoBase failure";
+        } else {
+            // Alloc memory based on above call
+            if ((msgBuffer = malloc(length)) == NULL) {
+                errorFlag = @"buffer allocation failure";
+            } else {
+                msgBufferAllocated = true;
+                // Get system information, store in buffer
+                if (sysctl(mgmtInfoBase, 6, msgBuffer, &length, NULL, 0) < 0) {
+                    errorFlag = @"sysctl msgBuffer failure";
+                }
+            }
+        }
+    }
+
+    // Before going any further...
+    if (errorFlag != NULL) {
+        AMPLITUDE_LOG(@"Cannot detect mac address. Error: %@", errorFlag);
+        if (msgBufferAllocated) {
+            free(msgBuffer);
+        }
+        return nil;
+    }
+
+    // Map msgbuffer to interface message structure
+    interfaceMsgStruct = (struct if_msghdr *) msgBuffer;
+
+    // Map to link-level socket structure
+    socketStruct = (struct sockaddr_dl *) (interfaceMsgStruct + 1);
+
+    // Copy link layer address data in socket structure to an array
+    memcpy(&macAddress, socketStruct->sdl_data + socketStruct->sdl_nlen, 6);
+
+    // Read from char array into a string object, into traditional Mac address format
+    NSString *macAddressString = [NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X",
+                                  macAddress[0], macAddress[1], macAddress[2],
+                                  macAddress[3], macAddress[4], macAddress[5]];
+
+    // Release the buffer memory
+    free(msgBuffer);
+
+    return macAddressString;
+}
+#endif
+
 @end

@@ -1,9 +1,24 @@
 //
-//  AMPUtil.m
-//  Pods
+//  AMPUtils.m
+//  Copyright (c) 2015 Amplitude Inc. (https://amplitude.com/)
 //
-//  Created by Daniel Jih on 10/4/15.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
 //
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 #ifndef AMPLITUDE_DEBUG
@@ -18,23 +33,19 @@
 #endif
 #endif
 
-#import <Foundation/Foundation.h>
 #import "AMPUtils.h"
-#import "AMPARCMacros.h"
 
 @interface AMPUtils()
 @end
 
 @implementation AMPUtils
 
-+ (id)alloc
-{
++ (instancetype)alloc {
     // Util class cannot be instantiated.
     return nil;
 }
 
-+ (NSString*)generateUUID
-{
++ (NSString*)generateUUID {
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
 #if __has_feature(objc_arc)
     NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
@@ -42,11 +53,10 @@
     NSString *uuidStr = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, uuid);
 #endif
     CFRelease(uuid);
-    return SAFE_ARC_AUTORELEASE(uuidStr);
+    return uuidStr;
 }
 
-+ (id) makeJSONSerializable:(id) obj
-{
++ (id)makeJSONSerializable:(id)obj {
     if (obj == nil) {
         return [NSNull null];
     }
@@ -70,7 +80,6 @@
         for (id i in objCopy) {
             [arr addObject:[self makeJSONSerializable:i]];
         }
-        SAFE_ARC_RELEASE(objCopy);
         return [NSArray arrayWithArray:arr];
     }
     if ([obj isKindOfClass:[NSDictionary class]]) {
@@ -80,7 +89,6 @@
             NSString *coercedKey = [self coerceToString:key withName:@"property key"];
             dict[coercedKey] = [self makeJSONSerializable:objCopy[key]];
         }
-        SAFE_ARC_RELEASE(objCopy);
         return [NSDictionary dictionaryWithDictionary:dict];
     }
     NSString *str = [obj description];
@@ -88,12 +96,11 @@
     return str;
 }
 
-+ (BOOL) isEmptyString:(NSString*) str
-{
++ (BOOL)isEmptyString:(NSString*)str {
     return str == nil || [str isKindOfClass:[NSNull class]] || [str length] == 0;
 }
 
-+ (NSString *) coerceToString: (id) obj withName:(NSString *) name
++ (NSString *)coerceToString: (id) obj withName:(NSString *) name
 {
     NSString *coercedString;
     if (![obj isKindOfClass:[NSString class]]) {
@@ -105,8 +112,7 @@
     return coercedString;
 }
 
-+ (NSDictionary *) validateGroups:(NSDictionary *) obj
-{
++ (NSDictionary *)validateGroups:(NSDictionary *)obj {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     id objCopy = [obj copy];
     for (id key in objCopy) {
@@ -137,12 +143,10 @@
             AMPLITUDE_LOG(@"WARNING: Invalid groupName value for groupType %@ (received class %@). Please use NSString or NSArray of NSStrings", coercedKey, [value class]);
         }
     }
-    SAFE_ARC_RELEASE(objCopy);
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 
-+ (NSString*) platformDataDirectory
-{
++ (NSString*) platformDataDirectory {
 #if TARGET_OS_TV
     return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
 #else
