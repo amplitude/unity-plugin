@@ -38,7 +38,7 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryName(string instanceName, string libraryName);
 	[DllImport ("__Internal")]
-    private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
+	private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueAmount(string instanceName, double amount);
 	[DllImport ("__Internal")]
