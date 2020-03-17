@@ -2,7 +2,7 @@
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 
-public static class AnalyticsPostProcessor {
+public static class AmplitudePostProcessor {
 
   [PostProcessBuild]
   public static void OnPostProcessBuild(BuildTarget buildTarget, string buildPath) {
