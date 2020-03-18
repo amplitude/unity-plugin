@@ -10,7 +10,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		// Amplitude amplitude = Amplitude.Instance;
 		Amplitude amplitude = Amplitude.getInstance();
 		amplitude.logging = true;
-		amplitude.trackSessionEvents (true);
+		amplitude.trackSessionEvents(true);
 		amplitude.init("e7177d872ff62c0356c973848c7bffba");
 		Debug.Log(amplitude.getDeviceId());
 
@@ -23,7 +23,7 @@ public class AmplitudeDemo : MonoBehaviour {
 
 		Amplitude app2 = Amplitude.getInstance("app2");
 		app2.logging = true;
-		app2.trackSessionEvents (true);
+		app2.trackSessionEvents(true);
 		app2.setTrackingOptions(trackingOptions);
 		app2.init("3653adbf32717221cacbf722f4671052");
 		Debug.Log(app2.getDeviceId());

@@ -1,14 +1,41 @@
-#if AMPLITUDE_SSL_PINNING
 //
 //  AMPURLConnection.m
-//  Amplitude
+//  Copyright (c) 2013 Amplitude Inc. (https://amplitude.com/)
 //
-//  Created by Allan on 3/13/15.
-//  Copyright (c) 2015 Amplitude. All rights reserved.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
+#if AMPLITUDE_SSL_PINNING
+
+#ifndef AMPLITUDE_DEBUG
+#define AMPLITUDE_DEBUG 0
+#endif
+
+#ifndef AMPLITUDE_LOG
+#if AMPLITUDE_DEBUG
+#   define AMPLITUDE_LOG(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
+#else
+#   define AMPLITUDE_LOG(...)
+#endif
+#endif
+
 #import "AMPURLConnection.h"
-#import "AMPARCMacros.h"
 #import "AMPConstants.h"
 #import "ISPCertificatePinning.h"
 #import "ISPPinnedNSURLConnectionDelegate.h"
@@ -25,22 +52,20 @@
 
 @implementation AMPURLConnection
 
-+ (void)initialize
-{
++ (void)initialize {
     if (self == [AMPURLConnection class]) {
         [AMPURLConnection pinSSLCertificate:@[@"ComodoRsaCA", @"ComodoRsaDomainValidationCA"]];
     }
 }
 
-+ (void)pinSSLCertificate:(NSArray *)certFilenames
-{
++ (void)pinSSLCertificate:(NSArray *)certFilenames {
     // We pin the anchor/CA certificates
     NSMutableArray *certs = [NSMutableArray array];
     for (NSString *certFilename in certFilenames) {
         NSString *certPath =  [[NSBundle bundleForClass:[self class]] pathForResource:certFilename ofType:@"der"];
-        NSData *certData = SAFE_ARC_AUTORELEASE([[NSData alloc] initWithContentsOfFile:certPath]);
+        NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
         if (certData == nil) {
-            NSLog(@"Failed to load a certificate");
+            AMPLITUDE_LOG(@"Failed to load a certificate");
             return;
         }
         [certs addObject:certData];
@@ -50,17 +75,15 @@
     [pins setObject:certs forKey:kAMPEventLogDomain];
 
     if (pins == nil) {
-        NSLog(@"Failed to pin a certificate");
+        AMPLITUDE_LOG(@"Failed to pin a certificate");
         return;
     }
 
     // Save the SSL pins so that our connection delegates automatically use them
     if ([ISPCertificatePinning setupSSLPinsUsingDictionnary:pins] != YES) {
-        NSLog(@"Failed to pin the certificates");
-        SAFE_ARC_RELEASE(pins);
+        AMPLITUDE_LOG(@"Failed to pin the certificates");
         return;
     }
-    SAFE_ARC_RELEASE(pins);
 }
 
 /**
@@ -72,8 +95,7 @@
  */
 + (void)sendAsynchronousRequest:(NSURLRequest *)request
                           queue:(NSOperationQueue *)queue
-              completionHandler:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))handler
-{
+              completionHandler:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))handler {
     // Ignore the return value. See note below about self retaining.
     (void)[[AMPURLConnection alloc] initWithRequest:request
                                               queue:queue
@@ -82,8 +104,7 @@
 
 - (AMPURLConnection *)initWithRequest:(NSURLRequest *)request
                                 queue:(NSOperationQueue *)queue
-                    completionHandler:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))handler
-{
+                    completionHandler:(void (^)(NSURLResponse *response, NSData *data, NSError *connectionError))handler {
 
     if (self = [super init]) {
         self.completionHandler = handler;
@@ -108,22 +129,8 @@
     return self;
 }
 
-- (void)dealloc
-{
-    SAFE_ARC_RELEASE(_connection);
-    SAFE_ARC_RELEASE(_completionHandler);
-    SAFE_ARC_RELEASE(_data);
-    SAFE_ARC_RELEASE(_response);
-    SAFE_ARC_RELEASE(_delegate);
-    SAFE_ARC_SUPER_DEALLOC();
-}
-
-- (void)complete:(NSError *)error
-{
+- (void)complete:(NSError *)error {
     self.completionHandler(self.response, self.data, error);
-
-    // The instance has done it's work. Release thyself.
-    SAFE_ARC_RELEASE(self);
     self.delegate = nil;
 }
 

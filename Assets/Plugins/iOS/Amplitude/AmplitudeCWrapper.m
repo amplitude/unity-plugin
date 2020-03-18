@@ -1,10 +1,8 @@
 #import "AmplitudeCWrapper.h"
 #import "Amplitude.h"
-#import "AMPARCMacros.h"
 #import "AMPIdentify.h"
 #import "AMPRevenue.h"
 #import "AMPTrackingOptions.h"
-
 
 // Used to allocate a C string on the heap for C#
 char* MakeCString(const char* string)
@@ -155,6 +153,26 @@ void _Amplitude_setOptOut(const char* instanceName, const bool enabled)
     [[Amplitude instanceWithName:ToNSString(instanceName)] setOptOut:enabled];
 }
 
+void _Amplitude_setLibraryName(const char* instanceName, const char* libraryName)
+{
+    [Amplitude instanceWithName:ToNSString(instanceName)].libraryName = ToNSString(libraryName);
+}
+
+void _Amplitude_setLibraryVersion(const char* instanceName, const char* libraryVersion)
+{
+    [Amplitude instanceWithName:ToNSString(instanceName)].libraryVersion = ToNSString(libraryVersion);
+}
+
+void _Amplitude_enableCoppaControl(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] enableCoppaControl];
+}
+
+void _Amplitude_disableCoppaControl(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] disableCoppaControl];
+}
+
 void _Amplitude_logRevenueAmount(const char* instanceName, double amount)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenue:[NSNumber numberWithDouble:amount]];
@@ -169,7 +187,6 @@ void _Amplitude_logRevenueWithReceipt(const char* instanceName, const char* prod
 {
     NSData *receiptData = [[NSData alloc] initWithBase64EncodedString:ToNSString(receipt) options:0];
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenue:ToNSString(productIdentifier) quantity:quantity price:[NSNumber numberWithDouble:price] receipt:receiptData];
-    SAFE_ARC_RELEASE(receiptData);
 }
 
 void _Amplitude_logRevenueWithReceiptAndProperties(const char* instanceName, const char* productIdentifier, int quantity, double price, const char* receipt, const char* revenueType, const char* properties)
@@ -190,9 +207,6 @@ void _Amplitude_logRevenueWithReceiptAndProperties(const char* instanceName, con
         [revenue setEventProperties:ToNSDictionary(properties)];
     }
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenueV2:revenue];
-    if (receiptData) {
-        SAFE_ARC_RELEASE(receiptData)
-    }
 }
 
 const char * _Amplitude_getDeviceId(const char* instanceName)

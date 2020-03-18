@@ -1,11 +1,30 @@
 //
-// Amplitude.h
+//  Amplitude.h
+//  Copyright (c) 2013 Amplitude Inc. (https://amplitude.com/)
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 #import <Foundation/Foundation.h>
 #import "AMPIdentify.h"
 #import "AMPRevenue.h"
 #import "AMPTrackingOptions.h"
-
 
 /**
  Amplitude iOS SDK.
@@ -33,36 +52,31 @@
 
 #pragma mark - Properties
 
- /**-----------------------------------------------------------------------------
- * @name Instance Properties
- * -----------------------------------------------------------------------------
+/**
+ API key for your Amplitude App.
  */
-
- /**
-  API key for your Amplitude App.
-  */
-@property (nonatomic, strong, readonly) NSString *apiKey;
+@property (nonatomic, copy, readonly) NSString *apiKey;
 
 /**
  Identifier for the current user.
  */
-@property (nonatomic, strong, readonly) NSString *userId;
+@property (nonatomic, copy, readonly) NSString *userId;
 
 /**
  Identifier for the current device.
  */
-@property (nonatomic, strong, readonly) NSString *deviceId;
+@property (nonatomic, copy, readonly) NSString *deviceId;
 
 /**
  Name of the SDK instance (ex: no name for default instance, or custom name for a named instance)
  */
-@property (nonatomic, strong, readonly) NSString *instanceName;
-@property (nonatomic ,strong, readonly) NSString *propertyListPath;
+@property (nonatomic, copy, readonly) NSString *instanceName;
+@property (nonatomic, copy, readonly) NSString *propertyListPath;
 
 /**
  Whether or to opt the current user out of tracking. If true then this blocks the logging of any events and properties, and blocks the sending of events to Amplitude servers.
  */
-@property (nonatomic, assign) BOOL optOut;
+@property (nonatomic, assign, readwrite) BOOL optOut;
 
 
 /**-----------------------------------------------------------------------------
@@ -91,7 +105,7 @@
 @property (nonatomic, assign) int eventUploadPeriodSeconds;
 
 /**
- When a user closes and reopens the app within minTimeBetweenSessionsMillis milliseconds, the reopen is considered part of the same session and the session continues. Otherwise, a new session is created. The default is 15 minutes.
+ When a user closes and reopens the app within minTimeBetweenSessionsMillis milliseconds, the reopen is considered part of the same session and the session continues. Otherwise, a new session is created. The default is 5 minutes.
  */
 @property (nonatomic, assign) long minTimeBetweenSessionsMillis;
 
@@ -100,6 +114,21 @@
  */
 @property (nonatomic, assign) BOOL trackingSessionEvents;
 
+/**
+ Library name is default as `amplitude-ios`.
+ Notice: You will only want to set it when following conditions are met.
+ 1. You develop your own library which bridges Amplitude iOS native library.
+ 2. You want to track your library as one of the data sources.
+ */
+@property (nonatomic, copy, readwrite) NSString *libraryName;
+
+/**
+ Library version is default as the latest Amplitude iOS SDK version.
+ Notice: You will only want to set it when following conditions are met.
+ 1. You develop your own library which bridges Amplitude iOS native library.
+ 2. You want to track your library as one of the data sources.
+*/
+@property (nonatomic, copy, readwrite) NSString *libraryVersion;
 
 #pragma mark - Methods
 
@@ -531,6 +560,21 @@
 
 - (void)setTrackingOptions:(AMPTrackingOptions*) options;
 
+/**
+ Enable COPPA (Children's Online Privacy Protection Act) restrictions on IDFA, IDFV, city, IP address and location tracking.
+ This can be used by any customer that does not want to collect IDFA, IDFV, city, IP address and location tracking.
+ */
+- (void)enableCoppaControl;
+
+/**
+ Disable COPPA (Children's Online Privacy Protection Act) restrictions on IDFA, IDFV, city, IP address and location tracking.
+ */
+- (void)disableCoppaControl;
+
+- (void)setServerUrl:(NSString*) serverUrl;
+
+- (void)setBearerToken:(NSString *) token;
+
 /**-----------------------------------------------------------------------------
  * @name Other Methods
  * -----------------------------------------------------------------------------
@@ -573,6 +617,10 @@
  */
 - (void)uploadEvents;
 
+/**
+ Call to check if the SDK is ready to start a new session at timestamp. Returns YES if a new session was started, otherwise NO and current session is extended. Only use if you know what you are doing. Recommended to use current time in UTC milliseconds for timestamp.
+ */
+- (BOOL)startOrContinueSession:(long long) timestamp;
 
 #pragma mark - Deprecated methods
 
