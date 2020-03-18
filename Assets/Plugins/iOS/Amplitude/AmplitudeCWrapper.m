@@ -163,6 +163,16 @@ void _Amplitude_setLibraryVersion(const char* instanceName, const char* libraryV
     [Amplitude instanceWithName:ToNSString(instanceName)].libraryVersion = ToNSString(libraryVersion);
 }
 
+void _Amplitude_enableCoppaControl(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] enableCoppaControl];
+}
+
+void _Amplitude_disableCoppaControl(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] disableCoppaControl];
+}
+
 void _Amplitude_logRevenueAmount(const char* instanceName, double amount)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenue:[NSNumber numberWithDouble:amount]];

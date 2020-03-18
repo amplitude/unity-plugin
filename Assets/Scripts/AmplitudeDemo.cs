@@ -26,8 +26,6 @@ public class AmplitudeDemo : MonoBehaviour {
 		app2.trackSessionEvents (true);
 		app2.setTrackingOptions(trackingOptions);
 		app2.init("3653adbf32717221cacbf722f4671052");
-		app2.setLibraryName("amplitude-unity");
-		app2.setLibraryVersion("1.0.0");
 		Debug.Log(app2.getDeviceId());
 		app2.logEvent("logging to unity demo 2");
 		app2.logEvent("keep logging events");

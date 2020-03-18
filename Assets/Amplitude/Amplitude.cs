@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 #endif
 
 public class Amplitude {
+    private static readonly string UnityLibraryName = "amplitude-unity";
+	private static readonly string UnityLibraryVersion = "1.0.0";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
@@ -39,6 +41,10 @@ public class Amplitude {
 	private static extern void _Amplitude_setLibraryName(string instanceName, string libraryName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_enableCoppaControl(string instanceName);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_disableCoppaControl(string instanceName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueAmount(string instanceName, double amount);
 	[DllImport ("__Internal")]
@@ -174,13 +180,14 @@ public class Amplitude {
 
 			Amplitude instance;
 			if (instances.TryGetValue(instanceKey, out instance)) {
-				return instance;
-			}
-			else {
+				// No logic
+			} else {
 				instance = new Amplitude(instanceName);
 				instances.Add(instanceKey, instance);
-				return instance;
 			}
+			instance.setLibraryName(UnityLibraryName);
+			instance.setLibraryVersion(UnityLibraryVersion);
+			return instance;
 		}
 	}
 
@@ -385,8 +392,7 @@ public class Amplitude {
 		}
 #endif
 	}
-
-	public void setLibraryName(string libraryName) {
+	private void setLibraryName(string libraryName) {
 		Log (string.Format("C# setLibraryName {0}", libraryName));
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -401,7 +407,7 @@ public class Amplitude {
 #endif
 	}
 
-	public void setLibraryVersion(string libraryVersion) {
+	private void setLibraryVersion(string libraryVersion) {
 		Log (string.Format("C# setLibraryVersion {0}", libraryVersion));
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -412,6 +418,35 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setLibraryVersion", instanceName, libraryVersion);
+		}
+#endif
+	}
+	public void enableCoppaControl() {
+		Log ("C# enableCoppaControl");
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_enableCoppaControl(instanceName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("enableCoppaControl", instanceName);
+		}
+#endif
+	}
+
+	public void disableCoppaControl() {
+		Log (string.Format("C# disableCoppaControl"));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_disableCoppaControl(instanceName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("disableCoppaControl", instanceName);
 		}
 #endif
 	}
