@@ -22,6 +22,24 @@ If by any chance you have okhttp included in your project, feel free to choose n
 
 <img src="https://github.com/amplitude/unity-plugin/blob/master/import_tutorial.png" width="500">
 
+# What if you're also using `unity-jar-resolver`?
+Some users use `unity-jar-resolver` themselves. When they force resolve dependencies, it will clean up Amplitude related jars. For this case, what you would need to do is to declare those dependencies in your `*Dependency.xml` file.
+
+Please add our native dependencies under `androidPackage` tag.
+```
+    <androidPackage spec="com.amplitude:android-sdk:2.25.0">
+      <repositories>
+        <repository>https://maven.google.com</repository>
+      </repositories>
+    </androidPackage>
+
+    <androidPackage spec="com.squareup.okhttp3:okhttp:4.2.2">
+      <repositories>
+        <repository>https://maven.google.com</repository>
+      </repositories>
+    </androidPackage>
+```
+
 # Need Help? #
 If you have any problems or issues over our SDK, feel free to create a github issue or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
 
