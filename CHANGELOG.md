@@ -2,6 +2,7 @@
 ## 1.0.0 (Mar 18, 2020)
 * Add Coppa control APIs (`enableCoppaControl`, `disableCoppaControl`) in `Amplitude`. 
 * Add `AmplitudePostProcessor.cs` in `Editor` directory to automatically add `sqlite` dependencies and set the proper flags while building iOS App. Kudo to [@EtienneMarbotic](https://github.com/EtienneMarbotic) for submitting a PR.
+* Now `library` field will be shown as `amplitude-unity/x.x.x` instead of showing information of the native library.
 
 # Unversioned Releases (Old)
 ## Feb 11, 2020
