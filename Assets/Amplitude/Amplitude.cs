@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 #endif
 
 public class Amplitude {
-    private static readonly string UnityLibraryName = "amplitude-unity";
+	private static readonly string UnityLibraryName = "amplitude-unity";
 	private static readonly string UnityLibraryVersion = "1.0.0";
 
 	private static Dictionary<string, Amplitude> instances;
