@@ -46,10 +46,10 @@ Please add our native dependencies under `androidPackage` tag.
     </androidPackage>
 ```
 
-## Running on API 19, 20 (Kitkat)
-Amplitude SDK depends on okhttp library, but you're free to choose which okhttp version you want to use. However, since okhttp v3.13, they require android 5.0, Android Lollipop (API 21). [Amplitude](https://developer.squareup.com/blog/okhttp-3-13-requires-android-5/)
+## Running on API 19, 20 (KitKat)
+Amplitude SDK depends on okhttp library, since okhttp v3.13, they require android 5.0, Android Lollipop (API 21). [Read details](https://developer.squareup.com/blog/okhttp-3-13-requires-android-5/)
 
-You can downgrade the okttp version to be lower than 3.13 to make it work for API 19, 20.
+We do not restrict which okhttp version to use, you can downgrade the okttp version to be lower than 3.13 to make it work for API 19, 20.
 
 ### How to do downgrade?
 If you import library by copying the jar file, you can downgrade okhttp library by replacing it with a version < 3.13.
