@@ -18,8 +18,6 @@
   </androidPackages>
 
   <iosPods>
-    <!-- !!Only use this if you want to import our framework yourself!! -->
-    <!-- <iosPod name="Amplitude" version="~> 5.1.0" bitcodeEnabled="true"
-            minTargetSdk="10.0" /> -->
+  
   </iosPods>
 </dependencies>

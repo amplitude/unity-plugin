@@ -11,8 +11,12 @@ public static class AmplitudePostProcessor {
       var proj = new PBXProject();
       proj.ReadFromFile(projPath);
 
+#if UNITY_2019_3_OR_NEWER
+      var targetGuid = proj.GetUnityFrameworkTargetGuid();
+#else
       var targetGuid = proj.TargetGuidByName(PBXProject.GetUnityTargetName());
-
+#endif
+                
       // Configure build settings
       proj.AddBuildProperty(targetGuid, "OTHER_LDFLAGS", "-lsqlite3.0");
       proj.SetBuildProperty(targetGuid, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class Amplitude {
 	private static readonly string UnityLibraryName = "amplitude-unity";
-	private static readonly string UnityLibraryVersion = "1.1.0";
+	private static readonly string UnityLibraryVersion = "1.2.0";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
@@ -185,8 +185,6 @@ public class Amplitude {
 				instance = new Amplitude(instanceName);
 				instances.Add(instanceKey, instance);
 			}
-			instance.setLibraryName(UnityLibraryName);
-			instance.setLibraryVersion(UnityLibraryVersion);
 			return instance;
 		}
 	}
@@ -207,6 +205,9 @@ public class Amplitude {
 			pluginClass = new AndroidJavaClass(androidPluginName);
 		}
 #endif
+
+		this.setLibraryName(UnityLibraryName);
+		this.setLibraryVersion(UnityLibraryVersion);
 	}
 
 	protected void Log(string message) {

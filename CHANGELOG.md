@@ -1,5 +1,9 @@
 # Versioned Releases
 
+## 1.2.0 (May 5, 2020)
+* Updated Unity to 2019.3.11f, also changed post processing script for iOS.
+* Include `AmplitudeDependencies.xml` as part of the package.
+
 ## 1.1.0 (Apr 5, 2020)
 * Updated Android version to 2.25.1, this version won't add location permission automatically to your manifest. You can choose whether your App will require location permissions or not.
 
