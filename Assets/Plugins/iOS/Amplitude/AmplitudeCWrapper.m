@@ -138,9 +138,9 @@ void _Amplitude_logOutOfSessionEvent(const char* instanceName, const char* event
     }
 }
 
-void _Amplitude_setUserId(const char* instanceName, const char* event)
+void _Amplitude_setUserId(const char* instanceName, const char* userId)
 {
-    [[Amplitude instanceWithName:ToNSString(instanceName)] setUserId:ToNSString(event)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setUserId:ToNSString(userId)];
 }
 
 void _Amplitude_setUserProperties(const char* instanceName, const char* properties)
@@ -161,6 +161,11 @@ void _Amplitude_setLibraryName(const char* instanceName, const char* libraryName
 void _Amplitude_setLibraryVersion(const char* instanceName, const char* libraryVersion)
 {
     [Amplitude instanceWithName:ToNSString(instanceName)].libraryVersion = ToNSString(libraryVersion);
+}
+
+void _Amplitude_setDeviceId(const char* instanceName, const char* deviceId)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setDeviceId:ToNSString(deviceId)];
 }
 
 void _Amplitude_enableCoppaControl(const char* instanceName)
