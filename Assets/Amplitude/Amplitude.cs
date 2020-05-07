@@ -34,6 +34,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserId(string instanceName, string userId);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setDeviceId(string instanceName, string deviceId);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserProperties(string instanceName, string propertiesJson);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOptOut(string instanceName, bool enabled);
@@ -419,6 +421,20 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setLibraryVersion", instanceName, libraryVersion);
+		}
+#endif
+	}
+	public void setDeviceId(string deviceId) {
+		Log (string.Format("C# setDeviceId {0}", deviceId));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setDeviceId(instanceName, deviceId);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setDeviceId", instanceName, deviceId);
 		}
 #endif
 	}
