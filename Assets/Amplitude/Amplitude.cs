@@ -60,6 +60,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_regenerateDeviceId(string instanceName);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_useAdvertisingIdForDeviceId(string instanceName);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_trackingSessionEvents(string instanceName, bool enabled);
 	[DllImport ("__Internal")]
 	private static extern long _Amplitude_getSessionId(string instanceName);
@@ -565,6 +567,20 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("regenerateDeviceId", instanceName);
+		}
+#endif
+	}
+
+	public void useAdvertisingIdForDeviceId() {
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_useAdvertisingIdForDeviceId(instanceName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("useAdvertisingIdForDeviceId", instanceName);
 		}
 #endif
 	}

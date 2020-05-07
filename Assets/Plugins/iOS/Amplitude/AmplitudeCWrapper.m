@@ -224,6 +224,11 @@ void _Amplitude_regenerateDeviceId(const char* instanceName)
     [[Amplitude instanceWithName:ToNSString(instanceName)] regenerateDeviceId];
 }
 
+void _Amplitude_useAdvertisingIdForDeviceId(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] useAdvertisingIdForDeviceId];
+}
+
 void _Amplitude_trackingSessionEvents(const char* instanceName, const bool enabled)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] setTrackingSessionEvents:enabled];
