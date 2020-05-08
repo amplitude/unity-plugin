@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class Amplitude {
 	private static readonly string UnityLibraryName = "amplitude-unity";
-	private static readonly string UnityLibraryVersion = "1.2.0";
+	private static readonly string UnityLibraryVersion = "1.3.0";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
@@ -672,7 +672,7 @@ public class Amplitude {
 #endif
 		return -1;
 	}
-	
+
 	/// <summary>
 	/// Manually forces the instance to immediately upload all unsent events. 
 	/// Use this method to force the class to immediately upload all queued events.

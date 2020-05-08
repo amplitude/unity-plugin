@@ -1,5 +1,11 @@
 # Versioned Releases
 
+## 1.3.0 (May 7, 2020)
+* Add a couple APIs.
+1. `uploadEvents` - Use this to flush events.
+2. `useAdvertisingIdForDeviceId` - Use idfa (iOS) / adid (Android) as device Id.
+3. `setDeviceId` - Set custom deviceId if you have your own strategy.
+
 ## 1.2.0 (May 5, 2020)
 * Updated Unity to 2019.3.11f, also changed post processing script for iOS.
 * Include `AmplitudeDependencies.xml` as part of the package.
