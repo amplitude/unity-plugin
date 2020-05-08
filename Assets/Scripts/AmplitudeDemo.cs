@@ -11,6 +11,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		Amplitude amplitude = Amplitude.getInstance();
 		amplitude.logging = true;
 		amplitude.trackSessionEvents(true);
+		amplitude.useAdvertisingIdForDeviceId();
 		amplitude.init("e7177d872ff62c0356c973848c7bffba");
 		Debug.Log(amplitude.getDeviceId());
 
@@ -25,6 +26,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		app2.logging = true;
 		app2.trackSessionEvents(true);
 		app2.setTrackingOptions(trackingOptions);
+		app2.setDeviceId("111111bca");
 		app2.init("3653adbf32717221cacbf722f4671052");
 		Debug.Log(app2.getDeviceId());
 		app2.logEvent("logging to unity demo 2");

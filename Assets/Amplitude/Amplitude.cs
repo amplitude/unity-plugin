@@ -248,6 +248,11 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Initialize the SDK.
+	/// </summary>
+	/// <param name="apiKey">API key</param>
+	/// <param name="userId">user Id</param>
 	public void init(string apiKey, string userId) {
 		Log (string.Format("C# init {0} with userId {1}", apiKey, userId));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -289,6 +294,11 @@ public class Amplitude {
 		}
 	}
 
+	/// <summary>
+	/// Tracks an event. Events are saved locally.
+	/// Uploads are batched to occur every 30 events or every 30 seconds (whichever comes first), as well as on app close.
+	/// </summary>
+	/// <param name="evt">event type</param>
 	public void logEvent(string evt) {
 		Log (string.Format("C# sendEvent {0}", evt));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -303,7 +313,13 @@ public class Amplitude {
 		}
 #endif
 	}
-
+	
+	/// <summary>
+	/// Tracks an event. Events are saved locally.
+	/// Uploads are batched to occur every 30 events or every 30 seconds (whichever comes first), as well as on app close.
+	/// </summary>
+	/// <param name="evt">event type</param>
+	/// <param name="properties">event properties</param>
 	public void logEvent(string evt, IDictionary<string, object> properties) {
 		string propertiesJson;
 		if (properties != null) {
@@ -326,6 +342,13 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Tracks an event. Events are saved locally.
+	/// Uploads are batched to occur every 30 events or every 30 seconds (whichever comes first), as well as on app close.
+	/// </summary>
+	/// <param name="evt">event type</param>
+	/// <param name="properties">event properties</param>
+	/// <param name="outOfSession">if this event belongs to current session</param>
 	public void logEvent(string evt, IDictionary<string, object> properties, bool outOfSession) {
 		string propertiesJson;
 		if (properties != null) {
@@ -352,6 +375,10 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Set user Id
+	/// </summary>
+	/// <param name="userId"></param>
 	public void setUserId(string userId) {
 		Log (string.Format("C# setUserId {0}", userId));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -367,6 +394,10 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Set user properties
+	/// </summary>
+	/// <param name="properties">properties dictionary</param>
 	public void setUserProperties(IDictionary<string, object> properties) {
 		string propertiesJson;
 		if (properties != null) {
@@ -389,6 +420,12 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Enables tracking opt out.
+	/// If the user wants to opt out of all tracking, use this method to enable opt out for them. 
+	/// Once opt out is enabled, no events will be saved locally or sent to the server. 
+	/// </summary>
+	/// <param name="enabled">enable opt out</param>
 	public void setOptOut(bool enabled) {
 		Log (string.Format("C# setOptOut {0}", enabled));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -403,35 +440,13 @@ public class Amplitude {
 		}
 #endif
 	}
-	private void setLibraryName(string libraryName) {
-		Log (string.Format("C# setLibraryName {0}", libraryName));
-#if (UNITY_IPHONE || UNITY_TVOS)
-		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
-			_Amplitude_setLibraryName(instanceName, libraryName);
-		}
-#endif
-
-#if UNITY_ANDROID
-		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setLibraryName", instanceName, libraryName);
-		}
-#endif
-	}
-
-	private void setLibraryVersion(string libraryVersion) {
-		Log (string.Format("C# setLibraryVersion {0}", libraryVersion));
-#if (UNITY_IPHONE || UNITY_TVOS)
-		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
-			_Amplitude_setLibraryVersion(instanceName, libraryVersion);
-		}
-#endif
-
-#if UNITY_ANDROID
-		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setLibraryVersion", instanceName, libraryVersion);
-		}
-#endif
-	}
+	
+	/// <summary>
+	/// If your app has its own system for tracking devices, you can set the deviceId.
+	/// 
+	/// NOTE: not recommended unless you know what you are doing.
+	/// </summary>
+	/// <param name="deviceId">device Id</param>
 	public void setDeviceId(string deviceId) {
 		Log (string.Format("C# setDeviceId {0}", deviceId));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -446,6 +461,11 @@ public class Amplitude {
 		}
 #endif
 	}
+
+	/// <summary>
+	/// Enable COPPA (Children's Online Privacy Protection Act) restrictions on IDFA, IDFV, city, IP address and location tracking.
+	/// This can be used by any customer that does not want to collect IDFA, IDFV, city, IP address and location tracking.
+	/// </summary>
 	public void enableCoppaControl() {
 		Log ("C# enableCoppaControl");
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -461,6 +481,9 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Disable COPPA (Children's Online Privacy Protection Act) restrictions on IDFA, IDFV, city, IP address and location tracking.
+	/// </summary>
 	public void disableCoppaControl() {
 		Log (string.Format("C# disableCoppaControl"));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -510,7 +533,7 @@ public class Amplitude {
 		}
 #endif
 	}
-
+	
 	public void logRevenue(string productId, int quantity, double price, string receipt, string receiptSignature) {
 		Log (string.Format("C# logRevenue {0}, {1}, {2} (with receipt)", productId, quantity, price));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -525,7 +548,7 @@ public class Amplitude {
 		}
 #endif
 	}
-
+	
 	public void logRevenue(string productId, int quantity, double price, string receipt, string receiptSignature, string revenueType, IDictionary<string, object> eventProperties) {
 		string propertiesJson;
 		if (eventProperties != null) {
@@ -548,6 +571,10 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Get current device Id.
+	/// </summary>
+	/// <returns></returns>
 	public string getDeviceId() {
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -563,6 +590,12 @@ public class Amplitude {
 		return null;
 	}
 
+	/// <summary>
+	/// Regenerates a new random deviceId for current user. 
+	/// Note: this is not recommended unless you know what you are doing. This can be used in conjunction with setUserId(null) to anonymize
+	/// users after they log out. 
+	/// With a null userId and a completely new deviceId, the current user would appear as a brand new user in dashboard.
+	/// </summary>
 	public void regenerateDeviceId() {
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -577,6 +610,16 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// iOS: 
+	/// Use advertisingIdentifier instead of identifierForVendor as the device ID.
+	/// Apple prohibits the use of advertisingIdentifier if your app does not have advertising. 
+	/// 
+	/// Android:
+	/// Whether to use the Android advertising ID (ADID) as the user's device ID.
+	/// 
+	/// **NOTE:** Must be called before `initializeApiKey`.
+	/// </summary>
 	public void useAdvertisingIdForDeviceId() {
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -591,6 +634,10 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Whether to automatically log start and end session events corresponding to the start and end of a user's session.
+	/// </summary>
+	/// <param name="enabled"></param>
 	public void trackSessionEvents(bool enabled) {
 		Log (string.Format("C# trackSessionEvents {0}", enabled));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -606,6 +653,10 @@ public class Amplitude {
 #endif
 	}
 
+	/// <summary>
+	/// Get session Id
+	/// </summary>
+	/// <returns>sessionId</returns>
 	public long getSessionId() {
 
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -619,9 +670,13 @@ public class Amplitude {
 			return pluginClass.CallStatic<long>("getSessionId", instanceName);
 		}
 #endif
-
 		return -1;
 	}
+	
+	/// <summary>
+	/// Manually forces the instance to immediately upload all unsent events. 
+	/// Use this method to force the class to immediately upload all queued events.
+	/// </summary>
 	public void uploadEvents() {
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -1441,7 +1496,35 @@ public class Amplitude {
 #endif
 	}
 
+	private void setLibraryName(string libraryName) {
+		Log (string.Format("C# setLibraryName {0}", libraryName));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setLibraryName(instanceName, libraryName);
+		}
+#endif
 
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setLibraryName", instanceName, libraryName);
+		}
+#endif
+	}
+
+	private void setLibraryVersion(string libraryVersion) {
+		Log (string.Format("C# setLibraryVersion {0}", libraryVersion));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setLibraryVersion(instanceName, libraryVersion);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setLibraryVersion", instanceName, libraryVersion);
+		}
+#endif
+	}
 
 	// This method is deprecated
 	public void startSession() { return; }
