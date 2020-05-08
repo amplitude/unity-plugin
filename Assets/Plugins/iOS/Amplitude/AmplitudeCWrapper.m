@@ -239,6 +239,11 @@ long long _Amplitude_getSessionId(const char* instanceName)
     return [[Amplitude instanceWithName:ToNSString(instanceName)] getSessionId];
 }
 
+void _Amplitude_uploadEvents(const char* instanceName)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] uploadEvents];
+}
+
 // User Property Operations
 void _Amplitude_clearUserProperties(const char* instanceName)
 {

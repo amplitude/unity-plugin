@@ -66,6 +66,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern long _Amplitude_getSessionId(string instanceName);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_uploadEvents(string instanceName);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_clearUserProperties(string instanceName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_unsetUserProperty(string instanceName, string property);
@@ -615,6 +617,19 @@ public class Amplitude {
 #endif
 
 		return -1;
+	}
+	public void uploadEvents() {
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_uploadEvents(instanceName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("uploadEvents", instanceName);
+		}
+#endif
 	}
 
 // User Property Operations
