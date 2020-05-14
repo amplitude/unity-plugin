@@ -33,7 +33,7 @@ Some users use `unity-jar-resolver` themselves. When they force resolve dependen
 
 Please add our native dependencies under `androidPackage` tag.
 ```
-    <androidPackage spec="com.amplitude:android-sdk:2.25.1">
+    <androidPackage spec="com.amplitude:android-sdk:2.25.2">
       <repositories>
         <repository>https://maven.google.com</repository>
       </repositories>

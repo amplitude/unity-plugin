@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 1.3.1 (May 13, 2020)
+* Fix APIs (`uploadEvents`, `useAdvertisingIdForDeviceId`, `setDeviceId`) missing for Android.
+
 ## 1.3.0 (May 7, 2020)
 * Add a couple APIs.
 1. `uploadEvents` - Use this to flush events.
