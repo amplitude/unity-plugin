@@ -15,4 +15,4 @@ Please visit our [Developer Center](https://developers.amplitude.com/docs/unity)
 Click [here](https://github.com/amplitude/unity-plugin/blob/master/CHANGELOG.md) to view the Unity Plugin Changelog.
 
 ## Need Help?
-If you have any problems or issues over our SDK, feel free to create a github issue or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
+If you have any problems or issues over our SDK, feel free to [create a github issue](https://github.com/amplitude/unity-plugin/issues/new) or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
