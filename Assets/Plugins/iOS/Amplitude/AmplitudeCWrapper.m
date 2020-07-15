@@ -178,6 +178,11 @@ void _Amplitude_disableCoppaControl(const char* instanceName)
     [[Amplitude instanceWithName:ToNSString(instanceName)] disableCoppaControl];
 }
 
+void _Amplitude_setServerUrl(const char* instanceName, const char* serverUrl)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setServerUrl:ToNSString(serverUrl)];
+}
+
 void _Amplitude_logRevenueAmount(const char* instanceName, double amount)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] logRevenue:[NSNumber numberWithDouble:amount]];

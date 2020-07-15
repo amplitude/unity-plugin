@@ -48,6 +48,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_disableCoppaControl(string instanceName);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setServerUrl(string instanceName, string serverUrl);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenueAmount(string instanceName, double amount);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logRevenue(string instanceName, string productIdentifier, int quantity, double price);
@@ -495,6 +497,24 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("disableCoppaControl", instanceName);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Customize server url events will be forwarded to.
+	/// </summary>
+	public void setServerUrl(string serverUrl) {
+		Log (string.Format("C# setServerUrl"));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setServerUrl(instanceName, serverUrl);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setServerUrl", instanceName, serverUrl);
 		}
 #endif
 	}
