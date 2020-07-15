@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 1.4.0 (Jul 15, 2020)
+* Add `setServerUrl` API, you can use it to customize the destination the events go.
+
 ## 1.3.1 (May 13, 2020)
 * Fix APIs (`uploadEvents`, `useAdvertisingIdForDeviceId`, `setDeviceId`) missing for Android.
 
