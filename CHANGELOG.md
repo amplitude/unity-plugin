@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 1.5.0 (Aug 27, 2020)
+* Add `setOffline` API, if offline is true, then the SDK will not upload events to Amplitude servers.
+
 ## 1.4.0 (Jul 15, 2020)
 * Add `setServerUrl` API, you can use it to customize the destination the events go.
 
