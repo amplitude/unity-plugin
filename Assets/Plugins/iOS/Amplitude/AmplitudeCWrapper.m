@@ -138,6 +138,11 @@ void _Amplitude_logOutOfSessionEvent(const char* instanceName, const char* event
     }
 }
 
+void _Amplitude_setOffline(const char* instanceName, const bool offline)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setOffline:offline];
+}
+
 void _Amplitude_setUserId(const char* instanceName, const char* userId)
 {
     [[Amplitude instanceWithName:ToNSString(instanceName)] setUserId:ToNSString(userId)];

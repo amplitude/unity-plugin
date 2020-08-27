@@ -32,6 +32,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_logOutOfSessionEvent(string instanceName, string evt, string propertiesJson);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setOffline(string instanceName, bool offline);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserId(string instanceName, string userId);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setDeviceId(string instanceName, string deviceId);
@@ -373,6 +375,26 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("logEvent", instanceName, evt, propertiesJson, outOfSession);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Sets offline. If offline is true, then the SDK will not upload events to Amplitude servers.
+	/// However, it will still log events.
+	/// </summary>
+	/// <param name="offline"></param>
+	public void setOffline(bool offline) {
+		Log (string.Format("C# setOffline {0}", offline));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setOffline(instanceName, offline);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setOffline", instanceName, offline);
 		}
 #endif
 	}
