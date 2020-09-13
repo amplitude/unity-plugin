@@ -1,6 +1,6 @@
 <dependencies>
   <packages>
-    <package>com.amplitude:android-sdk:2.28.1</package>
+    <package>com.amplitude:android-sdk:2.28.2</package>
     <package>com.squareup.okhttp3:okhttp:4.2.2</package>
   </packages>
   <files>

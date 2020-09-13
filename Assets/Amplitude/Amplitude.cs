@@ -42,6 +42,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOptOut(string instanceName, bool enabled);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setMinTimeBetweenSessionsMillis(string instanceName, long minTimeBetweenSessionsMillis);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryName(string instanceName, string libraryName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
@@ -461,6 +463,27 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setOptOut", instanceName, enabled);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// When a user closes and reopens the app within minTimeBetweenSessionsMillis milliseconds, 
+	/// the reopen is considered part of the same session and the session continues. 
+	/// Otherwise, a new session is created. The default is 5 minutes.
+	/// </summary>
+	/// <param name="minTimeBetweenSessionsMillis">minimum time (milliseconds) between sessions</param>
+	public void setMinTimeBetweenSessionsMillis(long minTimeBetweenSessionsMillis) {
+		Log (string.Format("C# minTimeBetweenSessionsMillis {0}", minTimeBetweenSessionsMillis));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setMinTimeBetweenSessionsMillis(instanceName, minTimeBetweenSessionsMillis);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setMinTimeBetweenSessionsMillis", instanceName, minTimeBetweenSessionsMillis);
 		}
 #endif
 	}

@@ -158,6 +158,11 @@ void _Amplitude_setOptOut(const char* instanceName, const bool enabled)
     [[Amplitude instanceWithName:ToNSString(instanceName)] setOptOut:enabled];
 }
 
+void _Amplitude_setMinTimeBetweenSessionsMillis(const char* instanceName, const long long minTimeBetweenSessionsMillis)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setMinTimeBetweenSessionsMillis:minTimeBetweenSessionsMillis];
+}
+
 void _Amplitude_setLibraryName(const char* instanceName, const char* libraryName)
 {
     [Amplitude instanceWithName:ToNSString(instanceName)].libraryName = ToNSString(libraryName);
