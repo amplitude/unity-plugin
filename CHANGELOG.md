@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 1.6.0 (Sep 13, 2020)
+* Add `setMinTimeBetweenSessionsMillis` API.
+
 ## 1.5.0 (Aug 27, 2020)
 * Add `setOffline` API, if offline is true, then the SDK will not upload events to Amplitude servers.
 
