@@ -1,7 +1,7 @@
 ---
 name: Bug report 🐛
 about: You're having technical issues
-labels: 'bug'
+labels: 'type: bug'
 ---
 
 <!--- Please fill out the template to the best of your ability -->
