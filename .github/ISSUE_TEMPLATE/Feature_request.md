@@ -1,7 +1,7 @@
 ---
 name: Feature Request 🚀
 about: You'd like something added to the plugin
-labels: 'feature request'
+labels: 'type: feature request'
 ---
 
 <!--- Please fill out the template to the best of your ability -->
