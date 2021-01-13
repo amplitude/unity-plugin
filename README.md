@@ -12,7 +12,7 @@ A plugin to simplify the integration of [Amplitude](https://www.amplitude.com) i
 Please visit our :100:[Developer Center](https://developers.amplitude.com/docs/unity) for instructions on installing and using our the SDK.
 
 ## Changelog
-Click [here](https://github.com/amplitude/unity-plugin/blob/master/CHANGELOG.md) to view the Changelog.
+Click [here](https://github.com/amplitude/unity-plugin/blob/main/CHANGELOG.md) to view the Changelog.
 
 ## Need Help?
 If you have any problems or issues over our SDK, feel free to [create a github issue](https://github.com/amplitude/unity-plugin/issues/new) or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
