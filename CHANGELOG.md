@@ -1,5 +1,12 @@
 # Versioned Releases
 
+## 2.0.0 (Jan 13, 2020)
+* PLEASE READ BEFORE UPDATING!
+* Upgrade native iOS SDK to [v7.2.2](https://github.com/amplitude/Amplitude-iOS/blob/main/CHANGELOG.md).
+* Major change to be aware is that Amplitude is no longer help customer to fetch idfa.
+* We will provide a customer driven approach to fetch idfa in our next version. 
+* NOTE: If you need idfa at this moment, please continue to use v1.6.0. If you don't need idfa, you can upgrade to this version.
+
 ## 1.6.0 (Sep 13, 2020)
 * Add `setMinTimeBetweenSessionsMillis` API.
 
