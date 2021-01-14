@@ -35,7 +35,7 @@
 
 #import "AMPUtils.h"
 
-@interface AMPUtils()
+@interface AMPUtils ()
 @end
 
 @implementation AMPUtils
@@ -45,12 +45,12 @@
     return nil;
 }
 
-+ (NSString*)generateUUID {
++ (NSString *)generateUUID {
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
 #if __has_feature(objc_arc)
     NSString *uuidStr = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
 #else
-    NSString *uuidStr = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    NSString *uuidStr = (NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
 #endif
     CFRelease(uuid);
     return uuidStr;
@@ -96,11 +96,11 @@
     return str;
 }
 
-+ (BOOL)isEmptyString:(NSString*)str {
++ (BOOL)isEmptyString:(NSString *)str {
     return str == nil || [str isKindOfClass:[NSNull class]] || [str length] == 0;
 }
 
-+ (NSString *)coerceToString: (id) obj withName:(NSString *) name
++ (NSString *)coerceToString:(id)obj withName:(NSString *)name
 {
     NSString *coercedString;
     if (![obj isKindOfClass:[NSString class]]) {
@@ -137,7 +137,7 @@
                 }
             }
             dict[coercedKey] = [NSArray arrayWithArray:arr];
-        } else if ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSDate class]]){
+        } else if ([value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSDate class]]) {
             dict[coercedKey] = [self coerceToString:value withName:@"groupName"];
         } else {
             AMPLITUDE_LOG(@"WARNING: Invalid groupName value for groupType %@ (received class %@). Please use NSString or NSArray of NSStrings", coercedKey, [value class]);
@@ -146,12 +146,64 @@
     return [NSDictionary dictionaryWithDictionary:dict];
 }
 
-+ (NSString*) platformDataDirectory {
++ (NSString *)platformDataDirectory {
 #if TARGET_OS_TV
-    return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 #else
-    return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    return [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 #endif
 }
+
+#if !TARGET_OS_OSX
++ (UIApplication *)getSharedApplication {
+    Class UIApplicationClass = NSClassFromString(@"UIApplication");
+    if (UIApplicationClass && [UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
+        return [UIApplication performSelector:@selector(sharedApplication)];
+    }
+    return nil;
+}
+#endif
+
+#if TARGET_OS_IOS || TARGET_OS_MACCATALYST
++ (NSInteger)barBottomOffset {
+    return [self statusBarHeight] > 24.0 ? 30 : 0;
+}
+
++ (CGFloat)statusBarHeight {
+    CGSize statusBarSize;
+    if (@available(iOS 13.0, *)) {
+        statusBarSize = [[[[AMPUtils getKeyWindow] windowScene] statusBarManager] statusBarFrame].size;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        // Even with the availability check above, Xcode would still emit a deprecation warning here.
+        // Since there's no way that it could be reached on iOS's >= 13.0
+        // (where `[UIApplication statusBarFrame]` was deprecated), we simply ignore the warning.
+        statusBarSize = [[AMPUtils getSharedApplication] statusBarFrame].size;
+#pragma clang diagnostic pop
+    }
+    return MIN(statusBarSize.width, statusBarSize.height);
+}
+
++ (UIWindow *)getKeyWindow {
+    if (@available(iOS 13.0, *)) {
+        for (UIWindow *window in [[AMPUtils getSharedApplication] windows]) {
+            if ([window isKeyWindow]) {
+                return window;
+            }
+        }
+        return nil;
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        // Even with the availability check above, Xcode would still emit a deprecation warning here.
+        // Since there's no way that it could be reached on iOS's >= 13.0
+        // (where `[UIApplication keyWindow]` was deprecated), we simply ignore the warning.
+        return [[AMPUtils getSharedApplication] keyWindow];
+#pragma clang diagnostic pop
+    }
+}
+
+#endif
 
 @end
