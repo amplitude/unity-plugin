@@ -44,6 +44,8 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setMinTimeBetweenSessionsMillis(string instanceName, long minTimeBetweenSessionsMillis);
 	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setEventUploadPeriodMillis(string instanceName, int eventUploadPeriodMillis);
+	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryName(string instanceName, string libraryName);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setLibraryVersion(string instanceName, string libraryVersion);
@@ -484,6 +486,27 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setMinTimeBetweenSessionsMillis", instanceName, minTimeBetweenSessionsMillis);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Sets event upload period millis. The SDK will attempt to batch upload unsent events
+    /// every eventUploadPeriodMillis milliseconds, or if the unsent event count exceeds the
+    /// event upload threshold. Default is 30 seconds.
+	/// </summary>
+	/// <param name="eventUploadPeriodMillis">milliseconds between batch uploads of events</param>
+	public void setEventUploadPeriodMillis(int eventUploadPeriodMillis) {
+		Log (string.Format("C# eventUploadPeriodMillis {0}", eventUploadPeriodMillis));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setEventUploadPeriodMillis(instanceName, eventUploadPeriodMillis);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setEventUploadPeriodMillis", instanceName, eventUploadPeriodMillis);
 		}
 #endif
 	}

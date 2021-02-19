@@ -1,6 +1,9 @@
 # Versioned Releases
 
-## 2.0.0 (Jan 13, 2020)
+## 2.1.0 (Feb 19, 2021)
+* Add `setEventUploadPeriodMillis` API.
+
+## 2.0.0 (Jan 13, 2021)
 * PLEASE READ BEFORE UPDATING!
 * Upgrade native iOS SDK to [v7.2.2](https://github.com/amplitude/Amplitude-iOS/blob/main/CHANGELOG.md).
 * Major change to be aware is that Amplitude no longer helps to fetch idfa automatically.
