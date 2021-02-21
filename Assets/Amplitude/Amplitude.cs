@@ -492,8 +492,8 @@ public class Amplitude {
 
 	/// <summary>
 	/// Sets event upload period millis. The SDK will attempt to batch upload unsent events
-    /// every eventUploadPeriodMillis milliseconds, or if the unsent event count exceeds the
-    /// event upload threshold. Default is 30 seconds.
+	/// every eventUploadPeriodMillis milliseconds, or if the unsent event count exceeds the
+	/// event upload threshold. Default is 30 seconds.
 	/// </summary>
 	/// <param name="eventUploadPeriodMillis">milliseconds between batch uploads of events</param>
 	public void setEventUploadPeriodMillis(int eventUploadPeriodMillis) {
