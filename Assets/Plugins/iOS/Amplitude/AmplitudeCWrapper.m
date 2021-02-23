@@ -163,6 +163,11 @@ void _Amplitude_setMinTimeBetweenSessionsMillis(const char* instanceName, const 
     [[Amplitude instanceWithName:ToNSString(instanceName)] setMinTimeBetweenSessionsMillis:minTimeBetweenSessionsMillis];
 }
 
+void _Amplitude_setEventUploadPeriodSeconds(const char* instanceName, const int eventUploadPeriodSeconds)
+{
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setEventUploadPeriodSeconds:eventUploadPeriodSeconds];
+}
+
 void _Amplitude_setLibraryName(const char* instanceName, const char* libraryName)
 {
     [Amplitude instanceWithName:ToNSString(instanceName)].libraryName = ToNSString(libraryName);
