@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class Amplitude {
 	private static readonly string UnityLibraryName = "amplitude-unity";
-	private static readonly string UnityLibraryVersion = "2.0.0";
+	private static readonly string UnityLibraryVersion = "2.1.0";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
@@ -491,7 +491,7 @@ public class Amplitude {
 	}
 	
 	/// <summary>
-	/// Sets event upload period millis. The SDK will attempt to batch upload unsent events
+	/// Sets event upload period seconds. The SDK will attempt to batch upload unsent events
 	/// every eventUploadPeriodSecond seconds, or if the unsent event count exceeds the
 	/// event upload threshold. Default is 30 seconds.
 	/// </summary>

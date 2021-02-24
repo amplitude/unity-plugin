@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.1.0 (Sep 13, 2020)
+* Add `setEventUploadPeriodSeconds` API.
+
 ## 2.0.0 (Jan 13, 2020)
 * PLEASE READ BEFORE UPDATING!
 * Upgrade native iOS SDK to [v7.2.2](https://github.com/amplitude/Amplitude-iOS/blob/main/CHANGELOG.md).
