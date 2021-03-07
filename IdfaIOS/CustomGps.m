@@ -14,8 +14,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
 
 @implementation CustomLocationManager 
 
-- initWithString:(NSString *)instanceNameString
-{
+- (instancetype)initWithString:(NSString *)instanceNameString {
     self = [super init];
     if (self) {
         self.instanceName = instanceNameString;
@@ -23,8 +22,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
     return self;
 }
 
-- (void)currentLocationIdentifier 
-{
+- (void)initializeLocationTracking {
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     if ([CLLocationManager locationServicesEnabled] && 
@@ -38,8 +36,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
     }
 }
 
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus *)status 
-{
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus *)status {
     if ([CLLocationManager locationServicesEnabled] && status == kCLAuthorizationStatusAuthorizedWhenInUse) {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
         self.locationManager.distanceFilter = 500; 
@@ -47,8 +44,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
     }
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations 
-{
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     CLLocation* location = [locations lastObject];
     float lat = location.coordinate.latitude;
     float lng = location.coordinate.longitude;
@@ -72,5 +68,5 @@ void setLocationInfoBlock(const char* instanceName)
     if (!customLocationManager) {
         customLocationManager = [[CustomLocationManager alloc] initWithString:ToNSString(instanceName)];
     }
-    [customLocationManager currentLocationIdentifier];
+    [customLocationManager initializeLocationTracking];
 }
