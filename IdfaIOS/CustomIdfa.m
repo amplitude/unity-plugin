@@ -8,8 +8,7 @@
 
 typedef NSString* (^AMPAdSupportBlock)(void);
 
-void setIdfaBlockInternal(const char* instanceName)
-{
+void setIdfaBlockInternal(const char* instanceName) {
     AMPAdSupportBlock adSupportBlock = ^{
         NSUUID *idfaUUID = [[ASIdentifierManager sharedManager] advertisingIdentifier];
         NSString *idfaString = [idfaUUID UUIDString];
@@ -20,8 +19,7 @@ void setIdfaBlockInternal(const char* instanceName)
 
 #pragma mark - Functions Exposed to C#
 
-void setIdfaBlock(const char* instanceName) 
-{
+void setIdfaBlock(const char* instanceName) {
     if (@available(iOS 14, *)) {
         if ([ATTrackingManager trackingAuthorizationStatus] == ATTrackingManagerAuthorizationStatusAuthorized) {
             setIdfaBlockInternal(instanceName);
