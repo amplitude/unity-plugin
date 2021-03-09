@@ -1,14 +1,17 @@
 # Versioned Releases
 
-## 2.1.0 (Sep 13, 2020)
+## 2.2.0 (Mar 9, 2021)
+* Add custom IDFA and GPS permissions and retrieval logic, which can be used in the Unity SDK according to [these Amplitude instructions](https://developers.amplitude.com/docs/unity-ios-idfa-and-gps-setup). Two new APIs: `setIdfaBlock`, and `setLocationInfoBlock`. These are entirely optional, and cannot be used in apps that target children or do not track ad id. 
+
+## 2.1.0 (Feb 24, 2021)
 * Add `setEventUploadPeriodSeconds` API.
 
-## 2.0.0 (Jan 13, 2020)
+## 2.0.0 (Jan 13, 2021)
 * PLEASE READ BEFORE UPDATING!
 * Upgrade native iOS SDK to [v7.2.2](https://github.com/amplitude/Amplitude-iOS/blob/main/CHANGELOG.md).
 * Major change to be aware is that Amplitude no longer helps to fetch idfa automatically.
 * We will provide a customer driven approach to fetch idfa in our next version. 
-* NOTE: If you need idfa at this moment, please continue to use v1.6.0. If you don't need idfa, you can upgrade to this version.
+* NOTE: If you need idfa at this moment, please upgrade to v2.2.0 or continue to use v1.6.0. If you don't need idfa, you can upgrade to this version.
 
 ## 1.6.0 (Sep 13, 2020)
 * Add `setMinTimeBetweenSessionsMillis` API.
