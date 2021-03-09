@@ -14,7 +14,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
 
 @implementation CustomLocationManager 
 
-- (instancetype)initWithString:(NSString *)instanceNameString {
+- (instancetype)init:(NSString *)instanceNameString {
     self = [super init];
     if (self) {
         self.instanceName = instanceNameString;
@@ -30,8 +30,7 @@ typedef NSDictionary* (^AMPLocationInfoBlock)(void);
         self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
         self.locationManager.distanceFilter = 500; 
         [self.locationManager startUpdatingLocation];
-    }
-    else {
+    } else {
         [self.locationManager requestWhenInUseAuthorization];
     }
 }
@@ -65,7 +64,7 @@ static CustomLocationManager *customLocationManager = nil;
 
 void setLocationInfoBlock(const char* instanceName) {
     if (!customLocationManager) {
-        customLocationManager = [[CustomLocationManager alloc] initWithString:ToNSString(instanceName)];
+        customLocationManager = [[CustomLocationManager alloc] init:ToNSString(instanceName)];
     }
     [customLocationManager initializeLocationTracking];
 }
