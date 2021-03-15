@@ -2,9 +2,7 @@
     "name": "SDK",
     "references": [],
     "includePlatforms": [],
-    "excludePlatforms": [
-        "XboxOne"
-    ],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
