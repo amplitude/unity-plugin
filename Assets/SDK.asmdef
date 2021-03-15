@@ -1,0 +1,15 @@
+{
+    "name": "SDK",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "XboxOne"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
