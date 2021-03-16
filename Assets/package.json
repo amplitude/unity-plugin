@@ -1,0 +1,19 @@
+{
+    "name": "com.amplitude.unityplugin",
+    "version": "2.1.0",
+    "displayName": "Amplitude Unity SDK",
+    "description": "A plugin to simplify the integration of Amplitude iOS and Android SDKs into your Unity project. This repository also contains a sample project with the Unity plugin integrated.",
+    "unity": "2019.4",
+    "unityRelease": "18f1",
+    "dependencies": {
+
+    },
+    "keywords": [
+        "Amplitude"
+    ],
+    "author": {
+        "name": "Amplitude",
+        "email": "contact@amplitude.com",
+        "url": "https://github.com/amplitude/unity-plugin/"
+    }
+}
