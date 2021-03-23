@@ -1,5 +1,5 @@
 {
-    "name": "NewAssembly",
+    "name": "AmplitudeSDKEditor",
     "references": [],
     "includePlatforms": [
         "Editor"
