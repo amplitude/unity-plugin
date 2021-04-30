@@ -37,5 +37,4 @@ void setIdfaBlockWithInstanceName(const char* instanceName) {
 
 void setIdfaBlock() {
     setIdfaBlockWithInstanceName("");
-    NSLog(@"Set idfa IDFA block with blank name");
 }
