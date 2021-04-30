@@ -4,8 +4,6 @@
 //Please ensure this path points to the file 'Assets/Plugins/iOS/Amplitude/Amplitude.h'
 #import "../../Plugins/iOS/Amplitude/Amplitude.h"
 
-#import "../../Plugins/iOS/Amplitude/AmplitudeCWrapper.h"
-
 typedef NSString* (^AMPAdSupportBlock)(void);
 
 void setIdfaBlockInternal(const char* instanceName) {
@@ -14,7 +12,8 @@ void setIdfaBlockInternal(const char* instanceName) {
         NSString *idfaString = [idfaUUID UUIDString];
         return idfaString;
     };
-    [[Amplitude instanceWithName:ToNSString(instanceName)] setAdSupportBlock:adSupportBlock];
+    NSString* convertedString = [NSString stringWithFormat:@"%s", instanceName];
+    [[Amplitude instanceWithName:convertedString] setAdSupportBlock:adSupportBlock];
 }
 
 #pragma mark - Functions Exposed to C#
