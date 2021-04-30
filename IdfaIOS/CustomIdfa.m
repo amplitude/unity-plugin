@@ -19,7 +19,7 @@ void setIdfaBlockInternal(const char* instanceName) {
 
 #pragma mark - Functions Exposed to C#
 
-void setIdfaBlock(const char* instanceName) {
+void setIdfaBlockWithInstanceName(const char* instanceName) {
     if (@available(iOS 14, *)) {
         if ([ATTrackingManager trackingAuthorizationStatus] == ATTrackingManagerAuthorizationStatusAuthorized) {
             setIdfaBlockInternal(instanceName);
@@ -33,4 +33,9 @@ void setIdfaBlock(const char* instanceName) {
     } else {
         setIdfaBlockInternal(instanceName);
     }
+}
+
+void setIdfaBlock() {
+    setIdfaBlockWithInstanceName("");
+    NSLog(@"Set idfa IDFA block with blank name");
 }

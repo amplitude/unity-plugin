@@ -62,9 +62,13 @@ static CustomLocationManager *customLocationManager = nil;
 
 #pragma mark - Functions Exposed to C#
 
-void setLocationInfoBlock(const char* instanceName) {
+void setLocationInfoBlockWithInstanceName(const char* instanceName) {
     if (!customLocationManager) {
         customLocationManager = [[CustomLocationManager alloc] init:ToNSString(instanceName)];
     }
     [customLocationManager initializeLocationTracking];
+}
+
+void setLocationInfoBlock() {
+    setLocationInfoBlockWithInstanceName("");
 }
