@@ -3,8 +3,6 @@
 //Please ensure this path points to the file 'Assets/Plugins/iOS/Amplitude/Amplitude.h'
 #import "../../Plugins/iOS/Amplitude/Amplitude.h"
 
-#import "../../Plugins/iOS/Amplitude/AmplitudeCWrapper.h"
-
 typedef NSDictionary* (^AMPLocationInfoBlock)(void);
 
 @interface CustomLocationManager : NSObject<CLLocationManagerDelegate> 
@@ -62,9 +60,14 @@ static CustomLocationManager *customLocationManager = nil;
 
 #pragma mark - Functions Exposed to C#
 
-void setLocationInfoBlock(const char* instanceName) {
+void setLocationInfoBlockWithInstanceName(const char* instanceName) {
     if (!customLocationManager) {
-        customLocationManager = [[CustomLocationManager alloc] init:ToNSString(instanceName)];
+        NSString* convertedString = [NSString stringWithFormat:@"%s", instanceName];
+        customLocationManager = [[CustomLocationManager alloc] init:convertedString];
     }
     [customLocationManager initializeLocationTracking];
+}
+
+void setLocationInfoBlock() {
+    setLocationInfoBlockWithInstanceName("");
 }
