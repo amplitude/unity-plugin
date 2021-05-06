@@ -268,7 +268,7 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_removeUserPropertyDouble(string instanceName, string property, double value);
 	[DllImport ("__Internal")]
-	private static extern void _Amplitude_removetUserPropertyFloat(string instanceName, string property, float value);
+	private static extern void _Amplitude_removeUserPropertyFloat(string instanceName, string property, float value);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_removeUserPropertyInt(string instanceName, string property, int value);
 	[DllImport ("__Internal")]
@@ -1924,8 +1924,7 @@ public class Amplitude {
 #endif
 	}
 
-
-//preInsertd
+//preInsert
 	public void preInsertUserProperty(string property, bool value) {
 		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -2148,7 +2147,8 @@ public class Amplitude {
 			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
 		}
 #endif
-	
+	}
+
 //postInsert
 	public void postInsertUserProperty(string property, bool value) {
 		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
@@ -2329,7 +2329,7 @@ public class Amplitude {
 #endif
 	}
 
-	public void postInsertdUserProperty(string property, int[] array) {
+	public void postInsertUserProperty(string property, int[] array) {
 		Log ("C# postInsertUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
@@ -2554,7 +2554,7 @@ public class Amplitude {
 #endif
 	}
 
-	public void removedUserProperty(string property, int[] array) {
+	public void removeUserProperty(string property, int[] array) {
 		Log ("C# removeUserProperty", property, array);
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
