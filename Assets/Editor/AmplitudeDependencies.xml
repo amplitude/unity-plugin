@@ -4,7 +4,7 @@
       <repository>https://repo.maven.apache.org/maven2</repository>
     </repositories>
 
-    <androidPackage spec="com.amplitude:android-sdk:2.31.1">
+    <androidPackage spec="com.amplitude:android-sdk:2.31.3">
       <repositories>
         <repository>https://maven.google.com</repository>
       </repositories>
