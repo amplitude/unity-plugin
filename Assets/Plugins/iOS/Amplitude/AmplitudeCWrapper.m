@@ -588,7 +588,6 @@ void _Amplitude_appendUserPropertyStringArray(const char* instanceName, const ch
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
 }
 
-//prepend
 void _Amplitude_prependUserPropertyBool(const char* instanceName, const char* property, const bool value) {
     AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithBool:value]];
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
@@ -693,7 +692,6 @@ void _Amplitude_prependUserPropertyStringArray(const char* instanceName, const c
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
 }
 
-//preInsert
 void _Amplitude_preInsertUserPropertyBool(const char* instanceName, const char* property, const bool value) {
     AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithBool:value]];
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
@@ -798,7 +796,6 @@ void _Amplitude_preInsertUserPropertyStringArray(const char* instanceName, const
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
 }
 
-//postInsert
 void _Amplitude_postInsertUserPropertyBool(const char* instanceName, const char* property, const bool value) {
     AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithBool:value]];
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
@@ -903,7 +900,6 @@ void _Amplitude_postInsertUserPropertyStringArray(const char* instanceName, cons
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
 }
 
-//remove
 void _Amplitude_removeUserPropertyBool(const char* instanceName, const char* property, const bool value) {
     AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithBool:value]];
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];

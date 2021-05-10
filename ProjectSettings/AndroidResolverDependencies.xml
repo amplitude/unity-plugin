@@ -1,4 +1,4 @@
-t <dependencies>
+<dependencies>
   <packages>
     <package>com.amplitude:android-sdk:2.31.3</package>
     <package>com.squareup.okhttp3:okhttp:4.2.2</package>

@@ -175,7 +175,7 @@ public class Amplitude {
 	private static extern void _Amplitude_appendUserPropertyLongArray(string instanceName, string property, long[] value, int length);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_appendUserPropertyStringArray(string instanceName, string property, string[] value, int length);
-    //prepend
+      //prepend
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_prependUserPropertyBool(string instanceName, string property, bool value);
 	[DllImport ("__Internal")]
@@ -292,6 +292,7 @@ public class Amplitude {
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_removeUserPropertyStringArray(string instanceName, string property, string[] value, int length);
 #endif
+
 	public static Amplitude getInstance() {
 		return getInstance(null);
 	}
