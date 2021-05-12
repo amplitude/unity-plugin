@@ -42,7 +42,11 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.unsetUserProperty("bool");
 		amplitude.setUserProperty("string", "this is a test");
 		amplitude.setUserProperty("stringArray", new string[]{"replace", "existing", "strings"});
-		amplitude.appendUserProperty("stringArray", new string[]{ "append", "more", "strings" });
+		amplitude.appendUserProperty("stringArray", new string[]{"append", "more", "strings"});
+		amplitude.prependUserProperty("longArray", new long[]{1, 2, 3});
+		amplitude.preInsertUserProperty("longArray", new long[]{1111,2222,3333});
+		amplitude.postInsertUserProperty("longArray", new long[]{4444,5555,6666});
+		amplitude.removeUserProperty("longArray", new long[]{ 1111,2222,3333,4444,5555,6666});
 		amplitude.setUserProperty("floatArray", new float[]{123.45f, 678.9f});
 		amplitude.setUserProperty("doubleArray", new double[]{123.45, 678.9});
 
@@ -74,6 +78,15 @@ public class AmplitudeDemo : MonoBehaviour {
 
 		amplitude.appendUserProperty("intList", new int[]{7, 8, 9});
 		amplitude.appendUserProperty("stringList", stringList);
+
+		amplitude.prependUserProperty("prependStringValue", "prependStr1");
+		amplitude.prependUserProperty("prependStringValue", "prependStr2");
+
+		amplitude.preInsertUserProperty("preInsertBooleanValue", true);
+		amplitude.preInsertUserProperty("preInsertBooleanValue", false);
+
+		amplitude.postInsertUserProperty("postInsertintList", new int[]{1, 2, 3});
+		amplitude.postInsertUserProperty("postInsertintList", new int[]{4, 5, 6});
 
 		amplitude.logEvent("this is a test");
 		Debug.Log(amplitude.getDeviceId());

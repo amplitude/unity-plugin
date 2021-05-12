@@ -587,3 +587,419 @@ void _Amplitude_appendUserPropertyStringArray(const char* instanceName, const ch
     AMPIdentify *identify = [[AMPIdentify identify] append:ToNSString(property) value:array];
     [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
 }
+
+void _Amplitude_prependUserPropertyBool(const char* instanceName, const char* property, const bool value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithBool:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyDouble(const char* instanceName, const char* property, const double value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyFloat(const char* instanceName, const char* property, const float value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyInt(const char* instanceName, const char* property, const int value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyLong(const char* instanceName, const char* property, const long long value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyString(const char* instanceName, const char* property, const char* value) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyDict(const char* instanceName, const char* property, const char* values) {
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyList(const char* instanceName, const char* property, const char* values) {
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:[dict objectForKey:@"list"]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyBoolArray(const char* instanceName, const char* property, const bool value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithBool:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyDoubleArray(const char* instanceName, const char* property, const double value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithDouble:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyFloatArray(const char* instanceName, const char* property, const float value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithFloat:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyIntArray(const char* instanceName, const char* property, const int value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithInt:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyLongArray(const char* instanceName, const char* property, const long long value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithLongLong:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_prependUserPropertyStringArray(const char* instanceName, const char* property, const char* value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:ToNSString(value[i])];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] prepend:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyBool(const char* instanceName, const char* property, const bool value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithBool:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyDouble(const char* instanceName, const char* property, const double value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyFloat(const char* instanceName, const char* property, const float value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyInt(const char* instanceName, const char* property, const int value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyLong(const char* instanceName, const char* property, const long long value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyString(const char* instanceName, const char* property, const char* value) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyDict(const char* instanceName, const char* property, const char* values) {
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyList(const char* instanceName, const char* property, const char* values) {
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:[dict objectForKey:@"list"]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyBoolArray(const char* instanceName, const char* property, const bool value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithBool:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyDoubleArray(const char* instanceName, const char* property, const double value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithDouble:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyFloatArray(const char* instanceName, const char* property, const float value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithFloat:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyIntArray(const char* instanceName, const char* property, const int value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithInt:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyLongArray(const char* instanceName, const char* property, const long long value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithLongLong:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_preInsertUserPropertyStringArray(const char* instanceName, const char* property, const char* value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:ToNSString(value[i])];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] preInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyBool(const char* instanceName, const char* property, const bool value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithBool:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyDouble(const char* instanceName, const char* property, const double value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyFloat(const char* instanceName, const char* property, const float value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyInt(const char* instanceName, const char* property, const int value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyLong(const char* instanceName, const char* property, const long long value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyString(const char* instanceName, const char* property, const char* value) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyDict(const char* instanceName, const char* property, const char* values) {
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyList(const char* instanceName, const char* property, const char* values) {
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:[dict objectForKey:@"list"]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyBoolArray(const char* instanceName, const char* property, const bool value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithBool:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyDoubleArray(const char* instanceName, const char* property, const double value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithDouble:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyFloatArray(const char* instanceName, const char* property, const float value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithFloat:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyIntArray(const char* instanceName, const char* property, const int value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithInt:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyLongArray(const char* instanceName, const char* property, const long long value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithLongLong:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_postInsertUserPropertyStringArray(const char* instanceName, const char* property, const char* value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:ToNSString(value[i])];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] postInsert:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyBool(const char* instanceName, const char* property, const bool value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithBool:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyDouble(const char* instanceName, const char* property, const double value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithDouble:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyFloat(const char* instanceName, const char* property, const float value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithFloat:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyInt(const char* instanceName, const char* property, const int value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithInt:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyLong(const char* instanceName, const char* property, const long long value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[NSNumber numberWithLongLong:value]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyString(const char* instanceName, const char* property, const char* value) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:ToNSString(value)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyDict(const char* instanceName, const char* property, const char* values) {
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:ToNSDictionary(values)];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyList(const char* instanceName, const char* property, const char* values) {
+    NSDictionary *dict = ToNSDictionary(values);
+    if (dict == nil) {
+        return;
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:[dict objectForKey:@"list"]];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyBoolArray(const char* instanceName, const char* property, const bool value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithBool:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyDoubleArray(const char* instanceName, const char* property, const double value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithDouble:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyFloatArray(const char* instanceName, const char* property, const float value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithFloat:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyIntArray(const char* instanceName, const char* property, const int value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithInt:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyLongArray(const char* instanceName, const char* property, const long long value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:[NSNumber numberWithLongLong:value[i]]];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}
+
+void _Amplitude_removeUserPropertyStringArray(const char* instanceName, const char* property, const char* value[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:ToNSString(value[i])];
+    }
+    AMPIdentify *identify = [[AMPIdentify identify] remove:ToNSString(property) value:array];
+    [[Amplitude instanceWithName:ToNSString(instanceName)] identify:identify];
+}

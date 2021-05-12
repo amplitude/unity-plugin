@@ -175,6 +175,122 @@ public class Amplitude {
 	private static extern void _Amplitude_appendUserPropertyLongArray(string instanceName, string property, long[] value, int length);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_appendUserPropertyStringArray(string instanceName, string property, string[] value, int length);
+      //prepend
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyBool(string instanceName, string property, bool value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyDouble(string instanceName, string property, double value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyFloat(string instanceName, string property, float value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyInt(string instanceName, string property, int value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyLong(string instanceName, string property, long value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyString(string instanceName, string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyDict(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyList(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyBoolArray(string instanceName, string property, bool[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyDoubleArray(string instanceName, string property, double[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyFloatArray(string instanceName, string property, float[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyIntArray(string instanceName, string property, int[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyLongArray(string instanceName, string property, long[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_prependUserPropertyStringArray(string instanceName, string property, string[] value, int length);
+	//preInsert
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyBool(string instanceName, string property, bool value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyDouble(string instanceName, string property, double value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyFloat(string instanceName, string property, float value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyInt(string instanceName, string property, int value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyLong(string instanceName, string property, long value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyString(string instanceName, string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyDict(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyList(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyBoolArray(string instanceName, string property, bool[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyDoubleArray(string instanceName, string property, double[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyFloatArray(string instanceName, string property, float[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyIntArray(string instanceName, string property, int[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyLongArray(string instanceName, string property, long[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_preInsertUserPropertyStringArray(string instanceName, string property, string[] value, int length);
+	//postInsert
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyBool(string instanceName, string property, bool value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyDouble(string instanceName, string property, double value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyFloat(string instanceName, string property, float value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyInt(string instanceName, string property, int value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyLong(string instanceName, string property, long value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyString(string instanceName, string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyDict(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyList(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyBoolArray(string instanceName, string property, bool[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyDoubleArray(string instanceName, string property, double[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyFloatArray(string instanceName, string property, float[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyIntArray(string instanceName, string property, int[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyLongArray(string instanceName, string property, long[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_postInsertUserPropertyStringArray(string instanceName, string property, string[] value, int length);
+	//remove
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyBool(string instanceName, string property, bool value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyDouble(string instanceName, string property, double value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyFloat(string instanceName, string property, float value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyInt(string instanceName, string property, int value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyLong(string instanceName, string property, long value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyString(string instanceName, string property, string value);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyDict(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyList(string instanceName, string property, string values);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyBoolArray(string instanceName, string property, bool[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyDoubleArray(string instanceName, string property, double[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyFloatArray(string instanceName, string property, float[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyIntArray(string instanceName, string property, int[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyLongArray(string instanceName, string property, long[] value, int length);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_removeUserPropertyStringArray(string instanceName, string property, string[] value, int length);
 #endif
 
 	public static Amplitude getInstance() {
@@ -1580,6 +1696,906 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("appendUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+//prepend
+	public void prependUserProperty(string property, bool value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyBool(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, double value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyDouble(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, float value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyFloat(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, int value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyInt(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, long value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyLong(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, string value) {
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyString(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyDict(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserPropertyDict", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void prependUserProperty<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# prependUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyList(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserPropertyList", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, bool[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyBoolArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, double[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyDoubleArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, float[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyFloatArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, int[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyIntArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, long[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyLongArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void prependUserProperty(string property, string[] array) {
+		Log ("C# prependUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_prependUserPropertyStringArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+//preInsert
+	public void preInsertUserProperty(string property, bool value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyBool(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, double value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyDouble(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, float value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyFloat(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, int value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyInt(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, long value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyLong(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, string value) {
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyString(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyDict(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserPropertyDict", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# preInsertUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyList(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserPropertyList", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, bool[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyBoolArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, double[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyDoubleArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, float[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyFloatArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, int[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyIntArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, long[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyLongArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("preInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void preInsertUserProperty(string property, string[] array) {
+		Log ("C# preInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_preInsertUserPropertyStringArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("prependUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+//postInsert
+	public void postInsertUserProperty(string property, bool value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyBool(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, double value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyDouble(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, float value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyFloat(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, int value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyInt(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, long value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyLong(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, string value) {
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyString(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyDict(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserPropertyDict", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# postInsertUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyList(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserPropertyList", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, bool[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyBoolArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, double[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyDoubleArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, float[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyFloatArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, int[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyIntArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, long[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyLongArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void postInsertUserProperty(string property, string[] array) {
+		Log ("C# postInsertUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_postInsertUserPropertyStringArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("postInsertUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+//remove
+	public void removeUserProperty(string property, bool value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyBool(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, double value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyDouble(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, float value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyFloat(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, int value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyInt(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, long value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyLong(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, string value) {
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, value));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyString(instanceName, property, value);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, value);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, IDictionary<string, object> values) {
+		if (values == null) {
+			return;
+		}
+
+		string valuesJson = Json.Serialize (values);
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyDict(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserPropertyDict", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void removeUserProperty<T>(string property, IList<T> values) {
+		if (values == null) {
+			return;
+		}
+
+		Dictionary<string, object> wrapper = new Dictionary<string, object>()
+		{
+			{"list", values}
+		};
+		string valuesJson = Json.Serialize (wrapper);
+		Log (string.Format("C# removeUserProperty {0}, {1}", property, valuesJson));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyList(instanceName, property, valuesJson);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserPropertyList", instanceName, property, valuesJson);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, bool[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyBoolArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, double[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyDoubleArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, float[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyFloatArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, int[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyIntArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, long[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyLongArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
+		}
+#endif
+	}
+
+	public void removeUserProperty(string property, string[] array) {
+		Log ("C# removeUserProperty", property, array);
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_removeUserPropertyStringArray(instanceName, property, array, array.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("removeUserProperty", instanceName, property, array);
 		}
 #endif
 	}
