@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.2.0 (May 12, 2021)
+* Add User property functions prepend/preInsert/postInsert/remove.
+
 ## 2.1.0 (Sep 13, 2020)
 * Add `setEventUploadPeriodSeconds` API.
 
