@@ -23,7 +23,7 @@ PluginImporter:
         Exclude Win: 1
         Exclude Win64: 1
         Exclude iOS: 0
-        Exclude tvOS: 0
+        Exclude tvOS: 1
   - first:
       Any: 
     second:
