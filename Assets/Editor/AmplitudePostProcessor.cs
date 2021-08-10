@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS
+﻿#if UNITY_IOS || UNITY_TVOS
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
@@ -7,7 +7,7 @@ public static class AmplitudePostProcessor {
 
   [PostProcessBuild]
   public static void OnPostProcessBuild(BuildTarget buildTarget, string buildPath) {
-    if (buildTarget == BuildTarget.iOS) {
+    if (buildTarget == BuildTarget.iOS || buildTarget == BuildTarget.tvOS) {
       var projPath = string.Concat(buildPath, "/Unity-iPhone.xcodeproj/project.pbxproj");
       var proj = new PBXProject();
       proj.ReadFromFile(projPath);
