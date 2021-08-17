@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.2.1
+* Fix .unitypackage overriding default editor preferences with asmdef files. Asmdef files removed.
+
 ## 2.2.0 (May 12, 2021)
 * Add User property functions prepend/preInsert/postInsert/remove.
 
