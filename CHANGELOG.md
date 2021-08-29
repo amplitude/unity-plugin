@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.2.2
+* Update Android version to 2.32.0 to resolve Cursor related errors.
+
 ## 2.2.1
 * Fix .unitypackage overriding default editor preferences with asmdef files. Asmdef files removed.
 

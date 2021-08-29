@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class Amplitude {
 	private static readonly string UnityLibraryName = "amplitude-unity";
-	private static readonly string UnityLibraryVersion = "2.2.1";
+	private static readonly string UnityLibraryVersion = "2.2.2";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
