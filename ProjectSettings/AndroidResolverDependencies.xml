@@ -1,10 +1,10 @@
 <dependencies>
   <packages>
-    <package>com.amplitude:android-sdk:2.31.3</package>
+    <package>com.amplitude:android-sdk:2.32.0</package>
     <package>com.squareup.okhttp3:okhttp:4.2.2</package>
   </packages>
   <files>
-    <file>Assets/Plugins/Android/com.amplitude.android-sdk-2.31.3.aar</file>
+    <file>Assets/Plugins/Android/com.amplitude.android-sdk-2.32.0.aar</file>
     <file>Assets/Plugins/Android/com.squareup.okhttp3.okhttp-4.2.2.jar</file>
     <file>Assets/Plugins/Android/com.squareup.okio.okio-2.2.2.jar</file>
     <file>Assets/Plugins/Android/org.jetbrains.annotations-13.0.jar</file>
@@ -16,8 +16,10 @@
     <setting name="bundleId" value="amplitude.unity3d.amplitudedemo" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradlePropertiesTemplateEnabled" value="False" />
     <setting name="gradleTemplateEnabled" value="False" />
     <setting name="installAndroidPackages" value="True" />
+    <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
     <setting name="packageDir" value="Assets/Plugins/Android" />
     <setting name="patchAndroidManifest" value="True" />
     <setting name="patchMainTemplateGradle" value="True" />
