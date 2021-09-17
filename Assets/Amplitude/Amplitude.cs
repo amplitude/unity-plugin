@@ -839,6 +839,23 @@ public class Amplitude {
 	}
 
 	/// <summary>
+	/// iOS: 
+	/// This method has no equivalent in iOS. See comments in `useAdvertisingIdForDeviceId()`.
+	/// 
+	/// Android: If this method is called, the setting for Advertising ID will be used first for the user's device ID,
+	/// and then if unsuccessful, fall back to Android App Set ID: a user-resetable, per device/per install ID provided by Google.
+	/// 
+	/// **NOTE:** Must be called before `initializeApiKey`.
+	/// </summary>
+	public void useAppSetIdForDeviceId() {
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("useAppSetIdForDeviceId", instanceName);
+		}
+#endif
+	}
+
+	/// <summary>
 	/// Whether to automatically log start and end session events corresponding to the start and end of a user's session.
 	/// </summary>
 	/// <param name="enabled"></param>
