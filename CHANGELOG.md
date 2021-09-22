@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.3.0
+* Add `useAppSetIdForDeviceId` API.
+
 ## 2.2.2
 * Update Android version to 2.32.0 to resolve Cursor related errors.
 
