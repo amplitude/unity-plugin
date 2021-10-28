@@ -1,8 +1,6 @@
 //
-//  AMPBubbleView.m
-//  Amplitude
-//
-//  Copyright (c) 2020 Amplitude Inc. (https://amplitude.com/)
+//  AMPPlan.h
+//  Copyright (c) 2021 Amplitude Inc. (https://amplitude.com/)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +20,24 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
+#import <Foundation/Foundation.h>
 
-#import "AMPBubbleView.h"
+@interface AMPPlan : NSObject
 
-@implementation AMPBubbleView
+@property (nonatomic, strong, readonly) NSString *branch;
 
-- (instancetype)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
-    
-    if (self) {
-        [self loadViewFromNib];
-    }
-    
-    return self;
-}
+@property (nonatomic, strong, readonly) NSString *source;
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    
-    if (self) {
-        [self loadViewFromNib];
-    }
-    
-    return self;
-}
+@property (nonatomic, strong, readonly) NSString *version;
 
-- (void)loadViewFromNib {
-    NSBundle *bundle = [NSBundle bundleForClass:[AMPBubbleView class]];
-    UINib *nib = [UINib nibWithNibName:@"AMPBubbleView" bundle:bundle];
-    
-    NSArray *views = [nib instantiateWithOwner:self options:nil];
-    UIView *view = [views objectAtIndex:0];
-    view.frame = self.bounds;
-    [self addSubview:view];
-}
++ (instancetype)plan;
+
+- (AMPPlan *)setBranch:(NSString *)branch;
+
+- (AMPPlan *)setSource:(NSString *)source;
+
+- (AMPPlan *)setVersion:(NSString *)version;
+
+- (NSDictionary *)toNSDictionary;
 
 @end
