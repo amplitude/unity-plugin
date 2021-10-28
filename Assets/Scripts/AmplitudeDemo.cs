@@ -13,7 +13,7 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.trackSessionEvents(true);
 		amplitude.useAdvertisingIdForDeviceId();
 		amplitude.setUseDynamicConfig(true);
-		amplitude.setServerZone("US");
+		amplitude.setServerZone(AmplitudeServerZone.US);
 		amplitude.init("e7177d872ff62c0356c973848c7bffba");
 		Debug.Log(amplitude.getDeviceId());
 

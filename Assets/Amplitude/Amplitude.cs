@@ -733,17 +733,18 @@ public class Amplitude {
     /// To send data to Amplitude's EU servers, you need to configure the serverZone to EU like client.setServerZone("EU");
     /// serverZone could be EU or US. Recommend to keep updateServerUrl to be true for alignment unless use own proxy server.
 	/// </summary>
-	public void setServerZone(string serverZone, bool updateServerUrl = true) {
+	public void setServerZone(AmplitudeServerZone serverZone, bool updateServerUrl = true) {
 		Log (string.Format("C# setServerZone"));
+		string serverZoneStr = serverZone.ToString();
 #if (UNITY_IPHONE || UNITY_TVOS)
 		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
-			_Amplitude_setServerZone(instanceName, serverZone, updateServerUrl);
+			_Amplitude_setServerZone(instanceName, serverZoneStr, updateServerUrl);
 		}
 #endif
 
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
-			pluginClass.CallStatic("setServerZone", instanceName, serverZone, updateServerUrl);
+			pluginClass.CallStatic("setServerZone", instanceName, serverZoneStr, updateServerUrl);
 		}
 #endif
 	}
