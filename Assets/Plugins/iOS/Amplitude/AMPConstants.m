@@ -24,12 +24,15 @@
 #import "AMPConstants.h"
 
 NSString *const kAMPLibrary = @"amplitude-ios";
-NSString *const kAMPVersion = @"7.2.2"; // Version is managed automatically by semantic-release, please don't change it manually
+NSString *const kAMPVersion = @"8.5.0"; // Version is managed automatically by semantic-release, please don't change it manually
 NSString *const kAMPUnknownLibrary = @"unknown-library";
 NSString *const kAMPUnknownVersion = @"unknown-version";
 NSString *const kAMPEventLogDomain = @"api2.amplitude.com";
 NSString *const kAMPEventLogUrl = @"https://api2.amplitude.com/";
+NSString *const kAMPEventLogEuUrl = @"https://api.eu.amplitude.com/";
+NSString *const kAMPContentTypeHeader = @"application/x-www-form-urlencoded";
 NSString *const kAMPDyanmicConfigUrl = @"https://regionconfig.amplitude.com/";
+NSString *const kAMPDyanmicConfigEuUrl = @"https://regionconfig.eu.amplitude.com/";
 NSString *const kAMPDefaultInstance = @"$default_instance";
 const int kAMPApiVersion = 3;
 const int kAMPDBVersion = 3;
@@ -50,6 +53,11 @@ const int kAMPDBFirstVersion = 2; // to detect if DB exists yet
     const int kAMPEventMaxCount = 1000;
     NSString *const kAMPPlatform = @"macOS";
     NSString *const kAMPOSName = @"macos";
+#elif TARGET_OS_WATCH // watchOS, simulator, etc.
+    const int kAMPEventUploadThreshold = 30;
+    const int kAMPEventMaxCount = 1000;
+    NSString *const kAMPPlatform = @"watchOS";
+    NSString *const kAMPOSName = @"watchos";
 #else // iOS, simulator, etc.
     const int kAMPEventUploadThreshold = 30;
     const int kAMPEventMaxCount = 1000;
@@ -99,3 +107,7 @@ NSString *const AMP_TRACKING_OPTION_OS_VERSION = @"os_version";
 NSString *const AMP_TRACKING_OPTION_PLATFORM = @"platform";
 NSString *const AMP_TRACKING_OPTION_REGION = @"region";
 NSString *const AMP_TRACKING_OPTION_VERSION_NAME = @"version_name";
+
+NSString *const AMP_PLAN_BRANCH = @"branch";
+NSString *const AMP_PLAN_SOURCE = @"source";
+NSString *const AMP_PLAN_VERSION = @"version";

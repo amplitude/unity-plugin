@@ -3,6 +3,7 @@
 #import "AMPIdentify.h"
 #import "AMPRevenue.h"
 #import "AMPTrackingOptions.h"
+#import "AMPServerZone.h"
 
 // Used to allocate a C string on the heap for C#
 char* MakeCString(const char* string) {
@@ -178,6 +179,15 @@ void _Amplitude_disableCoppaControl(const char* instanceName) {
 
 void _Amplitude_setServerUrl(const char* instanceName, const char* serverUrl) {
     [[Amplitude instanceWithName:ToNSString(instanceName)] setServerUrl:ToNSString(serverUrl)];
+}
+
+void _Amplitude_setServerZone(const char* instanceName, const char* serverZone, const bool updateServerUrl) {
+    AMPServerZone ampServerZone = (strcmp("EU",serverZone) == 0) ? EU : US;
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setServerZone:ampServerZone updateServerUrl:updateServerUrl];
+}
+
+void _Amplitude_setUseDynamicConfig(const char* instanceName, const bool useDynamicConfig) {
+    [Amplitude instanceWithName:ToNSString(instanceName)].useDynamicConfig = useDynamicConfig;
 }
 
 void _Amplitude_logRevenueAmount(const char* instanceName, double amount) {
