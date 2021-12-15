@@ -1,5 +1,11 @@
 # Versioned Releases
 
+## 2.4.0
+* Upgrade nativeAndroid SDK to v2.34.1.
+* Upgrade native iOS SDK to v8.5.0.
+* Add `setServerZone` and `setUseDynamicConfig` API.
+* Support EU server zone and dynamic configuration.
+
 ## 2.3.0
 * Add `useAppSetIdForDeviceId` API.
 

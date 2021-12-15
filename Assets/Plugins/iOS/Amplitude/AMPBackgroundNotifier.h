@@ -1,5 +1,5 @@
 //
-//  AMPConfigManager.h
+//  AMPBackgroundNotifier.h
 //  Copyright (c) 2020 Amplitude Inc. (https://amplitude.com/)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,17 +22,25 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AMPServerZone.h"
+
+#if TARGET_OS_WATCH
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AMPConfigManager : NSObject
+extern NSNotificationName const AMPAppWillEnterForegroundNotification;
+extern NSNotificationName const AMPAppDidEnterBackgroundNotification;
 
-@property (nonatomic, strong, readonly) NSString *ingestionEndpoint;
+/// watchOS adds support for background notifications in watchOS 7.0 with `WKExtension.applicationDidEnterBackgroundNotification`
+/// and related notifications. But since this SDK is backwards compatible with watchOS 3.0, these notifications are not available. Instead, the user
+/// should implement the appropriate background methods on their Extension Delegate and call the `AMPBackgroundNotifier` from those
+/// methods.
+@interface AMPBackgroundNotifier : NSObject
 
-+ (instancetype)sharedInstance;
-- (void)refresh:(void(^)(void))completionHandler serverZone:(AMPServerZone)serverZone;
++ (void)applicationWillEnterForeground;
++ (void)applicationDidEnterBackground;
 
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif
