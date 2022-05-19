@@ -1,5 +1,5 @@
 //
-//  AMPPlan.h
+//  AMPMiddleware.h
 //  Copyright (c) 2021 Amplitude Inc. (https://amplitude.com/)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,28 +20,41 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
+
 #import <Foundation/Foundation.h>
 
-@interface AMPPlan : NSObject
+/**
+ * AMPMiddlewarePayload
+ */
+@interface AMPMiddlewarePayload: NSObject
 
-@property (nonatomic, strong, readonly) NSString *branch;
+@property NSMutableDictionary *_Nonnull event;
+@property NSMutableDictionary *_Nullable extra;
 
-@property (nonatomic, strong, readonly) NSString *source;
+- (instancetype _Nonnull)initWithEvent:(NSMutableDictionary *_Nonnull) event withExtra:(NSMutableDictionary *_Nullable) extra;
 
-@property (nonatomic, strong, readonly) NSString *version;
+@end
 
-@property (nonatomic, strong, readonly) NSString *versionId;
+/**
+ * AMPMiddleware
+ */
+typedef void (^AMPMiddlewareNext)(AMPMiddlewarePayload *_Nullable newPayload);
 
-+ (instancetype)plan;
+@protocol AMPMiddleware
 
-- (AMPPlan *)setBranch:(NSString *)branch;
+- (void)run:(AMPMiddlewarePayload *_Nonnull)payload next:(AMPMiddlewareNext _Nonnull)next;
 
-- (AMPPlan *)setSource:(NSString *)source;
+@end
 
-- (AMPPlan *)setVersion:(NSString *)version;
+/**
+ * AMPBlockMiddleware
+ */
+typedef void (^AMPMiddlewareBlock)(AMPMiddlewarePayload *_Nonnull payload, AMPMiddlewareNext _Nonnull next);
 
-- (AMPPlan *)setVersionId:(NSString *)versionId;
+@interface AMPBlockMiddleware : NSObject <AMPMiddleware>
 
-- (NSDictionary *)toNSDictionary;
+@property (nonnull, nonatomic, readonly) AMPMiddlewareBlock block;
+
+- (instancetype _Nonnull)initWithBlock:(AMPMiddlewareBlock _Nonnull)block;
 
 @end
