@@ -27,6 +27,8 @@
 #import "AMPTrackingOptions.h"
 #import "AMPPlan.h"
 #import "AMPServerZone.h"
+#import "AMPMiddleware.h"
+#import "AnalyticsConnector.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -277,6 +279,9 @@ typedef void (^AMPInitCompletionBlock)(void);
  @see [Tracking Events](https://github.com/amplitude/amplitude-ios#tracking-events)
  */
 - (void)logEvent:(NSString *)eventType withEventProperties:(nullable NSDictionary *)eventProperties;
+
+
+- (void)logEvent:(NSString *)eventType withEventProperties:(nullable NSDictionary *)eventProperties withMiddlewareExtra: (nullable NSMutableDictionary *) extra;
 
 /**
  Tracks an event. Events are saved locally.
@@ -587,6 +592,13 @@ typedef void (^AMPInitCompletionBlock)(void);
 - (void)setOptOut:(BOOL)enabled;
 
 /**
+ Sets event upload max batch size. This controls the maximum number of events sent with each upload request.
+
+ @param eventUploadMaxBatchSize                  Set the event upload max batch size
+ */
+- (void)updateEventUploadMaxBatchSize:(int)eventUploadMaxBatchSize;
+
+/**
  Disables sending logged events to Amplitude servers.
 
  If you want to stop logged events from being sent to Amplitude severs, use this method to set the client to offline. Once offline is enabled, logged events will not be sent to the server until offline is disabled. Calling this method again with offline set to NO will allow events to be sent to server and the client will attempt to send events that have been queued while offline.
@@ -627,7 +639,7 @@ typedef void (^AMPInitCompletionBlock)(void);
 
 /**
  Sends events to a different URL other than kAMPEventLogUrl. Used for proxy servers
- 
+
  We now have a new method setServerZone. To send data to Amplitude's EU servers, recommend to use setServerZone
  method like [client setServerZone:EU]
  */
@@ -653,6 +665,11 @@ typedef void (^AMPInitCompletionBlock)(void);
  * If updateServerUrl is true, including server url as well. Recommend to keep updateServerUrl to be true for alignment.
  */
 - (void)setServerZone:(AMPServerZone)serverZone updateServerUrl:(BOOL)updateServerUrl;
+
+/**
+ * Adds a new middleware function to run on each logEvent() call prior to sending to Amplitude.
+ */
+- (void)addEventMiddleware:(id<AMPMiddleware> _Nonnull)middleware;
 
 /**-----------------------------------------------------------------------------
  * @name Other Methods
