@@ -1,5 +1,5 @@
 //
-//  AMPPlan.h
+//  AMPMiddlewareRunner.h
 //  Copyright (c) 2021 Amplitude Inc. (https://amplitude.com/)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,27 +21,16 @@
 //  THE SOFTWARE.
 //
 #import <Foundation/Foundation.h>
+#import "AMPMiddleware.h"
 
-@interface AMPPlan : NSObject
+@interface AMPMiddlewareRunner : NSObject
 
-@property (nonatomic, strong, readonly) NSString *branch;
+@property (nonatomic, nonnull, readonly) NSMutableArray<id<AMPMiddleware>> *middlewares;
 
-@property (nonatomic, strong, readonly) NSString *source;
++ (instancetype _Nonnull)middleRunner;
 
-@property (nonatomic, strong, readonly) NSString *version;
+- (void) add:(id<AMPMiddleware> _Nonnull)middleware;
 
-@property (nonatomic, strong, readonly) NSString *versionId;
-
-+ (instancetype)plan;
-
-- (AMPPlan *)setBranch:(NSString *)branch;
-
-- (AMPPlan *)setSource:(NSString *)source;
-
-- (AMPPlan *)setVersion:(NSString *)version;
-
-- (AMPPlan *)setVersionId:(NSString *)versionId;
-
-- (NSDictionary *)toNSDictionary;
+- (void) run:(AMPMiddlewarePayload *_Nonnull)payload next:(AMPMiddlewareNext _Nonnull)next;
 
 @end
