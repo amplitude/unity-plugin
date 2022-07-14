@@ -64,9 +64,6 @@
 #import "AMPServerZoneUtil.h"
 #import "AMPMiddleware.h"
 #import "AMPMiddlewareRunner.h"
-#import "AnalyticsConnector.h"
-#import "EventBridge.h"
-#import "IdentityStore.h"
 #import <math.h>
 #import <CommonCrypto/CommonDigest.h>
 
@@ -83,6 +80,8 @@
 #else
 #import <Cocoa/Cocoa.h>
 #endif
+
+@import AnalyticsConnector;
 
 @interface Amplitude ()
 
