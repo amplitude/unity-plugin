@@ -1,9 +1,9 @@
 #import "AmplitudeCWrapper.h"
-#import "Amplitude.h"
-#import "AMPIdentify.h"
-#import "AMPRevenue.h"
-#import "AMPTrackingOptions.h"
-#import "AMPServerZone.h"
+#import <Amplitude/Amplitude.h>
+#import <Amplitude/AMPIdentify.h>
+#import <Amplitude/AMPRevenue.h>
+#import <Amplitude/AMPTrackingOptions.h>
+#import <Amplitude/AMPServerZone.h>
 
 // Used to allocate a C string on the heap for C#
 char* MakeCString(const char* string) {

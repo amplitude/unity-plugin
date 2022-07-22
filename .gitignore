@@ -16,5 +16,10 @@
 .vscode
 .vs
 
+Assets/Resources/
+Assets/Resources.meta
+Assets/Scenes/
+Assets/StreamingAssets/
+Assets/StreamingAssets.meta
 Logs
-
+UserSettings

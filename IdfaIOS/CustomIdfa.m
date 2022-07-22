@@ -1,8 +1,6 @@
 #import <AdSupport/AdSupport.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
-
-//Please ensure this path points to the file 'Assets/Plugins/iOS/Amplitude/Amplitude.h'
-#import "../../Plugins/iOS/Amplitude/Amplitude.h"
+#import <Amplitude/Amplitude.h>
 
 typedef NSString* (^AMPAdSupportBlock)(void);
 
