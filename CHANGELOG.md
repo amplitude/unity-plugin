@@ -1,5 +1,10 @@
 # Versioned Releases
 
+## 2.5.1
+* Upgrade nativeAndroid SDK to v2.37.0.
+* Upgrade native iOS SDK to v8.10.0.
+* Remove native iOS SDK from plugin folder and use External Dependency Manager to manage iOS pod.
+
 ## 2.4.0
 * Upgrade nativeAndroid SDK to v2.34.1.
 * Upgrade native iOS SDK to v8.5.0.
