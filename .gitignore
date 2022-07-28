@@ -11,6 +11,7 @@
 *.pidb
 *.user
 *.userprefs
+*.asmdef
 
 .DS_Store
 .vscode
