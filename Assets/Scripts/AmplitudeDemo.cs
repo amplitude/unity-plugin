@@ -51,6 +51,8 @@ public class AmplitudeDemo : MonoBehaviour {
 		amplitude.removeUserProperty("longArray", new long[]{ 1111,2222,3333,4444,5555,6666});
 		amplitude.setUserProperty("floatArray", new float[]{123.45f, 678.9f});
 		amplitude.setUserProperty("doubleArray", new double[]{123.45, 678.9});
+		amplitude.setGroup("sdk", "unity");
+		amplitude.setGroup("sports", new string[]{"soccer", "tennis"});
 
 		Dictionary<string, object> dictValue = new Dictionary<string, object>()
 		{
