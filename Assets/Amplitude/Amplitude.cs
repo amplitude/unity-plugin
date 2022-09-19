@@ -579,7 +579,7 @@ public class Amplitude {
 	/// **Note:** this will also set groupType: groupName as a user property.
 	/// </summary>
 	/// <param name="groupType"You need to specify a group type (for example orgId).</param>
-	/// <param name="groupName"YThe value for the group name, can be a string. (for example for groupType orgId, the groupName would be the actual id number, like 15).</param>
+	/// <param name="groupName"The value for the group name, can be a string. (for example for groupType orgId, the groupName would be the actual id number, like 15).</param>
 	public void setGroup(string groupType, string groupName) {
 		Log (string.Format("C# setGroup"));
 #if (UNITY_IPHONE || UNITY_TVOS)
@@ -602,7 +602,7 @@ public class Amplitude {
 	/// **Note:** this will also set groupType: groupName as a user property.
 	/// </summary>
 	/// <param name="groupType"You need to specify a group type (for example sports).</param>
-	/// <param name="groupName"YThe value for the group name, can be an array of strings. (for example for groupType orgId, the groupName would be array of sport, like [soccer, tennis]).</param>
+	/// <param name="groupName"The value for the group name, can be an array of strings. (for example for groupType orgId, the groupName would be array of sport, like [soccer, tennis]).</param>
 	public void setGroup(string groupType, string[] groupName) {
 		Log (string.Format("C# setGroup"));
 #if (UNITY_IPHONE || UNITY_TVOS)
