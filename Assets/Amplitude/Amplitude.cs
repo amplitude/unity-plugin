@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 public class Amplitude {
 	private static readonly string UnityLibraryName = "amplitude-unity";
-	private static readonly string UnityLibraryVersion = "2.5.1";
+	private static readonly string UnityLibraryVersion = "2.6.0";
 
 	private static Dictionary<string, Amplitude> instances;
 	private static readonly object instanceLock = new object();
@@ -39,6 +39,10 @@ public class Amplitude {
 	private static extern void _Amplitude_setDeviceId(string instanceName, string deviceId);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setUserProperties(string instanceName, string propertiesJson);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setGroup(string instanceName, string groupType, string groupName);
+	[DllImport ("__Internal")]
+	private static extern void _Amplitude_setGroupWithStringArray(string instanceName, string groupType, string[] groupName, int length);
 	[DllImport ("__Internal")]
 	private static extern void _Amplitude_setOptOut(string instanceName, bool enabled);
 	[DllImport ("__Internal")]
@@ -564,6 +568,52 @@ public class Amplitude {
 #if UNITY_ANDROID
 		if (Application.platform == RuntimePlatform.Android) {
 			pluginClass.CallStatic("setUserProperties", instanceName, propertiesJson);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Adds a user to a group or groups. You need to specify a groupType and groupName(s).
+	/// For example you can group people by their organization. In that case groupType is "orgId", and groupName would be the actual ID(s). groupName can be a string or an array of strings to indicate a user in multiple groups. 
+	/// You can also call setGroup multiple times with different groupTypes to track multiple types of groups (up to 5 per app).
+	/// **Note:** this will also set groupType: groupName as a user property.
+	/// </summary>
+	/// <param name="groupType"You need to specify a group type (for example orgId).</param>
+	/// <param name="groupName"The value for the group name, can be a string. (for example for groupType orgId, the groupName would be the actual id number, like 15).</param>
+	public void setGroup(string groupType, string groupName) {
+		Log (string.Format("C# setGroup"));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setGroup(instanceName, groupType, groupName);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setGroup", instanceName, groupType, groupName);
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Adds a user to a group or groups. You need to specify a groupType and groupName(s).
+	/// For example you can group people by their organization. In that case groupType is "orgId", and groupName would be the actual ID(s). groupName can be a string or an array of strings to indicate a user in multiple groups. 
+	/// You can also call setGroup multiple times with different groupTypes to track multiple types of groups (up to 5 per app).
+	/// **Note:** this will also set groupType: groupName as a user property.
+	/// </summary>
+	/// <param name="groupType"You need to specify a group type (for example sports).</param>
+	/// <param name="groupName"The value for the group name, can be an array of strings. (for example for groupType orgId, the groupName would be array of sport, like [soccer, tennis]).</param>
+	public void setGroup(string groupType, string[] groupName) {
+		Log (string.Format("C# setGroup"));
+#if (UNITY_IPHONE || UNITY_TVOS)
+		if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.tvOS) {
+			_Amplitude_setGroupWithStringArray(instanceName, groupType, groupName, groupName.Length);
+		}
+#endif
+
+#if UNITY_ANDROID
+		if (Application.platform == RuntimePlatform.Android) {
+			pluginClass.CallStatic("setGroup", instanceName, groupType, groupName);
 		}
 #endif
 	}

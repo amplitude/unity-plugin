@@ -145,6 +145,19 @@ void _Amplitude_setUserProperties(const char* instanceName, const char* properti
     [[Amplitude instanceWithName:ToNSString(instanceName)] setUserProperties:ToNSDictionary(properties)];
 }
 
+void _Amplitude_setGroup(const char* instanceName, const char* groupType, const char* groupName) {
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setGroup:ToNSString(groupType) groupName:ToNSString(groupName)];
+}
+
+void _Amplitude_setGroupWithStringArray(const char* instanceName, const char* groupType, const char* groupName[], const int length) {
+    if (length == 0) return;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:length];
+    for (int i = 0; i < length; i++) {
+        [array addObject:ToNSString(groupName[i])];
+    }
+    [[Amplitude instanceWithName:ToNSString(instanceName)] setGroup:ToNSString(groupType) groupName:array];
+}
+
 void _Amplitude_setOptOut(const char* instanceName, const bool enabled) {
     [[Amplitude instanceWithName:ToNSString(instanceName)] setOptOut:enabled];
 }
