@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.7.0
+* Upgrade native iOS SDK to v8.16.3
+
 ## 2.6.0
 * Upgrade nativeAndroid SDK to v2.38.3.
 * Add `setGroup` API support.
