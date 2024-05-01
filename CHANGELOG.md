@@ -1,5 +1,8 @@
 # Versioned Releases
 
+## 2.8.0
+* Upgrade native iOS SDK to v8.19 and android sdk to 2.40.1
+
 ## 2.7.0
 * Upgrade native iOS SDK to v8.16.3
 
