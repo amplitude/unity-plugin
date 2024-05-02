@@ -4,7 +4,7 @@
       <repository>https://repo.maven.apache.org/maven2</repository>
     </repositories>
 
-    <androidPackage spec="com.amplitude:android-sdk:2.38.3">
+    <androidPackage spec="com.amplitude:android-sdk:2.40.+">
       <repositories>
         <repository>https://maven.google.com</repository>
       </repositories>
@@ -18,6 +18,6 @@
   </androidPackages>
 
   <iosPods>
-    <iosPod name="Amplitude" version="~> 8.16.3" />
+    <iosPod name="Amplitude" version="~> 8.19" />
   </iosPods>
 </dependencies>
