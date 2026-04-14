@@ -8,7 +8,22 @@
 # Official Amplitude Unity Plugin
 A plugin to simplify the integration of [Amplitude](https://www.amplitude.com) iOS and Android SDKs into your Unity project. This respository also contains a sample project with the Unity plugin integrated.
 
-## Installation and Quick Start
+## Installation
+Installing the plugin using the Unity Package Manager is the simplest way to install.
+
+[![openupm](https://img.shields.io/npm/v/com.amplitude.unityplugin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.amplitude.unityplugin/)
+
+1. Open your project settings and select the Package Manager.
+2. Add a new scoped registry:
+```
+Name: OpenUPM
+URL: https://package.openupm.com
+scope(s): com.amplitude
+```
+3. Open the Package Manager, and look for packages in "My Registries"
+4. Add the Amplitude package
+
+## Quick Start
 Please visit our :100:[Developer Center](https://developers.amplitude.com/docs/unity) for instructions on installing and using our the SDK.
 
 ## Changelog
